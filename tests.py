@@ -93,6 +93,12 @@ EXAMPLES = (
         ]},
         {'line': {'integer': '444'}},
     ]),
+    ('add(1 2)',  [
+        {'line': {
+            'function_call': 'add(',
+            'args': [{'integer': '1'}, {'integer': '2'}] 
+        }}
+    ]),
 )
 
 @pytest.fixture(scope="module", params=EXAMPLES)

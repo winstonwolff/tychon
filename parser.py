@@ -8,11 +8,15 @@ GRAMMAR = r'''
 
     start = { line | vertical_list | empty_line }*;
 
-    vertical_list = '$$INDENT$$' EOL vertical_list:{ line }+ '$$OUTDENT$$' EOL;
+    vertical_list = '$$INDENT$$' ~ EOL vertical_list:{ line }+ '$$OUTDENT$$' EOL;
 
     line = (line:expression EOL) | ( line:{ expression }+ EOL );
 
     empty_line = empty_line:'\n';
+
+    #
+    # expressions with priority
+    #
 
     expression = expr3;
 
@@ -26,8 +30,17 @@ GRAMMAR = r'''
 
     expr1 =
         | '(' ~ @:expression ')'
+        | function_call
+        ;
+
+    function_call =
+        | function_call:/[a-zA-Z_][a-zA-Z_0-9]*\(/ args:{ expression } * ')'
         | term
         ;
+
+    #
+    # terms
+    #
 
     term = string | number | identifier ;
     string = '"' ~ string:/[^"]*/ '"' ;
