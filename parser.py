@@ -4,19 +4,17 @@ import tatsu
 SHOW_PARSER_TRACE = False
 
 GRAMMAR = r'''
-    @@grammar::COBRA_LANG
-    #  @@whitespace :: / +/
+    @@whitespace :: / +/
 
-    start = list | expression $ ;
+    start = { line | vertical_list | empty_line }*;
 
-    # cmnt = comment:/#.*$/ ;
+    vertical_list = '$$INDENT$$' EOL vertical_list:{ line }+ '$$OUTDENT$$' EOL;
 
-    list =  { expr3 }+ ;
+    line = (line:expression EOL) | ( line:{ expression }+ EOL );
+
+    empty_line = empty_line:'\n';
 
     expression = expr3;
-
-    #  expr4 = | block | expr3 ;
-    #  block = '$$INDENT$$' ~ block:{ expr3 }+ '$$OUTDENT$$' ;
 
     expr3 = | addition | subtraction | expr2 ;
     addition = left:expr3 op:'+' ~ right:expr2 ;
@@ -38,6 +36,8 @@ GRAMMAR = r'''
     number = float | integer ;
     integer = integer:/\d+/ ;
     float = float:/\d+\.\d+/ ;
+
+    EOL = '\n' | $;
 '''
 PARSER = tatsu.compile(GRAMMAR)
 
