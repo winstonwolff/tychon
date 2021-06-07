@@ -2,5 +2,5 @@
 
 python3 -m pytest -vv \
   parser.py \
-  tests.py
+  parser_test.py
 
