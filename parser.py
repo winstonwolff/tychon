@@ -10,23 +10,23 @@ GRAMMAR = r'''
 
     vertical_list = '$$INDENT$$' ~ EOL vertical_list:{ line }+ '$$OUTDENT$$' EOL;
 
-    line = (line:expression EOL) | ( line:{ expression }+ EOL );
+    line = (@:expression EOL) | ( @:{ expression }+ EOL );
 
     empty_line = empty_line:'\n';
 
     #
-    # expressions with priority
+    # expressions with priority. First is lower priority, Last is higher priority.
     #
 
     expression = expr3;
 
     expr3 = | addition | subtraction | expr2 ;
-    addition = left:expr3 op:'+' ~ right:expr2 ;
-    subtraction = left:expr3 op:'-' ~ right:expr2 ;
+        addition = left:expr3 op:'+' ~ right:expr2 ;
+        subtraction = left:expr3 op:'-' ~ right:expr2 ;
 
     expr2 = | multiplication | division | expr1 ;
-    multiplication = left:expr2 op:'*' ~ right:expr1 ;
-    division = left:expr2 op:'/' ~ right:expr1 ;
+        multiplication = left:expr2 op:'*' ~ right:expr1 ;
+        division = left:expr2 op:'/' ~ right:expr1 ;
 
     expr1 =
         | '(' ~ @:expression ')'
@@ -34,7 +34,7 @@ GRAMMAR = r'''
         ;
 
     function_call =
-        | function_call:/[a-zA-Z_][a-zA-Z_0-9]*\(/ args:{ expression } * ')'
+        | function_call:/[a-zA-Z_][a-zA-Z_0-9]*/ '(' args:{ expression } * ')'
         | term
         ;
 
@@ -43,12 +43,16 @@ GRAMMAR = r'''
     #
 
     term = string | number | identifier ;
-    string = '"' ~ string:/[^"]*/ '"' ;
-    identifier = identifier:/[a-zA-Z_][a-zA-Z_0-9]*/ ;
 
-    number = float | integer ;
-    integer = integer:/\d+/ ;
-    float = float:/\d+\.\d+/ ;
+        string = single_quote_string | double_quote_string ;
+            double_quote_string = '"' ~ string:/[^"]*/ '"' ;
+            single_quote_string = "'" ~ string:/[^']*/ "'" ;
+
+        identifier = identifier:/[a-zA-Z_][a-zA-Z_0-9]*/ ;
+
+        number = float | integer ;
+            integer = integer:/\d+/ ;
+            float = float:/\d+\.\d+/ ;
 
     EOL = '\n' | $;
 '''

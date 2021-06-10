@@ -62,23 +62,23 @@ def test_deep_dict():
     assert map_tree(without_parseinfo, {'a':'aa', 'parseinfo': 'AA', 'b':{'c':'cc', 'parseinfo': 'CC'}}) == {'a': 'aa', 'b': {'c': 'cc'}}
 
 EXAMPLES = (
-    ('"hello"', [{'line': {'string': 'hello'}}]),
-    ('"hello my friend"', [{'line': {'string': 'hello my friend'}}]),
-    ('foo', [{'line': {'identifier': 'foo'}}]),
-    ('123', [{'line': {'integer': '123'}}]),
-    ('123 456', [{'line': [{'integer': '123'}, {'integer': '456'}]}]),
-    ("123\n456", [{'line': {'integer': '123'}}, {'line': {'integer': '456'}}]),
-    ('123.4', [{'line':{'float': '123.4'}}]),
-    ('add 1 2', [{'line': [{'identifier': 'add'}, {'integer': '1'}, {'integer': '2'}]}]),
-    ('2 + 3',  [{'line': {'op': '+', 'left': { 'integer': '2'}, 'right': {'integer': '3'}}}]),
-    ('3.14 * 2',  [{'line': {'op': '*', 'left': {'float': '3.14'}, 'right': {'integer': '2'}}}]),
+    ('"hello"', [{'string': 'hello'}]),
+    ('"hello my friend"', [ {'string': 'hello my friend'}]),
+    ('foo', [{'identifier': 'foo'}]),
+    ('123', [{'integer': '123'}]),
+    ('123 456', [[{'integer': '123'}, {'integer': '456'}]]),
+    ("123\n456", [{'integer': '123'}, {'integer': '456'}]),
+    ('123.4', [{'float': '123.4'}]),
+    ('add 1 2', [[{'identifier': 'add'}, {'integer': '1'}, {'integer': '2'}]]),
+    ('2 + 3',  [{'op': '+', 'left': { 'integer': '2'}, 'right': {'integer': '3'}}]),
+    ('3.14 * 2',  [{'op': '*', 'left': {'float': '3.14'}, 'right': {'integer': '2'}}]),
     ('2 + 3 * 4',  [
-        {'line': {'op': '+',
+        {'op': '+',
          'left': {'integer': '2'},
          'right': {
              'op': '*',
              'left': {'integer': '3'},
-             'right': {'integer': '4'}}}}]),
+             'right': {'integer': '4'}}}]),
     (trim_margin('''
         111
             222
@@ -86,18 +86,24 @@ EXAMPLES = (
         444
         '''), [
         {'empty_line': '\n'},
-        {'line': {'integer': '111'}},
+        {'integer': '111'},
         {'vertical_list': [
-            {'line': {'integer': '222'}},
-            {'line': {'integer': '333'}},
+            {'integer': '222'},
+            {'integer': '333'},
         ]},
-        {'line': {'integer': '444'}},
+        {'integer': '444'},
     ]),
     ('add(1 2)',  [
-        {'line': {
-            'function_call': 'add(',
-            'args': [{'integer': '1'}, {'integer': '2'}] 
-        }}
+        {
+            'function_call': 'add',
+            'args': [{'integer': '1'}, {'integer': '2'}]
+        }
+    ]),
+    ('print("hello" "world")',  [
+        {
+            'function_call': 'print',
+            'args': [{'string': 'hello'}, {'string': 'world'}]
+        }
     ]),
 )
 
@@ -107,7 +113,6 @@ def example(request):
 
 def test_parsing(example):
     source, expected = example
-    #  for source, expected in EXAMPLES:
     actual = parse(source)
     actual = map_tree(without_parseinfo, actual)
     assert actual == expected
