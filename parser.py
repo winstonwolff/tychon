@@ -45,14 +45,14 @@ GRAMMAR = r'''
     term = string | number | identifier ;
 
         string = single_quote_string | double_quote_string ;
-            double_quote_string = '"' ~ string:/[^"]*/ '"' ;
             single_quote_string = "'" ~ string:/[^']*/ "'" ;
-
-        identifier = identifier:/[a-zA-Z_][a-zA-Z_0-9]*/ ;
+            double_quote_string = '"' ~ string:/[^"]*/ '"' ;
 
         number = float | integer ;
-            integer = integer:/\d+/ ;
             float = float:/\d+\.\d+/ ;
+            integer = integer:/\d+/ ;
+
+        identifier = identifier:/[a-zA-Z_][a-zA-Z_0-9]*/ ;
 
     EOL = '\n' | $;
 '''

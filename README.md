@@ -10,7 +10,6 @@ TODO
 ----
 - Make an output from parser, e.g.
   `foo 1 2 3` -> [ <foo>, 1, 2, 3 ]
-- combine with yaml_lang
 
 
 Unify lines of code with Dictionary definitions
