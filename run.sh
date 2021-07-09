@@ -3,5 +3,5 @@
 python3 -m pytest -vv \
   parser.py \
   parser_test.py \
-  tychonian_test.py
+  tychon_test.py
 

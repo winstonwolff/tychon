@@ -54,6 +54,7 @@ class Scope(dict):
     #      print(Ansi.CYAN, msg, Ansi.RESET, sep='')
 
     def _evaluate(self, expression):
+        print('!!! _evaluate() expression=', expression)
         if not isinstance(expression, list):
             # it's not a function call, so just return itself
             return expression

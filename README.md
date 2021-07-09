@@ -3,7 +3,7 @@ Goal: Make a simple parser for building data structures. I could be used for
 
 Usage
 -----
-  ./main.py
+  ./run.sh
   pytest -v main.py — run tests
 
 TODO

@@ -1,9 +1,9 @@
 import io
-import tychonian
+import tychon
 
 def test_hello_world():
     out = io.StringIO()
-    tychonian.run("print('hello' 'world')", out)
+    tychon.run("print('hello' 'world')", out)
     assert out.getvalue() == 'hello world\n'
 
 
