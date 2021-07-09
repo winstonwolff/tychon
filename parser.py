@@ -1,4 +1,5 @@
 import tatsu
+from collections import namedtuple
 
 #  SHOW_PARSER_TRACE = True
 SHOW_PARSER_TRACE = False
@@ -30,13 +31,11 @@ GRAMMAR = r'''
 
     expr1 =
         | '(' ~ @:expression ')'
-        | function_call
+        | expr0
         ;
 
-    function_call =
-        | function_call:/[a-zA-Z_][a-zA-Z_0-9]*/ '(' args:{ expression } * ')'
-        | term
-        ;
+    expr0 = | function_call | term ;
+        function_call = func:identifier '(' args:{ expression } * ')' ;
 
     #
     # terms
@@ -50,9 +49,9 @@ GRAMMAR = r'''
 
         number = float | integer ;
             float = float:/\d+\.\d+/ ;
-            integer = integer:/\d+/ ;
+            integer = /[0-9]+/ ;
 
-        identifier = identifier:/[a-zA-Z_][a-zA-Z_0-9]*/ ;
+        identifier = /[a-zA-Z_][a-zA-Z_0-9]*/ ;
 
     EOL = '\n' | $;
 '''
@@ -64,6 +63,7 @@ def parse(source):
     parsed = PARSER.parse(source,
                           parseinfo=True,
                           comments_re=None,
+                          semantics=TychonSemantics(),
                           colorize=SHOW_PARSER_TRACE,
                           trace=SHOW_PARSER_TRACE)
     return parsed
@@ -103,3 +103,30 @@ AAA
 DDD'''
     assert _insert_indentation_symbols(source) == expected
 
+Call = namedtuple('Call', ['args'])
+Identifier = namedtuple('Identifier', ['name'])
+
+class TychonSemantics:
+
+    def addition(self, ast, *rule_params, **kwparams):
+        return Call([Identifier('add'), ast['left'], ast['right']])
+
+    def function_call(self, ast, *args, **kwargs):
+        #  print('!!! function_call() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
+        return Call([Identifier(ast['func'][0]), *ast['args']])
+
+    def single_quote_string(self, ast):
+        return ast['string']
+
+    def double_quote_string(self, ast):
+        return ast['string']
+
+    def integer(self, ast, *rule_params, **kwparams):
+        return int(ast)
+
+    def float(self, ast, *rule_params, **kwparams):
+        return float(ast)
+
+    def identifier(self, name, *args, **kwargs):
+        #  print('!!! identifier() name=', repr(name), 'args=', repr(args), 'kwargs=', repr(kwargs))
+        return Identifier(name)

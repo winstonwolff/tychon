@@ -1,5 +1,26 @@
-Goal: Make a simple parser for building data structures. I could be used for
-      HTML, Specs, GUI definitions.
+Goals:
+    Familiar
+        - a language that feels like Ruby or Python
+    Beautiful
+        - significant indentation for blocks
+        - but even less syntax: no commas
+        - Unify concept of writing: (a) lines of a function, (2) dictionaries, and (3) calling parameters
+        - Macro/function for docstrings
+    Functional
+        - mostly immutable data structures like Clojure
+        - "functions" are pure, and are clearly marked
+        - procedures are like functions but may have side-effects. Unlike Pascal, procedures may
+          return values
+
+    Programming in the Large
+        - has Macros to expand the language (like Lisp/Clojure)
+            - AST looks like Clojure, i.e. `1 + 1` == `add(1 1)` == Call(add 1 1)
+        - Macro/function for marking functions pure, and checking that it's so
+        - Macro/function for enforcing Law of Demeter
+        - Macro/function for enforcing knowledge of other modules, e.g. Controllers know all, but Models cannot know Views, and Views cannot know Controllers
+        - macros must be in marked modules, so people don't use them too much
+
+
 
 Usage
 -----
@@ -8,9 +29,17 @@ Usage
 
 TODO
 ----
-- Make an output from parser, e.g.
-  `foo 1 2 3` -> [ <foo>, 1, 2, 3 ]
+- DONE - Make an output from parser, e.g.
+  `foo 1 2 3` -> [ Symbol('foo'), 1, 2, 3 ]
+  `foo(1 2 3)` -> [ Call([Symbol('foo'), 1, 2, 3]) ]
 
+- Running my program works! Now fix the disabled parser tests
+
+- REPL
+
+
+Idea
+----
 
 Unify lines of code with Dictionary definitions
   : — assignment

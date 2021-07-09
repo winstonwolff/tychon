@@ -6,7 +6,7 @@ to run tests:
 import re
 import pytest
 
-from parser import parse
+from parser import parse, Call, Identifier
 
 class Color:
     red = '\x1b[31m'
@@ -62,49 +62,53 @@ def test_deep_dict():
     assert map_tree(without_parseinfo, {'a':'aa', 'parseinfo': 'AA', 'b':{'c':'cc', 'parseinfo': 'CC'}}) == {'a': 'aa', 'b': {'c': 'cc'}}
 
 EXAMPLES = (
-    ('"hello"', [{'string': 'hello'}]),
-    ('"hello my friend"', [ {'string': 'hello my friend'}]),
-    ('foo', [{'identifier': 'foo'}]),
-    ('123', [{'integer': '123'}]),
-    ('123 456', [[{'integer': '123'}, {'integer': '456'}]]),
-    ("123\n456", [{'integer': '123'}, {'integer': '456'}]),
-    ('123.4', [{'float': '123.4'}]),
-    ('add 1 2', [[{'identifier': 'add'}, {'integer': '1'}, {'integer': '2'}]]),
-    ('2 + 3',  [{'op': '+', 'left': { 'integer': '2'}, 'right': {'integer': '3'}}]),
-    ('3.14 * 2',  [{'op': '*', 'left': {'float': '3.14'}, 'right': {'integer': '2'}}]),
-    ('2 + 3 * 4',  [
-        {'op': '+',
-         'left': {'integer': '2'},
-         'right': {
-             'op': '*',
-             'left': {'integer': '3'},
-             'right': {'integer': '4'}}}]),
-    (trim_margin('''
-        111
-            222
-            333
-        444
-        '''), [
-        {'empty_line': '\n'},
-        {'integer': '111'},
-        {'vertical_list': [
-            {'integer': '222'},
-            {'integer': '333'},
-        ]},
-        {'integer': '444'},
-    ]),
-    ('add(1 2)',  [
-        {
-            'function_call': 'add',
-            'args': [{'integer': '1'}, {'integer': '2'}]
-        }
-    ]),
-    ('print("hello" "world")',  [
-        {
-            'function_call': 'print',
-            'args': [{'string': 'hello'}, {'string': 'world'}]
-        }
-    ]),
+    #  ('"hello"', [{'string': 'hello'}]),
+    #  ('"hello my friend"', [ {'string': 'hello my friend'}]),
+    #  ('foo', [{'identifier': 'foo'}]),
+    #  ('123', [{'integer': '123'}]),
+    #  ('123 456', [[{'integer': '123'}, {'integer': '456'}]]),
+    #  ("123\n456", [{'integer': '123'}, {'integer': '456'}]),
+    #  ('123.4', [{'float': '123.4'}]),
+    #  ('add 1 2', [[{'identifier': 'add'}, {'integer': '1'}, {'integer': '2'}]]),
+    #  ('2 + 3',  [{'op': '+', 'left': { 'integer': '2'}, 'right': {'integer': '3'}}]),
+
+    ('2 + 3',  [Call([ Identifier('add'), 2, 3 ])]),
+
+    #  ('3.14 * 2',  [{'op': '*', 'left': {'float': '3.14'}, 'right': {'integer': '2'}}]),
+    #  ('2 + 3 * 4',  [
+    #      {'op': '+',
+    #       'left': {'integer': '2'},
+    #       'right': {
+    #           'op': '*',
+    #           'left': {'integer': '3'},
+    #           'right': {'integer': '4'}}}]),
+    #  (trim_margin('''
+    #      111
+    #          222
+    #          333
+    #      444
+    #      '''), [
+    #      {'empty_line': '\n'},
+    #      {'integer': '111'},
+    #      {'vertical_list': [
+    #          {'integer': '222'},
+    #          {'integer': '333'},
+    #      ]},
+    #      {'integer': '444'},
+    #  ]),
+    #  ('add(1 2)',  [
+    #      {
+    #          'function_call': 'add',
+    #          'args': [{'integer': '1'}, {'integer': '2'}]
+    #      }
+    #  ]),
+    ('add(1 2)',  [Call([Identifier('add'), 1, 2])]),
+    #  ('print("hello" "world")',  [
+    #      {
+    #          'function_call': 'print',
+    #          'args': [{'string': 'hello'}, {'string': 'world'}]
+    #      }
+    #  ]),
 )
 
 @pytest.fixture(scope="module", params=EXAMPLES)

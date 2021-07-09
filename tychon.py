@@ -4,7 +4,8 @@ import parser
 def run(code_str, stdout):
 
     ast = parser.parse(code_str)
-    scope = Scope({**BUILTIN_FUNCTIONS, **{'stdout': stdout}})
+    #  scope = Scope({**BUILTIN_FUNCTIONS, **{'stdout': stdout}})
+    scope = Scope(BUILTIN_FUNCTIONS, {'stdout': stdout})
     scope.run(ast)
     print('DONE. scope=', scope)
 
@@ -17,13 +18,13 @@ def run(code_str, stdout):
 #      scope.run(program)
 #      print('DONE. scope=', scope)
 
-#  class Ansi:
-#      RESET = '\x1b[0m'
-#      GRAY  = '\x1b[90m'
-#      RED   = '\x1b[31m'
-#      GREEN = '\x1b[32m'
-#      BLUE  = '\x1b[34m'
-#      CYAN  = '\x1b[36m'
+class Ansi:
+    RESET = '\x1b[0m'
+    GRAY  = '\x1b[90m'
+    RED   = '\x1b[31m'
+    GREEN = '\x1b[32m'
+    BLUE  = '\x1b[34m'
+    CYAN  = '\x1b[36m'
 
 
 class Scope(dict):
@@ -55,20 +56,20 @@ class Scope(dict):
 
     def _evaluate(self, expression):
         print('!!! _evaluate() expression=', expression)
-        if not isinstance(expression, list):
+        if not isinstance(expression, parser.Call):
             # it's not a function call, so just return itself
             return expression
 
-        self._depth += 1
-        self.debug('eval:', repr(expression))
-        func_name = expression[0]
-        func = self[func_name]
-        args = expression[1:]
-        kind = getattr(func, 'kind', None)
+        call = expression
 
-        if kind == Kinds.FUNC:
-            # It's a function call. Evaluate all args in turn
-            args = [self._evaluate(arg) for arg in args]
+        self._depth += 1
+        self.debug('eval:', repr(call))
+        func_name = call.args[0].name
+        func = self[func_name]
+        args = call.args[1:]
+        #  kind = getattr(func, 'kind', None)
+
+        args = [self._evaluate(arg) for arg in args]
 
         result = func(self, *args)
         self.debug('   ->', result)
@@ -147,9 +148,9 @@ def get(scope, key):
 @function_with_name('print')
 def _print(scope, *args, sep=' ', end="\n"):
     msg = sep.join(str(a) for a in args)
-    scope.stdout.write(msg)
-    scope.stdout.write(end)
-    scope.stdout.flush()
+    scope['stdout'].write(msg)
+    scope['stdout'].write(end)
+    scope['stdout'].flush()
     print("!!! msg=", msg)
     return msg
 
