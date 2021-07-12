@@ -4,7 +4,6 @@ import parser
 def run(code_str, stdout):
 
     ast = parser.parse(code_str)
-    #  scope = Scope({**BUILTIN_FUNCTIONS, **{'stdout': stdout}})
     scope = Scope(BUILTIN_FUNCTIONS, {'stdout': stdout})
     scope.run(ast)
     print('DONE. scope=', scope)

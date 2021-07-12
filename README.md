@@ -36,7 +36,11 @@ TODO
   `foo 1 2 3` -> [ Symbol('foo'), 1, 2, 3 ]
   `foo(1 2 3)` -> [ Call([Symbol('foo'), 1, 2, 3]) ]
 
-- Running my program works! Now fix the disabled parser tests
+- DONE - Running my program works! Now fix the disabled parser tests
+
+- Refactor tychon.Scope with ChainMap
+
+- Run a program with `tychon myprog`
 
 - REPL
 
