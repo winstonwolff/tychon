@@ -1,11 +1,14 @@
 import sys
 import parser
+import collections
+import _builtins
 
 def run(code_str, stdout):
 
     ast = parser.parse(code_str)
-    scope = Scope(BUILTIN_FUNCTIONS, {'stdout': stdout})
-    scope.run(ast)
+    scope = Scope(_builtins.BUILTIN_FUNCTIONS)
+    scope.update({'stdout': stdout})
+    Tychon.run(scope, ast)
     print('DONE. scope=', scope)
 
 #  def main():
@@ -26,34 +29,54 @@ class Ansi:
     CYAN  = '\x1b[36m'
 
 
-class Scope(dict):
-    '''
-    A dictionary that also has a `parent`. If you get an item which
-    is not in this dictionary, the parent dictionary will be checked.
-    '''
-    def __init__(self, parent, initialize={}):
-        super()
-        self._parent = parent
-        self.update(initialize)
-        self._depth = parent._depth + 1 if isinstance(parent, Scope) else 0
+def Scope(parent):
+    if isinstance(parent, collections.ChainMap):
+        return parent.new_child(initialize)
+    else:
+        return collections.ChainMap(parent)
 
-    def __getitem__(self, key):
-        if key in self:
-            return super().__getitem__(key)
-        else:
-            return self._parent[key]
+#  class Scope(dict):
+#      '''
+#      A dictionary that also has a `parent`. If you get an item which
+#      is not in this dictionary, the parent dictionary will be checked.
+#      '''
+#      def __init__(self, parent, initialize={}):
+#          super()
+#          self._parent = parent
+#          self.update(initialize)
+#          self._depth = parent._depth + 1 if isinstance(parent, Scope) else 0
 
-    def debug(self, *args):
-        indent = '    ' * self._depth
+#      def __getitem__(self, key):
+#          if key in self:
+#              return super().__getitem__(key)
+#          else:
+#              return self._parent[key]
+
+class Tychon:
+
+    @staticmethod
+    def run(scope, program):
+        result = None
+        for expression in program:
+            print('!!! run() expression=', expression)
+            result = Tychon._evaluate(scope, expression)
+        return result
+
+    @staticmethod
+    def debug(scope, *args):
+        print(' !!! debug depth=', scope['_depth'])
+        indent = '    ' * scope['_depth']
         msg = indent + ' '.join(str(a) for a in args)
         print(Ansi.GRAY, msg, Ansi.RESET, sep='')
 
-    #  def info(self, *args):
-    #      indent = '    ' * self._depth
-    #      msg = indent + ' '.join(str(a) for a in args)
-    #      print(Ansi.CYAN, msg, Ansi.RESET, sep='')
+    @staticmethod
+    def info(scope, *args):
+        indent = '    ' * scope['_depth']
+        msg = indent + ' '.join(str(a) for a in args)
+        print(Ansi.CYAN, msg, Ansi.RESET, sep='')
 
-    def _evaluate(self, expression):
+    @staticmethod
+    def _evaluate(scope, expression):
         print('!!! _evaluate() expression=', expression)
         if not isinstance(expression, parser.Call):
             # it's not a function call, so just return itself
@@ -61,130 +84,17 @@ class Scope(dict):
 
         call = expression
 
-        self._depth += 1
-        self.debug('eval:', repr(call))
+        scope['_depth'] += 1
+        Tychon.debug(scope, 'eval:', repr(call))
         func_name = call.args[0].name
-        func = self[func_name]
+        func = scope[func_name]
         args = call.args[1:]
         #  kind = getattr(func, 'kind', None)
 
-        args = [self._evaluate(arg) for arg in args]
+        args = [Tychon._evaluate(scope, arg) for arg in args]
 
-        result = func(self, *args)
-        self.debug('   ->', result)
-        self._depth -= 1
+        result = func(scope, *args)
+        Tychon.debug(scope, '   ->', result)
+        scope['_depth'] -= 1
         return result
-
-    def run(self, program):
-        result = None
-        for expression in program:
-            print('!!! run() expression=', expression)
-            result = self._evaluate(expression)
-        return result
-
-BUILTIN_FUNCTIONS = {
-}
-
-class Kinds:
-    FUNC = 'FUNC'
-    MACRO = 'MACRO'
-
-def _register(func, name, kind):
-    func.kind = kind
-    BUILTIN_FUNCTIONS[name] = func
-
-
-def function(func):
-    '''
-    Decorator for registering functions.
-
-    When functions are called, their arguments are evaluated before passing in.
-    '''
-    _register(func, func.__name__, Kinds.FUNC)
-    return func
-
-def function_with_name(name):
-    def inside(func):
-        _register(func, name, Kinds.FUNC)
-    return inside
-
-def macro(func):
-    '''
-    Decorator for registering macros.
-
-    When Macros are called, their arguments are not evaluated--the data structure
-    is passed in to the macro as-is.
-    '''
-    _register(func, func.__name__, Kinds.MACRO)
-    return func
-
-def macro_with_name(name):
-    def inside(func):
-        _register(func, name, Kinds.MACRO)
-    return inside
-
-@function_with_name('pass')
-def _pass(scope, args):
-    pass
-
-@function
-def add(scope, a, b):
-    return a + b
-
-@function
-def equal(scope, a, b):
-    return a == b
-
-@function
-def define(scope, key, value):
-    scope[key] = value
-    return value
-
-@function
-def get(scope, key):
-    return scope[key]
-
-@function_with_name('print')
-def _print(scope, *args, sep=' ', end="\n"):
-    msg = sep.join(str(a) for a in args)
-    scope['stdout'].write(msg)
-    scope['stdout'].write(end)
-    scope['stdout'].flush()
-    print("!!! msg=", msg)
-    return msg
-
-@macro
-def defn(scope, func_name, arg_names, program):
-
-    class Func:
-        def __call__(self, scope, *args):
-            sub_scope = Scope(scope)
-
-            # bind args to names
-            names_and_args = zip(arg_names, args)
-            for name, arg in names_and_args:
-                define(sub_scope, name, arg)
-
-            return sub_scope.run(program)
-
-        def __repr__(self):
-            arg_repr = ' '.join(arg_names)
-            return f'<function {func_name}({arg_repr})>'
-    func = Func()
-
-    define(scope, func_name, func)
-    return func
-
-@macro_with_name('if')
-def _if(scope, predicate, true_program, false_program=[]):
-    sub_scope = Scope(scope)
-
-    test = sub_scope._evaluate(predicate)
-
-    if test:
-        result = sub_scope.run(true_program)
-    else:
-        result = sub_scope.run(false_program)
-    return result
-
 
