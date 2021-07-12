@@ -1,0 +1,7 @@
+print('hello' 'stephanie')
+print('i' 'love' 'you')
+
+print('1+2=' add(1 2))
+
+defn('foo' [a b] [ a + b ])
+print(foo( 1 2))

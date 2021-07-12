@@ -67,7 +67,7 @@ def _print(scope, *args, sep=' ', end="\n"):
     scope['stdout'].write(msg)
     scope['stdout'].write(end)
     scope['stdout'].flush()
-    print("!!! msg=", msg)
+    #  print("!!! msg=", msg)
     return msg
 
 @macro

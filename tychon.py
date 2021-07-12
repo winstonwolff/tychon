@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import sys
 import collections
 import _parser
@@ -9,16 +11,13 @@ def run(code_str, stdout):
     scope = Scope(_builtins.BUILTIN_FUNCTIONS)
     scope.update({'stdout': stdout})
     Tychon.run(scope, ast)
-    print('DONE. scope=', scope)
+    #  print('DONE. scope=', scope)
 
-#  def main():
-#      source_fname = sys.argv[1]
-#      with open(source_fname, 'r') as f:
-#          program = yaml.safe_load(f)
-
-#      scope = Scope(BUILTIN_FUNCTIONS)
-#      scope.run(program)
-#      print('DONE. scope=', scope)
+def main():
+    source_fname = sys.argv[1]
+    with open(source_fname, 'r') as f:
+        code_str = f.read()
+        run(code_str, sys.stdout)
 
 class Ansi:
     RESET = '\x1b[0m'
@@ -35,22 +34,6 @@ def Scope(parent):
     else:
         return collections.ChainMap(parent)
 
-#  class Scope(dict):
-#      '''
-#      A dictionary that also has a `parent`. If you get an item which
-#      is not in this dictionary, the parent dictionary will be checked.
-#      '''
-#      def __init__(self, parent, initialize={}):
-#          super()
-#          self._parent = parent
-#          self.update(initialize)
-#          self._depth = parent._depth + 1 if isinstance(parent, Scope) else 0
-
-#      def __getitem__(self, key):
-#          if key in self:
-#              return super().__getitem__(key)
-#          else:
-#              return self._parent[key]
 
 class Tychon:
 
@@ -58,26 +41,23 @@ class Tychon:
     def run(scope, program):
         result = None
         for expression in program:
-            print('!!! run() expression=', expression)
             result = Tychon._evaluate(scope, expression)
         return result
 
     @staticmethod
     def debug(scope, *args):
-        print(' !!! debug depth=', scope['_depth'])
         indent = '    ' * scope['_depth']
         msg = indent + ' '.join(str(a) for a in args)
-        print(Ansi.GRAY, msg, Ansi.RESET, sep='')
+        #  print(Ansi.GRAY, msg, Ansi.RESET, sep='')
 
     @staticmethod
     def info(scope, *args):
         indent = '    ' * scope['_depth']
         msg = indent + ' '.join(str(a) for a in args)
-        print(Ansi.CYAN, msg, Ansi.RESET, sep='')
+        #  print(Ansi.CYAN, msg, Ansi.RESET, sep='')
 
     @staticmethod
     def _evaluate(scope, expression):
-        print('!!! _evaluate() expression=', expression)
         if not isinstance(expression, _parser.Call):
             # it's not a function call, so just return itself
             return expression
@@ -97,4 +77,7 @@ class Tychon:
         Tychon.debug(scope, '   ->', result)
         scope['_depth'] -= 1
         return result
+
+if __name__ == '__main__':
+    main()
 
