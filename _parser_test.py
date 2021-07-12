@@ -6,7 +6,7 @@ to run tests:
 import re
 import pytest
 
-from parser import parse, Call, Identifier
+from _parser import parse, Call, Identifier
 
 class Color:
     red = '\x1b[31m'

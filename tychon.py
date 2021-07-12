@@ -1,11 +1,11 @@
 import sys
-import parser
 import collections
+import _parser
 import _builtins
 
 def run(code_str, stdout):
 
-    ast = parser.parse(code_str)
+    ast = _parser.parse(code_str)
     scope = Scope(_builtins.BUILTIN_FUNCTIONS)
     scope.update({'stdout': stdout})
     Tychon.run(scope, ast)
@@ -78,7 +78,7 @@ class Tychon:
     @staticmethod
     def _evaluate(scope, expression):
         print('!!! _evaluate() expression=', expression)
-        if not isinstance(expression, parser.Call):
+        if not isinstance(expression, _parser.Call):
             # it's not a function call, so just return itself
             return expression
 
