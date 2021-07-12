@@ -1,4 +1,7 @@
+Tychon — An embedded language so users can "program" or "script" within your program
+
 Goals:
+
     Familiar
         - a language that feels like Ruby or Python
 
@@ -38,11 +41,15 @@ TODO
 
 - DONE - Running my program works! Now fix the disabled parser tests
 
-- Refactor tychon.Scope with ChainMap
+- DONE - Refactor tychon.Scope with ChainMap
 
-- Run a program with `tychon myprog`
+- DONE - Run a program with `tychon myprog`
 
 - REPL
+
+- Syntax error messages from parser
+
+- Searching operators, e.g. '(a == 1 or a == 3) and (b == 0)'
 
 
 Idea
