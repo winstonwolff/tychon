@@ -48,7 +48,7 @@ GRAMMAR = r'''
             double_quote_string = '"' ~ string:/[^"]*/ '"' ;
 
         number = float | integer ;
-            float = float:/\d+\.\d+/ ;
+            float = /\d+\.\d+/ ;
             integer = /[0-9]+/ ;
 
         identifier = /[a-zA-Z_][a-zA-Z_0-9]*/ ;
@@ -110,6 +110,15 @@ class TychonSemantics:
 
     def addition(self, ast, *rule_params, **kwparams):
         return Call([Identifier('add'), ast['left'], ast['right']])
+
+    def subtraction(self, ast, *rule_params, **kwparams):
+        return Call([Identifier('subtract'), ast['left'], ast['right']])
+
+    def multiplication(self, ast, *rule_params, **kwparams):
+        return Call([Identifier('multiply'), ast['left'], ast['right']])
+
+    def division(self, ast, *rule_params, **kwparams):
+        return Call([Identifier('divide'), ast['left'], ast['right']])
 
     def function_call(self, ast, *args, **kwargs):
         #  print('!!! function_call() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))

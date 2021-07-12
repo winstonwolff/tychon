@@ -1,11 +1,14 @@
 Goals:
     Familiar
         - a language that feels like Ruby or Python
+
     Beautiful
         - significant indentation for blocks
         - but even less syntax: no commas
+        - notation for tree structures
         - Unify concept of writing: (a) lines of a function, (2) dictionaries, and (3) calling parameters
         - Macro/function for docstrings
+
     Functional
         - mostly immutable data structures like Clojure
         - "functions" are pure, and are clearly marked
