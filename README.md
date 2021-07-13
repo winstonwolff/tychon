@@ -6,9 +6,11 @@ Goals:
         - a language that feels like Ruby or Python
 
     Beautiful
+        Visually
         - significant indentation for blocks
         - but even less syntax: no commas
         - notation for tree structures
+        Conceptually
         - Unify concept of writing: (a) lines of a function, (2) dictionaries, and (3) calling parameters
         - Macro/function for docstrings
 
@@ -31,24 +33,13 @@ Goals:
 Usage
 -----
   ./run.sh
-  pytest -v main.py — run tests
+  ./tychon.py <sourcefile>.ty
 
 TODO
 ----
-- DONE - Make an output from parser, e.g.
-  `foo 1 2 3` -> [ Symbol('foo'), 1, 2, 3 ]
-  `foo(1 2 3)` -> [ Call([Symbol('foo'), 1, 2, 3]) ]
-
-- DONE - Running my program works! Now fix the disabled parser tests
-
-- DONE - Refactor tychon.Scope with ChainMap
-
-- DONE - Run a program with `tychon myprog`
-
-- REPL
-
 - Syntax error messages from parser
-
+- REPL
+- Define functions
 - Searching operators, e.g. '(a == 1 or a == 3) and (b == 0)'
 
 

@@ -104,25 +104,35 @@ DDD'''
     assert _insert_indentation_symbols(source) == expected
 
 Call = namedtuple('Call', ['args'])
-Identifier = namedtuple('Identifier', ['name'])
+#  Identifier = namedtuple('Identifier', ['name'])
+
+class Sym:
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return "Sym('{}')".format(self.name)
+
+    def __eq__(self, other):
+        return isinstance(other, Sym) and self.name == other.name
 
 class TychonSemantics:
 
     def addition(self, ast, *rule_params, **kwparams):
-        return Call([Identifier('add'), ast['left'], ast['right']])
+        return Call([Sym('add'), ast['left'], ast['right']])
 
     def subtraction(self, ast, *rule_params, **kwparams):
-        return Call([Identifier('subtract'), ast['left'], ast['right']])
+        return Call([Sym('subtract'), ast['left'], ast['right']])
 
     def multiplication(self, ast, *rule_params, **kwparams):
-        return Call([Identifier('multiply'), ast['left'], ast['right']])
+        return Call([Sym('multiply'), ast['left'], ast['right']])
 
     def division(self, ast, *rule_params, **kwparams):
-        return Call([Identifier('divide'), ast['left'], ast['right']])
+        return Call([Sym('divide'), ast['left'], ast['right']])
 
     def function_call(self, ast, *args, **kwargs):
         #  print('!!! function_call() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
-        return Call([Identifier(ast['func'][0]), *ast['args']])
+        return Call([Sym(ast['func'].name), *ast['args']])
 
     def single_quote_string(self, ast):
         return ast['string']
@@ -138,4 +148,4 @@ class TychonSemantics:
 
     def identifier(self, name, *args, **kwargs):
         #  print('!!! identifier() name=', repr(name), 'args=', repr(args), 'kwargs=', repr(kwargs))
-        return Identifier(name)
+        return Sym(name)

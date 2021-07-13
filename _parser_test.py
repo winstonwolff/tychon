@@ -6,7 +6,7 @@ to run tests:
 import re
 import pytest
 
-from _parser import parse, Call, Identifier
+from _parser import parse, Call, Sym
 
 class Color:
     red = '\x1b[31m'
@@ -64,18 +64,18 @@ def test_deep_dict():
 EXAMPLES = (
     ('"hello"', ['hello']),
     ('"hello my friend"', ['hello my friend']),
-    ('foo', [Identifier('foo')]),
+    ('foo', [Sym('foo')]),
     ('123', [123]),
     ('123 456', [[123, 456]]),
     ("123\n456", [123, 456]),
     ('123.4', [123.4]),
-    ('add 1 2', [[Identifier('add'), 1, 2]]),
-    ('2 + 3',  [Call([ Identifier('add'), 2, 3 ])]),
+    ('foo 1 2', [[Sym('foo'), 1, 2]]),
+    ('2 + 3',  [Call([ Sym('add'), 2, 3 ])]),
 
-    ('3.14 * 2',  [Call([ Identifier('multiply'), 3.14, 2])]),
+    ('3.14 * 2',  [Call([ Sym('multiply'), 3.14, 2])]),
     ('2 + 3 * 4',  [
-        Call([ Identifier('add'), 2,
-              Call([ Identifier('multiply'), 3, 4])])]),
+        Call([ Sym('add'), 2,
+              Call([ Sym('multiply'), 3, 4])])]),
     (trim_margin('''
         111
             222
@@ -90,10 +90,11 @@ EXAMPLES = (
         ]},
         444
     ]),
-    ('add(1 2)',  [ Call([ Identifier('add'), 1, 2])]),
-    ('add(1 2)',  [Call([Identifier('add'), 1, 2])]),
+    ('add(1 2)',  [Call([Sym('add'), 1, 2])]),
+    ('add(1 2)',  [Call([Sym('add'), 1, 2])]),
     ('print("hello" "world")',  [
-        Call([ Identifier('print'), "hello", "world"])
+        Call([ Sym('print'), "hello", "world"])
+    ]),
     ]),
 )
 
