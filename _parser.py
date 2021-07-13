@@ -103,8 +103,17 @@ AAA
 DDD'''
     assert _insert_indentation_symbols(source) == expected
 
-Call = namedtuple('Call', ['args'])
-#  Identifier = namedtuple('Identifier', ['name'])
+#  Call = namedtuple('Call', ['args'])
+
+class Call(tuple):
+    def __new__(self, *args):
+        return tuple.__new__(Call, *args)
+
+    def __repr__(self):
+        return "Call({})".format(", ".join(repr(i) for i in self))
+
+    #  def __eq__(self, other):
+    #      return isinstance(other, Call) and tuple(self) == tuple(other)
 
 class Sym:
     def __init__(self, name):

@@ -66,9 +66,9 @@ class Tychon:
 
         scope['_depth'] += 1
         Tychon.debug(scope, 'eval:', repr(call))
-        func_name = call.args[0].name
+        func_name = call[0].name
         func = scope[func_name]
-        args = call.args[1:]
+        args = call[1:]
         #  kind = getattr(func, 'kind', None)
 
         args = [Tychon._evaluate(scope, arg) for arg in args]
