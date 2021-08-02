@@ -31,6 +31,11 @@ GRAMMAR = r'''
 
     expr1 =
         | '(' ~ @:expression ')'
+        | bracket_list
+        ;
+
+    bracket_list =
+        | '[' ~ @:{ expression }+ ']'
         | expr0
         ;
 
