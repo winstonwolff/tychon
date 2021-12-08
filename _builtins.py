@@ -1,7 +1,7 @@
 import collections
 import _parser
 
-class Ansi:
+class _Ansi:
     RESET = '\x1b[0m'
     GRAY  = '\x1b[90m'
     RED   = '\x1b[31m'
@@ -37,13 +37,13 @@ class Evaluator:
     def debug(scope, *args):
         indent = '    ' * scope['_depth']
         msg = indent + ' '.join(str(a) for a in args)
-        print(Ansi.GRAY, msg, Ansi.RESET, sep='')
+        print(_Ansi.GRAY, msg, _Ansi.RESET, sep='')
 
     @staticmethod
     def info(scope, *args):
         indent = '    ' * scope['_depth']
         msg = indent + ' '.join(str(a) for a in args)
-        #  print(Ansi.CYAN, msg, Ansi.RESET, sep='')
+        print(_Ansi.CYAN, msg, _Ansi.RESET, sep='')
 
     @staticmethod
     def _evaluate(scope, expression):
@@ -51,13 +51,11 @@ class Evaluator:
             # it's not a function call, so just return itself
             return expression
 
-        call = expression
-
         scope['_depth'] += 1
-        Evaluator.debug(scope, 'eval:', repr(call))
-        func_name = call[0].name
+        Evaluator.debug(scope, 'evaluating:', repr(expression))
+        func_name = expression[0].name
         func = scope[func_name]
-        args = call[1:]
+        args = expression[1:]
         #  kind = getattr(func, 'kind', None)
 
         args = [Evaluator._evaluate(scope, arg) for arg in args]
@@ -115,13 +113,13 @@ def equal(scope, a, b):
 
 @function
 def define(scope, key_sym, value):
-    Evaluator.debug(scope, 'define', repr(key_sym), '=', repr(value))
+    Evaluator.debug(scope, 'defining:', repr(key_sym), '=', repr(value))
     scope[key_sym.name] = value
     return value
 
 @function
 def get(scope, key_sym):
-    Evaluator.debug(scope, 'get', repr(key_sym))
+    Evaluator.debug(scope, 'getting:', repr(key_sym))
     return scope[key_sym.name]
 
 @function_with_name('print')
