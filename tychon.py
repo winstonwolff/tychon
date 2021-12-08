@@ -9,7 +9,7 @@ from pprint import pformat
 def run(code_str, stdout):
 
     ast = _parser.parse(code_str)
-    print('!!! ast=', pformat(ast))
+    #  print('!!! ast=', pformat(ast))
     scope = Scope(_builtins.BUILTIN_FUNCTIONS)
     scope.update({'stdout': stdout})
     Evaluator.run(scope, ast)

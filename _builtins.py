@@ -63,7 +63,7 @@ class Evaluator:
         args = [Evaluator._evaluate(scope, arg) for arg in args]
 
         result = func(scope, *args)
-        Evaluator.debug(scope, '   ->', result)
+        Evaluator.debug(scope, '->', repr(result))
         scope['_depth'] -= 1
         return result
 

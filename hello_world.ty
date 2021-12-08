@@ -1,6 +1,5 @@
 print('--- simple printing')
 print('hello' 'world')
-print('i' 'love' 'you')
 
 print('--- calling a function')
 print('1+2 =' add(1 2))

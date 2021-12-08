@@ -151,11 +151,11 @@ class TychonSemantics:
         return Call([Sym('divide'), ast['left'], ast['right']])
 
     def function_call(self, ast, *args, **kwargs):
-        print('!!! function_call() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
+        #  print('!!! function_call() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
         return Call([Sym(ast['func'].name), *ast['args']])
 
     def function_definition(self, ast, *args, **kwargs):
-        print('!!! function_definition() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
+        #  print('!!! function_definition() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
         return Call([Sym('function'),
                      Sym(ast['func'].name),
                      ast['args'],
