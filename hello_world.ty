@@ -1,7 +1,14 @@
-print('hello' 'stephanie')
+print('--- simple printing')
+print('hello' 'world')
 print('i' 'love' 'you')
 
-print('1+2=' add(1 2))
+print('--- calling a function')
+print('1+2 =' add(1 2))
 
-defn('foo' [a b] [ a + b ])
-print(foo( 1 2))
+print('--- defining a variable')
+define(a 333)
+print('a =' get(a))
+
+print('--- defining a function')
+defn(foo [a b] [get(a) + get(b)])
+print('foo(1 2) =' foo(1 2))

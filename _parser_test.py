@@ -92,11 +92,33 @@ EXAMPLES = (
         444
     ]),
     ('add(1 2)',  [Call([Sym('add'), 1, 2])]),
-    ('add(1 2)',  [Call([Sym('add'), 1, 2])]),
     ('print("hello" "world")',  [
         Call([ Sym('print'), "hello", "world"])
     ]),
+    ('function([addition a b] [a + b])',  [
+        Call([Sym('function'),
+              [Sym('addition'), Sym('a'), Sym('b')],
+              [Call([Sym('add'), Sym('a'), Sym('b')])]
+             ])
     ]),
+    #  (trim_margin('''
+    #      function(
+    #          addition a b
+    #          a + b
+    #      )'''),  [
+    #      {'emtpy_line': '\n'},
+    #      Call([Sym('function'),
+    #            [Sym('addition'), Sym('a'), Sym('b')],
+    #            [Call([Sym('add'), Sym('a'), Sym('b')])]
+    #           ])
+    #  ]),
+    #  ('func addition(a b):\n    a + b',  [
+    #      Call([Sym('function'),
+    #            [Sym('addition')],
+    #            [Sym('a'), Sym('b')],
+    #            [Call([Sym('add'), Sym('a'), Sym('b')])]
+    #           ])
+    #  ]),
 )
 
 @pytest.fixture(scope="module", params=EXAMPLES)

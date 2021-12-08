@@ -5,6 +5,12 @@ Goals:
     Familiar
         - a language that feels like Ruby or Python
 
+    Driving Feature
+        - as Python scripted your computer, Tychon scripts the internet. With one line, call APIs in
+          REST, Graph QL, and some pre-made api bindings, e.g. Github, Gmail, Slack
+          - distributed computing
+        - embeddable in other people's programs as text editor or graphical block language
+
     Beautiful
         Visually
         - significant indentation for blocks

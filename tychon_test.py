@@ -16,4 +16,12 @@ def test_function_calling_function():
     tychon.run("print( 'the sum is' add(3 4) )", out)
     assert out.getvalue() == 'the sum is 7\n'
 
+def test_defining_a_fuction():
+    out = io.StringIO()
+    tychon.run("""
+defn(foo [a b] [get(a) + get(b)])
+print('foo(1 2) =' foo(1 2))""", out)
+    assert out.getvalue() == 'foo(1 2) = 3\n'
+
+
 

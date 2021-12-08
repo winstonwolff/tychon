@@ -39,6 +39,9 @@ GRAMMAR = r'''
         | expr0
         ;
 
+    #  expr0 = | function_definition | function_call | term ;
+        #  function_definition = 'func' name:identifier '(' args:{ identifier }* '):' body:expression;
+        #  function_call = func:identifier '(' args:{ expression } * ')' ;
     expr0 = | function_call | term ;
         function_call = func:identifier '(' args:{ expression } * ')' ;
 
@@ -130,6 +133,9 @@ class Sym:
     def __eq__(self, other):
         return isinstance(other, Sym) and self.name == other.name
 
+    def __hash__(self):
+        return self.name.__hash__()
+
 class TychonSemantics:
 
     def addition(self, ast, *rule_params, **kwparams):
@@ -145,8 +151,16 @@ class TychonSemantics:
         return Call([Sym('divide'), ast['left'], ast['right']])
 
     def function_call(self, ast, *args, **kwargs):
-        #  print('!!! function_call() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
+        print('!!! function_call() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
         return Call([Sym(ast['func'].name), *ast['args']])
+
+    def function_definition(self, ast, *args, **kwargs):
+        print('!!! function_definition() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
+        return Call([Sym('function'),
+                     Sym(ast['func'].name),
+                     ast['args'],
+                     ast['code'],
+                    ])
 
     def single_quote_string(self, ast):
         return ast['string']
