@@ -8,16 +8,19 @@ from pprint import pformat
 
 def run(code_str, stdout):
 
-    ast = _parser.parse(code_str)
-    #  print('!!! ast=', pformat(ast))
-    scope = Scope(_builtins.BUILTIN_FUNCTIONS)
-    scope.update({'stdout': stdout})
-    Evaluator.run(scope, ast)
+    for code_line in code_str.split('\n'):
+        #  print('!!! code_line=', code_line)
+        ast = _parser.parse(code_line)
+        #  print('!!! ast=', pformat(ast))
+        scope = Scope(_builtins.BUILTIN_FUNCTIONS)
+        scope.update({'stdout': stdout})
+        Evaluator.run(scope, ast)
     #  print('DONE. scope=', scope)
 
 def main():
+    #  print('!!! sys.argv=', sys.argv)
     source_fname = sys.argv[1]
-    with open(source_fname, 'r') as f:
+    with open(source_fname, 'rt') as f:
         code_str = f.read()
         run(code_str, sys.stdout)
 

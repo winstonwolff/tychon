@@ -5,11 +5,15 @@ Goals:
     Familiar
         - a language that feels like Ruby or Python
 
-    Driving Feature
-        - as Python scripted your computer, Tychon scripts the internet. With one line, call APIs in
+    Driving Feature? Who would adopt it?
+        - embeddable in other people's programs as text editor or graphical block language
+            WHO: Zapier, Slack Workflows, Logic AND OR statements
+        - compiles to WebASM. Run it on CloudFlare.
+            WHO: Cloudflare
+        - as Python scripts your computer, Tychon scripts the internet. With one line, call APIs in
           REST, Graph QL, and some pre-made api bindings, e.g. Github, Gmail, Slack
           - distributed computing
-        - embeddable in other people's programs as text editor or graphical block language
+            WHO: general populace
 
     Beautiful
         Visually
@@ -43,14 +47,15 @@ Usage
 
 TODO
 ----
-- Syntax error messages from parser
 - REPL
-- Define functions
-- Searching operators, e.g. '(a == 1 or a == 3) and (b == 0)'
+- Syntax error messages from parser
 
-
-Idea
+DONE
 ----
+- Define functions
+
+Ideas
+-----
 
 Unify lines of code with Dictionary definitions
   : — assignment
@@ -90,3 +95,124 @@ Prefix calling
     static <| pure <| Class User:
         name:String=""
         email:String="unknown@example.com"
+
+
+All notations have horizontal and vertical notation
+    list:
+        [a b c]                         # one-liner
+        a                               # vertical
+        b
+        c
+
+    create a dictionary:
+        dictionary(a:1 b:2)
+        @dictionary
+            a:1
+            b:2
+
+    strings:
+        "i am a string"
+        'single quote string'
+        """
+        multi
+        line
+        string
+        """
+
+    comments:
+        # one line comment
+        ###
+        multi
+        line
+        comment
+        ###
+
+    function call:
+        f(a b c)                        # one-liner using f() notation
+        @f                              # vertical notation without parentheses
+            a
+            b
+            c
+        f( g( n ))
+
+        @f
+        @g
+        n
+
+    named function arguments
+        print(1 3 end:'\n' sep:' ')
+
+    define a constant:
+        constant(pi 3.14)               # f() notation
+        pi := 3.14                      # infix notation
+        @constant
+            pi 3.14
+            tau 6.28
+
+    anonymous function
+        function(a [a * 2])             # f() notation
+        a -> a * 2                      # infix notation
+        a ->                            # vertical
+            a * 2
+
+        a                               # more vertical
+        ->
+        a * 2
+
+    function definition:
+        constant(sum function([a b] [[a + b]]))   # f() notation one-liner
+
+        @constant                       # f() notation vertical
+            sum
+            @function
+                a b
+                a + b
+
+        sum := (a b) -> a + b     # infix one-liner
+
+        sum :=                          # infix vertical
+            a
+            b
+        ->
+            a + b
+
+
+    function arguments can take default values, doc strings, and other annotations
+        sum: function( [[a doc:'first argument'] [b:3 doc:'second argument']] [a + b])
+        sum: (a b) -> a + b
+        sum:                          # vertical
+            a
+            b:3 type:Integer doc:'the second value'
+        ->
+            a + b
+
+    labels:
+        a:1
+        label('a' 1)
+        label('my_dict' dictionary(label('a' 1) label('b' 2)))
+
+Unify notation for dictionaries, argument lists, function bodies
+    dictionary(a:1 b:2)
+    print(1 2 sep:' | ')
+    (a b) ->
+        a_squared: a ** 2                       # define constants
+        b_squared: b ** 2
+        two_a_b: 2 * a * b
+        a_squared + b_squared + two_a_b         # return last value
+
+    Dictionaries evaluate labels to create data structure
+        dictionary( label('a' 1) label('b' 2))
+
+    Argument lists interpret labels to fill out the argument list
+
+    Function bodies evaluate labels as constant definitions
+
+
+variables are separate from constants
+    pi: 3.14            # a constant named 'pi'
+    a = 1               # a variable named 'a'
+    a = pi * a          # change variable 'a'
+    a += 1              # increment a
+
+    pi: 3.14
+
