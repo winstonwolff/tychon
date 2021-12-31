@@ -1,6 +1,21 @@
 Tychon — An embedded language so users can "program" or "script" within your program
 
+Usage
+-----
+  ./run_tests.sh
+  ./tychon.py <sourcefile>.ty
+
+TODO
+----
+- REPL
+- Syntax error messages from parser
+
+DONE
+----
+- Define functions
+
 Goals:
+------
 
     Familiar
         - a language that feels like Ruby or Python
@@ -40,20 +55,6 @@ Goals:
 
 
 
-Usage
------
-  ./run.sh
-  ./tychon.py <sourcefile>.ty
-
-TODO
-----
-- REPL
-- Syntax error messages from parser
-
-DONE
-----
-- Define functions
-
 Ideas
 -----
 
@@ -80,21 +81,30 @@ Dictionaries:
         4
 
 
-Chained calling
+Calling functions
+    Mathematical notation
+        sum(1 2)        # returns 3
 
-    list
-        |> map( _ * 2)
-        |> filter( isEven(_) )
+    Chained calling
 
-    equivalent to:
-        a = map(list, _ * 2)
-        b = filter(a, isEvent(_) )
+        list
+            |> map( _ * 2)
+            |> filter( isEven(_) )
 
-Prefix calling
+        equivalent to:
+            a = map(list, _ * 2)
+            b = filter(a, isEvent(_) )
 
-    static <| pure <| Class User:
-        name:String=""
-        email:String="unknown@example.com"
+    Prefix calling
+
+        static <| pure <| Class User:
+            name:String=""
+            email:String="unknown@example.com"
+
+        @class User
+            name
+            email
+            greeting: \ 'hello {}'.format(name)
 
 
 All notations have horizontal and vertical notation
