@@ -7,11 +7,13 @@ Usage
 
 TODO
 ----
-- REPL
+- documentation generation system
+- automated testing
 - Syntax error messages from parser
 
 DONE
 ----
+- REPL
 - Define functions
 
 Goals:
