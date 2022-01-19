@@ -4,6 +4,7 @@ import _parser
 class _Ansi:
     RESET = '\x1b[0m'
     GRAY  = '\x1b[90m'
+    PURPLE= '\x1b[95m'
     RED   = '\x1b[31m'
     GREEN = '\x1b[32m'
     BLUE  = '\x1b[34m'
@@ -37,7 +38,7 @@ class Evaluator:
     def debug(scope, *args):
         indent = '    ' * scope['_depth']
         msg = indent + ' '.join(str(a) for a in args)
-        print(_Ansi.GRAY, msg, _Ansi.RESET, sep='')
+        print(_Ansi.PURPLE, msg, _Ansi.RESET, sep='')
 
     @staticmethod
     def info(scope, *args):
@@ -131,7 +132,7 @@ def _print(scope, *args, sep=' ', end="\n"):
     return msg
 
 @macro
-def defn(scope, func_name, arg_syms, program):
+def func(scope, func_name, arg_syms, program):
 
     class Func:
         def __call__(self, scope, *args):
@@ -163,5 +164,3 @@ def _if(scope, predicate, true_program, false_program=[]):
     else:
         result = Evaluator.run(false_program)
     return result
-
-

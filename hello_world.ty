@@ -1,5 +1,6 @@
 #!/usr/bin/env python3 tychon.py
 
+
 print('--- simple printing')
 print('hello' 'world')
 
@@ -11,5 +12,5 @@ define(a 333)
 print('a =' get(a))
 
 print('--- defining a function')
-defn(foo [a b] [get(a) + get(b)])
+func(foo [a b] [get(a) + get(b)])
 print('foo(1 2) =' foo(1 2))

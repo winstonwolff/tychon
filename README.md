@@ -7,8 +7,18 @@ Usage
 
 TODO
 ----
-- documentation generation system
-- automated testing
+- Syntax:
+    - := — set variable
+    - = — define constant
+- functions can manipulate Scope
+- Graphical multi-user-dungeon
+    - Rooms with an image
+    - hot spots which activate a script when clicked
+    - script can print a message, or go to another room
+- DSL or Macros for automated testing
+- DSL or Macros for generating html
+- evaluating a variable fetches it's value
+- execute browser via WASM
 - Syntax error messages from parser
 
 DONE
@@ -19,18 +29,14 @@ DONE
 Goals:
 ------
 
-    Familiar
-        - a language that feels like Ruby or Python
-
     Driving Feature? Who would adopt it?
-        - embeddable in other people's programs as text editor or graphical block language
-            WHO: Zapier, Slack Workflows, Logic AND OR statements
         - compiles to WebASM. Run it on CloudFlare.
             WHO: Cloudflare
-        - as Python scripts your computer, Tychon scripts the internet. With one line, call APIs in
-          REST, Graph QL, and some pre-made api bindings, e.g. Github, Gmail, Slack
-          - distributed computing
-            WHO: general populace
+        - embeddable in other people's programs as text editor or graphical block language
+            WHO: Zapier, Slack Workflows, Logic AND OR statements
+
+    Familiar
+        - a language that feels like Ruby or Python
 
     Beautiful
         Visually
@@ -47,6 +53,21 @@ Goals:
         - procedures are like functions but may have side-effects. Unlike Pascal, procedures may
           return values
 
+    Compilation is just a form of Optimization
+        - Macro for enforcing constraints, e.g. on inputs and outputs, which can be used by
+          optimizer
+        - Instead of a compiler, have an optimizer that searches for things that can be
+          pre-computed or unrolled for speed.
+        - repetitions can be combined to save memory
+        - Can indicate if you want to optimize for speed or memory.
+
+    Types are programmable
+        - Since there is no compilation phase, just an optimization phase, types
+          can be programmed like normal code.
+        - Type checking means calling a function to see if this is in fact a type.
+        - Some optimizations can use type assertions to simplify code or reduce
+          memory footprint.
+
     Programming in the Large
         - has Macros to expand the language (like Lisp/Clojure)
             - AST looks like Clojure, i.e. `1 + 1` == `add(1 1)` == Call(add 1 1)
@@ -59,28 +80,6 @@ Goals:
 
 Ideas
 -----
-
-Unify lines of code with Dictionary definitions
-  : — assignment
-  = — define a constant
-
-Function definitions are macros
-  add = func(a b): a + b
-  add = func(a:Integer b:Integer): a + b                # with type annotation
-  add = func(a=1 b=2): a + b                            # with default values
-  add = func(a:Integer=1 "the first operand"            # arguments with docstrings
-             b:Integer=2 "the second operand"):
-             "returns the sum of of 'a' and 'b'"
-             a + b
-  double = lambda(_ * 2)
-
-Dictionaries:
-    dict = Dict(a:1 inc:(func(self):self.a + 1))
-    list = [1 2 4]
-    list =
-        1
-        2
-        4
 
 
 Calling functions
@@ -99,9 +98,11 @@ Calling functions
 
     Prefix calling
 
-        static <| pure <| Class User:
-            name:String=""
-            email:String="unknown@example.com"
+        static:
+        pure:
+        class User:
+            name: "" type: String doc: "Moniker of person"
+            email: "unknown@example.com" type: String doc: "how to contact them"
 
         @class User
             name
@@ -115,12 +116,6 @@ All notations have horizontal and vertical notation
         a                               # vertical
         b
         c
-
-    create a dictionary:
-        dictionary(a:1 b:2)
-        @dictionary
-            a:1
-            b:2
 
     strings:
         "i am a string"
@@ -145,86 +140,84 @@ All notations have horizontal and vertical notation
             a
             b
             c
-        f( g( n ))
 
-        @f
-        @g
-        n
+        f( g( n ))                      # function call, regular math notation
+
+        f(): g(): n                       # ??? function call that is more convenient with indention
+        f():
+            g():
+                n
+
+        n |> g |> f                     # reverse function call
 
     named function arguments
-        print(1 3 end:'\n' sep:' ')
+        print(1 3 end='\n' sep=' ')
 
     define a constant:
         constant(pi 3.14)               # f() notation
-        pi := 3.14                      # infix notation
+        pi = 3.14                      # infix notation
         @constant
             pi 3.14
             tau 6.28
 
+    define a variable, i.e. mutable reference
+        variable(a 55)
+        a := 55
+
     anonymous function
-        function(a [a * 2])             # f() notation
-        a -> a * 2                      # infix notation
-        a ->                            # vertical
+        func(a [a * 2])                 # f() notation
+        (a) -> a * 2                    # infix notation
+        (a) ->                          # vertical
             a * 2
 
         a                               # more vertical
         ->
         a * 2
 
-    function definition:
-        constant(sum function([a b] [[a + b]]))   # f() notation one-liner
-
-        @constant                       # f() notation vertical
-            sum
-            @function
-                a b
-                a + b
-
-        sum := (a b) -> a + b     # infix one-liner
-
-        sum :=                          # infix vertical
-            a
-            b
-        ->
-            a + b
+    writing modes
+        - Tychon code
+        - HTML a la JSX
+        - Human text, i.e. documentation
+        - executable examples within documentation
 
 
-    function arguments can take default values, doc strings, and other annotations
-        sum: function( [[a doc:'first argument'] [b:3 doc:'second argument']] [a + b])
-        sum: (a b) -> a + b
-        sum:                          # vertical
-            a
-            b:3 type:Integer doc:'the second value'
-        ->
-            a + b
+### Automated Testing
 
-    labels:
-        a:1
-        label('a' 1)
-        label('my_dict' dictionary(label('a' 1) label('b' 2)))
+func(:) add [a b]:
+    '''
+    Returns the sum of `a` and `b`.
 
-Unify notation for dictionaries, argument lists, function bodies
-    dictionary(a:1 b:2)
-    print(1 2 sep:' | ')
-    (a b) ->
-        a_squared: a ** 2                       # define constants
-        b_squared: b ** 2
-        two_a_b: 2 * a * b
-        a_squared + b_squared + two_a_b         # return last value
+    >>> add(1 2)
+    3
 
-    Dictionaries evaluate labels to create data structure
-        dictionary( label('a' 1) label('b' 2))
+    >>> add(0 0)
+    0
+    '''
+    a + b
 
-    Argument lists interpret labels to fill out the argument list
-
-    Function bodies evaluate labels as constant definitions
+describe 'add()':
+    test 'returns the sum of arguments':
+        expect(add(3 4)).to eq(7)
 
 
-variables are separate from constants
-    pi: 3.14            # a constant named 'pi'
-    a = 1               # a variable named 'a'
-    a = pi * a          # change variable 'a'
-    a += 1              # increment a
+### HTML generation, a la JSX
 
-    pi: 3.14
+import(render html body h1 div ul li from: TSX)
 
+func<:> MyComponent [explative product_name]
+    div(:)id='MyComponent' class=['first' 'second']
+        h1(:)class='foo' id='blah'
+            "This is my string"
+        p(:) class="plain_paragraph"
+            Ut dolor aliqua dolor dolor culpa aliqua minim non enim aliquip cillum veniam id.  Do ut
+            in cillum laborum ut voluptate.  Sit duis in adipiscing lorem est in ad consequat
+            aliquip laboris.
+
+func<:> MyPage [goods_for_sale]
+    div(:) id="MyPage"
+        goods_for_sale |> map(-> MyComponent('Buy now for a limited time only' %1))
+
+@main
+func<:> [stdin stdout]
+    skews = ['12113' '3342']
+    render(MyPage)

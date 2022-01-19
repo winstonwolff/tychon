@@ -12,7 +12,7 @@ def run_string(code_line, stdout):
     scope.update({'stdout': stdout})
     return Evaluator.run(scope, ast)
 
-def _run_file(source_filename):
+def _run_file(source_fname):
     with open(source_fname, 'rt') as f:
         code_str = f.read()
 
