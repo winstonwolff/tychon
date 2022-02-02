@@ -19,7 +19,7 @@ def test_function_calling_function():
 def test_defining_a_fuction():
     out = io.StringIO()
     tychon.run_string("""
-defn(foo [a b] [get(a) + get(b)])
+func(foo [a b] [get(a) + get(b)])
 print('foo(1 2) =' foo(1 2))""", out)
     assert out.getvalue() == 'foo(1 2) = 3\n'
 
