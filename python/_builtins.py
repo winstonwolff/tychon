@@ -1,5 +1,6 @@
 import collections
 import _parser
+from pprint import pformat
 
 class _Ansi:
     RESET = '\x1b[0m'
@@ -25,53 +26,52 @@ class Kinds:
     FUNC = 'FUNC'
     MACRO = 'MACRO'
 
-class Evaluator:
 
-    @staticmethod
-    def run(scope, program):
-        result = None
-        for expression in program:
-            result = Evaluator._evaluate(scope, expression)
-        return result
+def _debug(scope, *args):
+    '''debug level logging for Evaluator'''
+    indent = '    ' * scope['_depth']
+    msg = '    ' + indent + ' '.join(str(a) for a in args)
+    print(_Ansi.PURPLE, msg, _Ansi.RESET, sep='')
 
-    @staticmethod
-    def debug(scope, *args):
-        indent = '    ' * scope['_depth']
-        msg = indent + ' '.join(str(a) for a in args)
-        print(_Ansi.PURPLE, msg, _Ansi.RESET, sep='')
 
-    @staticmethod
-    def info(scope, *args):
-        indent = '    ' * scope['_depth']
-        msg = indent + ' '.join(str(a) for a in args)
-        print(_Ansi.CYAN, msg, _Ansi.RESET, sep='')
+def evaluate(scope, expression):
+    '''
+    Execute some code.
 
-    @staticmethod
-    def _evaluate(scope, expression):
-        if not isinstance(expression, _parser.Call):
-            # it's not a function call, so just return itself
-            return expression
+    expression = an AST node, or a list of nodes
+    '''
+    _debug(scope, 'eval:', repr(expression), type(expression))
 
+    if isinstance(expression, _parser.Sym):
+        return scope[expression.name]
+
+    elif isinstance(expression, _parser.Call):
         scope['_depth'] += 1
-        Evaluator.debug(scope, 'evaluating:', repr(expression))
         func_name = expression[0].name
         func = scope[func_name]
         args = expression[1:]
-        #  kind = getattr(func, 'kind', None)
 
-        args = [Evaluator._evaluate(scope, arg) for arg in args]
+        if func.kind == Kinds.FUNC:
+            args = [evaluate(scope, arg) for arg in args]
 
         result = func(scope, *args)
-        Evaluator.debug(scope, '->', repr(result))
+        _debug(scope, '->', repr(result))
         scope['_depth'] -= 1
         return result
 
-def _register(func, name, kind):
-    func.kind = kind
-    BUILTIN_FUNCTIONS[name] = func
+    elif isinstance(expression, (list, tuple)):
+        return tuple(evaluate(scope, e) for e in expression)[-1]
+    else:
+        return expression
 
 
-def function(func):
+def _register(callable, name, kind):
+    '''adda a function or macro to the list of BUILTINs'''
+    callable.kind = kind
+    BUILTIN_FUNCTIONS[name] = callable
+
+
+def _builtin_function(func):
     '''
     Decorator for registering functions.
 
@@ -80,12 +80,12 @@ def function(func):
     _register(func, func.__name__, Kinds.FUNC)
     return func
 
-def function_with_name(name):
+def _builtin_function_with_name(name):
     def inside(func):
         _register(func, name, Kinds.FUNC)
     return inside
 
-def macro(func):
+def builtin_macro(func):
     '''
     Decorator for registering macros.
 
@@ -100,30 +100,35 @@ def macro_with_name(name):
         _register(func, name, Kinds.MACRO)
     return inside
 
-@function_with_name('pass')
+@_builtin_function_with_name('pass')
 def _pass(scope, args):
     pass
 
-@function
+@_builtin_function
 def add(scope, a, b):
     return a + b
 
-@function
+@_builtin_function
 def equal(scope, a, b):
     return a == b
 
-@function
+@_builtin_function
+def scope(scope):
+    return pformat(scope)
+
+@builtin_macro
 def define(scope, key_sym, value):
-    Evaluator.debug(scope, 'defining:', repr(key_sym), '=', repr(value))
+    #  value = Evaluate.run(scope, value)
+    _debug(scope, 'defining:', repr(key_sym), '=', repr(value))
     scope[key_sym.name] = value
     return value
 
-@function
+@_builtin_function
 def get(scope, key_sym):
-    Evaluator.debug(scope, 'getting:', repr(key_sym))
+    _debug(scope, 'getting:', repr(key_sym))
     return scope[key_sym.name]
 
-@function_with_name('print')
+@_builtin_function_with_name('print')
 def _print(scope, *args, sep=' ', end="\n"):
     msg = sep.join(str(a) for a in args)
     scope['stdout'].write(msg)
@@ -131,10 +136,11 @@ def _print(scope, *args, sep=' ', end="\n"):
     scope['stdout'].flush()
     return msg
 
-@macro
+@builtin_macro
 def func(scope, func_name, arg_syms, program):
 
     class Func:
+        kind = Kinds.FUNC
         def __call__(self, scope, *args):
             sub_scope = Scope(scope)
 
@@ -143,7 +149,7 @@ def func(scope, func_name, arg_syms, program):
             for sym, arg in syms_and_args:
                 define(sub_scope, sym, arg)
 
-            return Evaluator.run(sub_scope, program)
+            return evaluate(sub_scope, program)
 
         def __repr__(self):
             arg_repr = ' '.join(str(a) for a in arg_syms)
@@ -153,14 +159,14 @@ def func(scope, func_name, arg_syms, program):
     define(scope, func_name, func)
     return func
 
-@macro_with_name('if')
-def _if(scope, predicate, true_program, false_program=[]):
-    sub_scope = Scope(scope)
+#  @macro_with_name('if')
+#  def _if(scope, predicate, true_program, false_program=[]):
+#      sub_scope = Scope(scope)
 
-    test = sub_scope._evaluate(predicate)
+#      test = sub_scope._evaluate(predicate)
 
-    if test:
-        result = Evaluator.run(true_program)
-    else:
-        result = Evaluator.run(false_program)
-    return result
+#      if test:
+#          result = Evaluator.run(true_program)
+#      else:
+#          result = Evaluator.run(false_program)
+#      return result

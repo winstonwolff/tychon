@@ -3,14 +3,14 @@
 import sys
 import _parser
 import _builtins
-from _builtins import Scope, Evaluator
+from _builtins import Scope, evaluate
 from pprint import pformat
 
 def run_string(code_line, stdout):
     ast = _parser.parse(code_line)
     scope = Scope(_builtins.BUILTIN_FUNCTIONS)
     scope.update({'stdout': stdout})
-    return Evaluator.run(scope, ast)
+    return evaluate(scope, ast)
 
 def _run_file(source_fname):
     with open(source_fname, 'rt') as f:
@@ -33,7 +33,6 @@ def _repl(stdin, stdout):
 
 
 def main():
-    #  print('!!! sys.argv=', sys.argv)
     if len(sys.argv) > 1:
         source_fname = sys.argv[1]
         _run_file(source_fname)
