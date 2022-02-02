@@ -7,12 +7,13 @@ Usage
 
 TODO
 ----
-* minimal language: functions, macros
+* minimal language: functions, macros, arithmetic
 
     - DONE evaluating a variable fetches it's value
     - DONE if(predicate true_block else: false_block)
 
     - Tychon program to generate documentation, i.e. doctest
+        - can load a file as AST graph, and evaluate later
     - user can define macros
     - make 'func' a macro which evaluates it's args first
 
@@ -22,6 +23,7 @@ TODO
     - range()
     - map()
     - for()
+    - Syntax error messages from parser
 
 * Nicer Syntax:
     - := — set variable
@@ -31,12 +33,15 @@ TODO
     - Rooms with an image
     - hot spots which activate a script when clicked
     - script can print a message, or go to another room
-- DSL or Macros for asserting the shape of data (related to typing)
-- Replacement for SASS, that can also write unit tests for CSS.
-- DSL or Macros for automated testing
-- DSL or Macros for generating html
-- execute browser via WASM
-- Syntax error messages from parser
+
+* Apply Tychon to something
+    - DSL or Macros for asserting the shape of data (related to typing)
+    - Replacement for SASS, that can also write unit tests for CSS.
+    - DSL or Macros for automated testing
+    - DSL or Macros for generating html
+
+* WASM engine
+    - execute browser via WASM
 
 DONE
 ----

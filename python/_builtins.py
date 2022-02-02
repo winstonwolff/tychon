@@ -40,6 +40,9 @@ def evaluate(scope, expression):
 
     expression = an AST node, or a list of nodes
     '''
+    if isinstance(expression, (str, int, float)):
+        return expression
+
     _debug(scope, 'eval:', repr(expression), type(expression))
 
     if isinstance(expression, _parser.Sym):
@@ -55,7 +58,7 @@ def evaluate(scope, expression):
             args = [evaluate(scope, arg) for arg in args]
 
         result = func(scope, *args)
-        _debug(scope, '->', repr(result))
+        #  _debug(scope, '->', repr(result))
         scope['_depth'] -= 1
         return result
 
