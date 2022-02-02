@@ -114,6 +114,7 @@ def equal(scope, a, b):
 
 @_builtin_function
 def scope(scope):
+    '''Returns current scope as a formatted string'''
     return pformat(scope)
 
 @builtin_macro
@@ -123,10 +124,10 @@ def define(scope, key_sym, value):
     scope[key_sym.name] = value
     return value
 
-@_builtin_function
-def get(scope, key_sym):
-    _debug(scope, 'getting:', repr(key_sym))
-    return scope[key_sym.name]
+#  @_builtin_function
+#  def get(scope, key_sym):
+#      _debug(scope, 'getting:', repr(key_sym))
+#      return scope[key_sym.name]
 
 @_builtin_function_with_name('print')
 def _print(scope, *args, sep=' ', end="\n"):
@@ -159,14 +160,14 @@ def func(scope, func_name, arg_syms, program):
     define(scope, func_name, func)
     return func
 
-#  @macro_with_name('if')
-#  def _if(scope, predicate, true_program, false_program=[]):
-#      sub_scope = Scope(scope)
+@macro_with_name('if')
+def _if(scope, predicate, true_program, false_program=[]):
+    sub_scope = Scope(scope)
 
-#      test = sub_scope._evaluate(predicate)
+    test = evaluate(scope, predicate)
 
-#      if test:
-#          result = Evaluator.run(true_program)
-#      else:
-#          result = Evaluator.run(false_program)
-#      return result
+    if test:
+        result = evaluate(scope, true_program)
+    else:
+        result = evaluate(scope, false_program)
+    return result

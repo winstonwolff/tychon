@@ -9,13 +9,18 @@ TODO
 ----
 * minimal language: functions, macros
 
-    - >>> evaluating a variable fetches it's value
+    - DONE evaluating a variable fetches it's value
+    - DONE if(predicate true_block else: false_block)
 
-    - functions (or macros) can manipulate Scope
-    - if(predicate true_block else: false_block)
+    - Tychon program to generate documentation, i.e. doctest
+    - user can define macros
+    - make 'func' a macro which evaluates it's args first
+
+    - user-defined functions (or macros) can manipulate Scope
     - constant(name value scope:@scope)
     - variable(name value scope:@scope)
     - range()
+    - map()
     - for()
 
 * Nicer Syntax:

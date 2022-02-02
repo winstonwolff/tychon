@@ -30,3 +30,16 @@ func(foo [a b] [a + b])
 print('foo(1 2) =' foo(1 2))""", out)
     assert out.getvalue() == 'foo(1 2) = 3\n'
 
+def test_if():
+    out = io.StringIO()
+    tychon.run_string("""
+if(equal(1 2) print('yeah') print('nope'))
+""", out)
+    assert out.getvalue() == 'nope\n'
+
+def test_if_is_expression():
+    out = io.StringIO()
+    tychon.run_string("""
+print(if(equal(1 2) 'yeah' 'nope'))
+""", out)
+    assert out.getvalue() == 'nope\n'
