@@ -95,9 +95,10 @@ EXAMPLES = (
     ('print("hello" "world")',  [
         Call([ Sym('print'), "hello", "world"])
     ]),
-    ('function([addition a b] [a + b])',  [
-        Call([Sym('function'),
-              [Sym('addition'), Sym('a'), Sym('b')],
+    ('func(addition [a b] [a + b])',  [
+        Call([Sym('func'),
+              Sym('addition'),
+              [Sym('a'), Sym('b')],
               [Call([Sym('add'), Sym('a'), Sym('b')])]
              ])
     ]),
