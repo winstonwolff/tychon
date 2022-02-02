@@ -7,17 +7,29 @@ Usage
 
 TODO
 ----
-- Syntax:
+* minimal language: functions, macros
+
+    - >>> evaluating a variable fetches it's value
+
+    - functions (or macros) can manipulate Scope
+    - if(predicate true_block else: false_block)
+    - constant(name value scope:@scope)
+    - variable(name value scope:@scope)
+    - range()
+    - for()
+
+* Nicer Syntax:
     - := — set variable
     - = — define constant
-- functions can manipulate Scope
-- Graphical multi-user-dungeon
+
+* Graphical multi-user-dungeon
     - Rooms with an image
     - hot spots which activate a script when clicked
     - script can print a message, or go to another room
+- DSL or Macros for asserting the shape of data (related to typing)
+- Replacement for SASS, that can also write unit tests for CSS.
 - DSL or Macros for automated testing
 - DSL or Macros for generating html
-- evaluating a variable fetches it's value
 - execute browser via WASM
 - Syntax error messages from parser
 
@@ -33,7 +45,7 @@ Goals:
         - compiles to WebASM. Run it on CloudFlare.
             WHO: Cloudflare
         - embeddable in other people's programs as text editor or graphical block language
-            WHO: Zapier, Slack Workflows, Logic AND OR statements
+            WHO: Zapier, Slack Workflows, Logic AND OR statements, Gitlab or CirceCI yaml, AirTable
 
     Familiar
         - a language that feels like Ruby or Python
