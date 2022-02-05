@@ -7,13 +7,19 @@ SHOW_PARSER_TRACE = False
 GRAMMAR = r'''
     @@whitespace :: / +/
 
-    start = { line | vertical_list | empty_line }*;
+    start = single_expression | horizontal_list | { line | vertical_list | empty_line }*;
 
-    vertical_list = '$$INDENT$$' ~ EOL vertical_list:{ line }+ '$$OUTDENT$$' EOL;
+        single_expression = (@:expression $);
 
-    line = (@:expression EOL) | ( @:{ expression }+ EOL );
+        horizontal_list = { @:expression }+ $;
 
-    empty_line = empty_line:'\n';
+        line = (@:expression EOL) | ( { @:expression }+ EOL );
+
+        vertical_list = '$$INDENT$$' ~ EOL vertical_list:{ line }+ '$$OUTDENT$$' EOL;
+
+        empty_line = empty_line:'\n';
+
+        EOL = '\n' | $;
 
     #
     # expressions with priority. First is lower priority, Last is higher priority.
@@ -41,7 +47,6 @@ GRAMMAR = r'''
 
     #  expr0 = | function_definition | function_call | term ;
         #  function_definition = 'func' name:identifier '(' args:{ identifier }* '):' body:expression;
-        #  function_call = func:identifier '(' args:{ expression } * ')' ;
     expr0 = | function_call | term ;
         function_call = func:identifier '(' args:{ expression } * ')' ;
 
@@ -61,20 +66,19 @@ GRAMMAR = r'''
 
         identifier = /[a-zA-Z_][a-zA-Z_0-9]*/ ;
 
-    EOL = '\n' | $;
 '''
 PARSER = tatsu.compile(GRAMMAR)
 
 def parse(source):
     '''Parse a string and return the AST'''
     source = _insert_indentation_symbols(source)
-    parsed = PARSER.parse(source,
+    tychon_ast = PARSER.parse(source,
                           parseinfo=True,
                           comments_re=None,
                           semantics=TychonSemantics(),
                           colorize=SHOW_PARSER_TRACE,
                           trace=SHOW_PARSER_TRACE)
-    return parsed
+    return tychon_ast
 
 def _insert_indentation_symbols(source):
     '''
@@ -118,7 +122,10 @@ class Call(tuple):
         return tuple.__new__(Call, *args)
 
     def __repr__(self):
-        return "Call({})".format(", ".join(repr(i) for i in self))
+        #  return "Call({})".format(", ".join(repr(i) for i in self))
+        function_name = self[0]
+        args = self[1:]
+        return "{}({})".format(function_name, " ".join(repr(i) for i in args))
 
     #  def __eq__(self, other):
     #      return isinstance(other, Call) and tuple(self) == tuple(other)
@@ -128,7 +135,7 @@ class Sym:
         self.name = name
 
     def __repr__(self):
-        return "Sym('{}')".format(self.name)
+        return self.name
 
     def __eq__(self, other):
         return isinstance(other, Sym) and self.name == other.name

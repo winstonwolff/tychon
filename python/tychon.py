@@ -4,7 +4,6 @@ import sys
 import _parser
 import _builtins
 from _builtins import Scope, evaluate
-from pprint import pformat
 
 def run_string(code_line, stdout):
     ast = _parser.parse(code_line)

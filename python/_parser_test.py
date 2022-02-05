@@ -62,46 +62,44 @@ def test_deep_dict():
     assert map_tree(without_parseinfo, {'a':'aa', 'parseinfo': 'AA', 'b':{'c':'cc', 'parseinfo': 'CC'}}) == {'a': 'aa', 'b': {'c': 'cc'}}
 
 EXAMPLES = (
-    ('"hello"', ['hello']),
-    ('"hello my friend"', ['hello my friend']),
-    ('foo', [Sym('foo')]),
-    ('123', [123]),
-    ('123 456', [[123, 456]]),
-    ('[123 456]', [[123, 456]]),
+    ('"hello"', 'hello'),
+    ('"hello my friend"', 'hello my friend'),
+    ('foo', Sym('foo')),
+    ('123', 123),
+    ('123 456', (123, 456)),
+    ('[123 456]', [123, 456]),
     ("123\n456", [123, 456]),
-    ('123.4', [123.4]),
-    ('foo 1 2', [[Sym('foo'), 1, 2]]),
-    ('2 + 3',  [Call([ Sym('add'), 2, 3 ])]),
+    ('123.4', 123.4),
+    ('foo 1 2', (Sym('foo'), 1, 2)),
+    ('2 + 3',  Call([ Sym('add'), 2, 3 ])),
 
-    ('3.14 * 2',  [Call([ Sym('multiply'), 3.14, 2])]),
-    ('2 + 3 * 4',  [
-        Call([ Sym('add'), 2,
-              Call([ Sym('multiply'), 3, 4])])]),
+    ('3.14 * 2',  Call([ Sym('multiply'), 3.14, 2])),
+    ('2 + 3 * 4', Call([ Sym('add'), 2,
+                    Call([ Sym('multiply'), 3, 4])])),
     (trim_margin('''
         111
             222
-            333
+            333 333
         444
-        '''), [
-        {'empty_line': '\n'},
-        111,
-        {'vertical_list': [
-            222,
-            333,
-        ]},
-        444
-    ]),
-    ('add(1 2)',  [Call([Sym('add'), 1, 2])]),
-    ('print("hello" "world")',  [
-        Call([ Sym('print'), "hello", "world"])
-    ]),
-    ('func(addition [a b] [a + b])',  [
+        '''),
+        [
+            {'empty_line': '\n'},
+            111,
+            {'vertical_list': [
+                222,
+                [333, 333],
+            ]},
+            444
+        ]),
+    ('add(1 2)',  Call([Sym('add'), 1, 2])),
+    ('print("hello" "world")', Call([ Sym('print'), "hello", "world"])),
+    ('func(addition [a b] [a + b])',
         Call([Sym('func'),
               Sym('addition'),
               [Sym('a'), Sym('b')],
               [Call([Sym('add'), Sym('a'), Sym('b')])]
              ])
-    ]),
+    ),
     #  (trim_margin('''
     #      function(
     #          addition a b

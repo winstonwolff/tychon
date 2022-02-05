@@ -40,13 +40,15 @@ def evaluate(scope, expression):
 
     expression = an AST node, or a list of nodes
     '''
+    result = None
+    show_debug = True
+
     if isinstance(expression, (str, int, float)):
-        return expression
+        result = expression
+        show_debug = False
 
-    _debug(scope, 'eval:', repr(expression), type(expression))
-
-    if isinstance(expression, _parser.Sym):
-        return scope[expression.name]
+    elif isinstance(expression, _parser.Sym):
+        result = scope[expression.name]
 
     elif isinstance(expression, _parser.Call):
         scope['_depth'] += 1
@@ -60,12 +62,15 @@ def evaluate(scope, expression):
         result = func(scope, *args)
         #  _debug(scope, '->', repr(result))
         scope['_depth'] -= 1
-        return result
+        result = result
 
     elif isinstance(expression, (list, tuple)):
-        return tuple(evaluate(scope, e) for e in expression)[-1]
+        result = tuple(evaluate(scope, e) for e in expression)[-1]
     else:
-        return expression
+        result = expression
+
+    if show_debug: _debug(scope, 'eval:', repr(expression), '->', repr(result))
+    return result
 
 
 def _register(callable, name, kind):
