@@ -9,8 +9,8 @@ print('1+2 =' add(1 2))
 
 print('--- defining a variable')
 define(a 333)
-print('a =' get(a))
+print('a =' a)
 
 print('--- defining a function')
-func(foo [a b] [get(a) + get(b)])
+func(foo [a b] [a + b])
 print('foo(1 2) =' foo(1 2))

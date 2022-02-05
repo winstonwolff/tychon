@@ -41,16 +41,16 @@ def evaluate(scope, expression):
     expression = an AST node, or a list of nodes
     '''
     result = None
-    show_debug = True
 
     if isinstance(expression, (str, int, float)):
         result = expression
-        show_debug = False
 
     elif isinstance(expression, _parser.Sym):
         result = scope[expression.name]
+        _debug(scope, 'eval:', repr(expression), '->', repr(result))
 
     elif isinstance(expression, _parser.Call):
+        _debug(scope, 'eval:', repr(expression))
         scope['_depth'] += 1
         func_name = expression[0].name
         func = scope[func_name]
@@ -63,13 +63,19 @@ def evaluate(scope, expression):
         #  _debug(scope, '->', repr(result))
         scope['_depth'] -= 1
         result = result
+        _debug(scope, 'eval:', '->', repr(result))
 
     elif isinstance(expression, (list, tuple)):
-        result = tuple(evaluate(scope, e) for e in expression)[-1]
+        _debug(scope, 'eval:', repr(expression))
+        scope['_depth'] += 1
+        result = tuple(evaluate(scope, e) for e in expression)
+        scope['_depth'] -= 1
+        _debug(scope, 'eval:', repr(result))
+
     else:
         result = expression
 
-    if show_debug: _debug(scope, 'eval:', repr(expression), '->', repr(result))
+    #  if show_debug: _debug(scope, 'eval:', repr(expression), '->', repr(result))
     return result
 
 
@@ -143,7 +149,7 @@ def _print(scope, *args, sep=' ', end="\n"):
     scope['stdout'].write(msg)
     scope['stdout'].write(end)
     scope['stdout'].flush()
-    return msg
+    #  return msg
 
 @builtin_macro
 def func(scope, func_name, arg_syms, program):
@@ -162,7 +168,7 @@ def func(scope, func_name, arg_syms, program):
 
         def __repr__(self):
             arg_repr = ' '.join(str(a) for a in arg_syms)
-            return f'<function {func_name}({arg_repr})>'
+            return f'<func {func_name}({arg_repr})>'
     func = Func()
 
     define(scope, func_name, func)
