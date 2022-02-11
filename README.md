@@ -11,9 +11,11 @@ TODO
 
     - DONE evaluating a variable fetches it's value
     - DONE if(predicate true_block else: false_block)
-
     - DONE Fix grammar so single elements on a line evaluate to just that element, not a list of one
       element
+
+    - Failing test: foo(1 2) = (3,)
+
     - Tychon program to generate documentation, i.e. doctest
         - can load a file as AST graph, and evaluate later
     - user can define macros

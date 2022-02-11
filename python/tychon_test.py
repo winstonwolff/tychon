@@ -37,9 +37,18 @@ if(equal(1 2) print('yeah') print('nope'))
 """, out)
     assert out.getvalue() == 'nope\n'
 
-def test_if_is_expression():
+def test_if_as_expression():
     out = io.StringIO()
     tychon.run_string("""
 print(if(equal(1 2) 'yeah' 'nope'))
 """, out)
     assert out.getvalue() == 'nope\n'
+
+def test_defining_macro():
+    out = io.StringIO()
+    tychon.run_string("""
+macro(debug_print [sym] [print(sym '=' evaluate(sym))])
+define(a 333)
+debug_print(a)
+""", out)
+    assert out.getvalue() == 'a = 333\n'

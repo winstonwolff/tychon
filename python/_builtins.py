@@ -131,6 +131,11 @@ def scope(scope):
     '''Returns current scope as a formatted string'''
     return pformat(scope)
 
+@_builtin_function_with_name('evaluate')
+def _evaluate(scope, ast):
+    '''Executes the AST given'''
+    return evaluate(scope, ast)
+
 @builtin_macro
 def define(scope, key_sym, value):
     #  value = Evaluate.run(scope, value)
@@ -164,7 +169,8 @@ def func(scope, func_name, arg_syms, program):
             for sym, arg in syms_and_args:
                 define(sub_scope, sym, arg)
 
-            return evaluate(sub_scope, program)
+            results = evaluate(sub_scope, program)
+            return results[-1] # just the last line's result
 
         def __repr__(self):
             arg_repr = ' '.join(str(a) for a in arg_syms)
@@ -172,6 +178,29 @@ def func(scope, func_name, arg_syms, program):
     func = Func()
 
     define(scope, func_name, func)
+    return func
+
+@builtin_macro
+def macro(scope, macro_name, arg_syms, program):
+
+    class Macro:
+        kind = Kinds.MACRO
+        def __call__(self, scope, *args):
+            sub_scope = Scope(scope)
+
+            # bind args to names
+            syms_and_args = zip(arg_syms, args)
+            for sym, arg in syms_and_args:
+                define(sub_scope, sym, arg)
+
+            return evaluate(sub_scope, program)
+
+        def __repr__(self):
+            arg_repr = ' '.join(str(a) for a in arg_syms)
+            return f'<macro {macro_name}({arg_repr})>'
+    macro = Macro()
+
+    define(scope, macro_name, macro)
     return func
 
 @macro_with_name('if')

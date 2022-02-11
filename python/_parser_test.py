@@ -100,6 +100,12 @@ EXAMPLES = (
               [Call([Sym('add'), Sym('a'), Sym('b')])]
              ])
     ),
+    ("print('foo(1 2) =' foo(1 2))",
+        Call([Sym('print'),
+              'foo(1 2) =',
+              Call([Sym('foo'), 1, 2])
+             ])
+    ),
     #  (trim_margin('''
     #      function(
     #          addition a b
