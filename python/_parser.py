@@ -41,7 +41,7 @@ GRAMMAR = r'''
         ;
 
     bracket_list =
-        | '[' ~ @:{ expression }+ ']'
+        | '[' ~ @:{ expression }* ']'
         | expr0
         ;
 

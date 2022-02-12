@@ -100,6 +100,7 @@ EXAMPLES = (
               [Call([Sym('add'), Sym('a'), Sym('b')])]
              ])
     ),
+    ("macro(blah [] [])", Call([Sym('macro'), Sym('blah'), [], [] ])), # empty brackets
     ("print('foo(1 2) =' foo(1 2))",
         Call([Sym('print'),
               'foo(1 2) =',
