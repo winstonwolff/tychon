@@ -66,11 +66,11 @@ def evaluate(scope, expression):
         _debug(scope, 'eval:', '->', repr(result))
 
     elif isinstance(expression, (list, tuple)):
-        _debug(scope, 'eval:', repr(expression))
+        if len(expression) != 0: _debug(scope, 'eval:', repr(expression))
         scope['_depth'] += 1
         result = tuple(evaluate(scope, e) for e in expression)
         scope['_depth'] -= 1
-        _debug(scope, 'eval:', repr(result))
+        if len(expression) != 0: _debug(scope, 'eval:', repr(result))
 
     else:
         result = expression
@@ -123,6 +123,10 @@ def add(scope, a, b):
     return a + b
 
 @_builtin_function
+def subtract(scope, a, b):
+    return a - b
+
+@_builtin_function
 def equal(scope, a, b):
     return a == b
 
@@ -130,6 +134,12 @@ def equal(scope, a, b):
 def scope(scope):
     '''Returns current scope as a formatted string'''
     return pformat(scope)
+
+@_builtin_function
+def rand_int(scope, low, high):
+    '''Returns random integer between "low" and "high"'''
+    import random
+    return random.randint(low, high)
 
 @_builtin_function_with_name('evaluate')
 def _evaluate(scope, ast):
@@ -163,6 +173,7 @@ def func(scope, func_name, arg_syms, program):
         kind = Kinds.FUNC
         def __call__(self, scope, *args):
             sub_scope = Scope(scope)
+            sub_scope['__scope__'] = sub_scope
 
             # bind args to names
             syms_and_args = zip(arg_syms, args)
@@ -175,10 +186,10 @@ def func(scope, func_name, arg_syms, program):
         def __repr__(self):
             arg_repr = ' '.join(str(a) for a in arg_syms)
             return f'<func {func_name}({arg_repr})>'
-    func = Func()
+    new_function = Func()
 
-    define(scope, func_name, func)
-    return func
+    define(scope, func_name, new_function)
+    return new_function
 
 @builtin_macro
 def macro(scope, macro_name, arg_syms, program):
@@ -187,6 +198,7 @@ def macro(scope, macro_name, arg_syms, program):
         kind = Kinds.MACRO
         def __call__(self, scope, *args):
             sub_scope = Scope(scope)
+            sub_scope['__scope__'] = sub_scope
 
             # bind args to names
             syms_and_args = zip(arg_syms, args)
@@ -201,12 +213,10 @@ def macro(scope, macro_name, arg_syms, program):
     macro = Macro()
 
     define(scope, macro_name, macro)
-    return func
+    return macro
 
 @macro_with_name('if')
 def _if(scope, predicate, true_program, false_program=[]):
-    sub_scope = Scope(scope)
-
     test = evaluate(scope, predicate)
 
     if test:

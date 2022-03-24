@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-python3 -m pytest -vv \
+python3 -m pytest --capture=no -vv \
   _parser.py \
   _parser_test.py \
   tychon_test.py
