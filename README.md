@@ -11,17 +11,23 @@ TODO
 
     - DONE evaluating a variable fetches it's value
     - DONE if(predicate true_block else: false_block)
-    - DONE Fix grammar so single elements on a line evaluate to just that element, not a list of one
-      element
+    - DONE Fix grammar so single elements on a line evaluate to just that element, not a list of one element
+    - DONE Failing test: foo(1 2) = (3,)
+    - DONE user can define macros
 
-    - Failing test: foo(1 2) = (3,)
-
-    - Tychon program to generate documentation, i.e. doctest
-        - can load a file as AST graph, and evaluate later
-    - user can define macros
-    - make 'func' a macro which evaluates it's args first
+Next:
+    - functions or macros with multi-line blocks
 
     - user-defined functions (or macros) can manipulate Scope
+    - Tychon program to generate documentation, i.e. doctest
+        - can load a file as AST graph, and evaluate later
+    - make 'func' a macro which evaluates it's args first
+
+* Graphical multi-user-dungeon
+    - Rooms with an image
+    - hot spots which activate a script when clicked
+    - script can print a message, or go to another room
+
     - constant(name value scope:@scope)
     - variable(name value scope:@scope)
     - range()
@@ -32,11 +38,6 @@ TODO
 * Nicer Syntax:
     - := — set variable
     - = — define constant
-
-* Graphical multi-user-dungeon
-    - Rooms with an image
-    - hot spots which activate a script when clicked
-    - script can print a message, or go to another room
 
 * Apply Tychon to something
     - DSL or Macros for asserting the shape of data (related to typing)
