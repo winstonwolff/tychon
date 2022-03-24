@@ -127,6 +127,14 @@ def subtract(scope, a, b):
     return a - b
 
 @_builtin_function
+def multiply(scope, a, b):
+    return a * b
+
+@_builtin_function
+def divide(scope, a, b):
+    return a / b
+
+@_builtin_function
 def equal(scope, a, b):
     return a == b
 
