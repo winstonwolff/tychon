@@ -30,9 +30,14 @@ GRAMMAR = r'''
         addition = left:expr3 op:'+' ~ right:expr2 ;
         subtraction = left:expr3 op:'-' ~ right:expr2 ;
 
-    expr2 = | multiplication | division | expr1 ;
-        multiplication = left:expr2 op:'*' ~ right:expr1 ;
-        division = left:expr2 op:'/' ~ right:expr1 ;
+    expr2 = | multiplication | division | function_calls ;
+        multiplication = left:expr2 op:'*' ~ right:function_calls ;
+        division = left:expr2 op:'/' ~ right:function_calls ;
+
+    #  function_calls = | function_call | vertical_function_call | expr1 ;
+    function_calls = | function_call | expr1 ;
+        function_call = func:identifier '(' args:{ expression } * ')' ;
+        #  vertical_function_call = func:identifier '::' EOL args:indented_list ;
 
     expr1 =
         | '(' ~ @:expression ')'
@@ -41,12 +46,8 @@ GRAMMAR = r'''
 
     bracket_list =
         | '[' ~ @:{ expression }* ']'
-        | expr0
+        | term
         ;
-
-    expr0 = | function_call | vertical_function_call | term ;
-        function_call = func:identifier '(' args:{ expression } * ')' ;
-        vertical_function_call = func:identifier '::' EOL args:indented_list ;
 
     #
     # terms
@@ -116,18 +117,17 @@ DDD'''
 
 #  Call = namedtuple('Call', ['args'])
 
-class Call(tuple):
-    def __new__(self, *args):
-        return tuple.__new__(Call, *args)
+class Call:
+    def __init__(self, args):
+        assert isinstance(args[0], Sym)
+        self.function_name = args[0].name
+        self.args = args[1:]
 
     def __repr__(self):
-        #  return "Call({})".format(", ".join(repr(i) for i in self))
-        function_name = self[0]
-        args = self[1:]
-        return "{}({})".format(function_name, " ".join(repr(i) for i in args))
+        return "{}({})".format(self.function_name, " ".join(repr(i) for i in self.args))
 
-    #  def __eq__(self, other):
-    #      return isinstance(other, Call) and tuple(self) == tuple(other)
+    def __eq__(self, other):
+        return isinstance(other, Call) and self.function_name == other.function_name and self.args == other.args
 
 class Sym:
     def __init__(self, name):
@@ -167,7 +167,6 @@ class TychonSemantics:
         return Call([Sym(ast['func'].name), *ast['args']])
 
     def vertical_function_call(self, ast, *args, **kwargs):
-        print('!!! vertical_function_call() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
         '''
             ast= {
                 'func': func,

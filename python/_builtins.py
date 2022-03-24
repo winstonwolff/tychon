@@ -52,9 +52,9 @@ def evaluate(scope, expression):
     elif isinstance(expression, _parser.Call):
         _debug(scope, 'eval:', repr(expression))
         scope['_depth'] += 1
-        func_name = expression[0].name
+        func_name = expression.function_name
         func = scope[func_name]
-        args = expression[1:]
+        args = expression.args
 
         if func.kind == Kinds.FUNC:
             args = [evaluate(scope, arg) for arg in args]
