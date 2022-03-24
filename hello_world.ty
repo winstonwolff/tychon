@@ -15,7 +15,8 @@ print('--- defining a function')
 func(foo [a b] [a + b])
 print('foo(1 2) =' foo(1 2))
 
-print('--- defining and using a macro - debug_print()')
-macro(debug_print [sym] [print(sym '=' evaluate(sym))])
+print('--- defining and using a macro - log()')
+macro(log [sym] [print('log:' sym '=' evaluate(sym))])
 
-debug_print(a)
+log(a)
+
