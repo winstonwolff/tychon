@@ -7,19 +7,18 @@ SHOW_PARSER_TRACE = False
 GRAMMAR = r'''
     @@whitespace :: / +/
 
-    start = single_expression | horizontal_list | { line | vertical_list | empty_line }*;
+    start = { @:line }*;
 
-        single_expression = (@:expression $);
+        line = | single_expression | horizontal_list | indented_list | empty_line ;
+            single_expression = (@:expression EOL) ;
+            horizontal_list = { @:expression }+ EOL ;
+            indented_list = '$$INDENT$$' ~ EOL indented_list:{ line }+ '$$OUTDENT$$' EOL ;
+            empty_line = empty_line:'\n' ;
 
-        horizontal_list = { @:expression }+ $;
+        #  vertical_list = vertical_list:{ @:line }*;
 
-        line = (@:expression EOL) | ( { @:expression }+ EOL );
+    EOL = '\n' | $;
 
-        vertical_list = '$$INDENT$$' ~ EOL vertical_list:{ line }+ '$$OUTDENT$$' EOL;
-
-        empty_line = empty_line:'\n';
-
-        EOL = '\n' | $;
 
     #
     # expressions with priority. First is lower priority, Last is higher priority.
@@ -45,10 +44,9 @@ GRAMMAR = r'''
         | expr0
         ;
 
-    #  expr0 = | function_definition | function_call | term ;
-        #  function_definition = 'func' name:identifier '(' args:{ identifier }* '):' body:expression;
-    expr0 = | function_call | term ;
+    expr0 = | function_call | vertical_function_call | term ;
         function_call = func:identifier '(' args:{ expression } * ')' ;
+        vertical_function_call = func:identifier '::' EOL args:indented_list ;
 
     #
     # terms
@@ -78,6 +76,7 @@ def parse(source):
                           semantics=TychonSemantics(),
                           colorize=SHOW_PARSER_TRACE,
                           trace=SHOW_PARSER_TRACE)
+    #  print('!!! parse() tychon_ast=', repr(tychon_ast))
     return tychon_ast
 
 def _insert_indentation_symbols(source):
@@ -145,6 +144,13 @@ class Sym:
 
 class TychonSemantics:
 
+    def vertical_list(self, ast, *rule_params, **kwparams):
+        return list(ast)
+
+    #  def horizontal_list(self, ast, *rule_params, **kwparams):
+    #      print('!!! horizontal list', repr(ast), 'rule=', repr(rule_params), 'kw=', repr(kwparams))
+    #      return list(ast)
+
     def addition(self, ast, *rule_params, **kwparams):
         return Call([Sym('add'), ast['left'], ast['right']])
 
@@ -158,8 +164,23 @@ class TychonSemantics:
         return Call([Sym('divide'), ast['left'], ast['right']])
 
     def function_call(self, ast, *args, **kwargs):
-        #  print('!!! function_call() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
         return Call([Sym(ast['func'].name), *ast['args']])
+
+    def vertical_function_call(self, ast, *args, **kwargs):
+        print('!!! vertical_function_call() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
+        '''
+            ast= {
+                'func': func,
+                'args': {
+                    'indented_list': [addition, [a, b], [add, a, b]],
+                    'parseinfo': [
+                        None, 'indented_list', 9, 71, 2, 8]
+                },
+                'parseinfo': [None, 'vertical_function_call', 1, 71, 1, 8]
+            }
+        '''
+
+        return Call([Sym(ast['func'].name), *ast['args']['indented_list']])
 
     def function_definition(self, ast, *args, **kwargs):
         #  print('!!! function_definition() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
@@ -173,6 +194,7 @@ class TychonSemantics:
         return ast['string']
 
     def double_quote_string(self, ast):
+        print('!!! double_quote_string() ast=', repr(ast))
         return ast['string']
 
     def integer(self, ast, *rule_params, **kwparams):
