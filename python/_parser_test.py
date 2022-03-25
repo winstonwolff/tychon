@@ -109,6 +109,23 @@ def test_parse_indented_lists():
             ]},
             444
         ]
+# 
+# traditional math syntax with binary operators
+#
+
+def test_parse_binary_operator():
+    assert parse_without_info('foo 1 2') == [Sym('foo'), 1, 2]
+
+def test_parse_multiply_operator():
+    assert parse_without_info('3.14 * 2') ==  Call([ Sym('multiply'), 3.14, 2])
+
+def test_parse_binary_operator_precedence():
+    assert parse_without_info('2 + 3 * 4') == \
+        Call([ Sym('add'), 2, Call([ Sym('multiply'), 3, 4])])
+
+def test_parse_parenthesis():
+    assert parse_without_info('(2 + 3) * 4') == \
+        Call([ Sym('multiply'), Call([ Sym('add'), 2, 3]), 4])
 #
 # functions - calling and defining
 #
@@ -130,16 +147,6 @@ def test_parse_vertical_function_call():
             {'empty_line': '\n'},
             Call([ Sym('print'), "hello", "world"]),
         ]
-
-def test_parse_binary_operator():
-    assert parse_without_info('foo 1 2') == [Sym('foo'), 1, 2]
-
-def test_parse_multiply_operator():
-    assert parse_without_info('3.14 * 2') ==  Call([ Sym('multiply'), 3.14, 2])
-
-def test_parse_binary_operator_precedence():
-    assert parse_without_info('2 + 3 * 4') == Call([ Sym('add'), 2,
-                    Call([ Sym('multiply'), 3, 4])])
 
 def test_parse_defining_function():
     assert parse_without_info('func(addition [a b] [a + b])') == Call([Sym('func'),

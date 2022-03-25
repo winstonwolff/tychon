@@ -2,12 +2,6 @@ TODO
 ----
 * minimal language: functions, macros, arithmetic
 
-    - DONE evaluating a variable fetches it's value
-    - DONE if(predicate true_block else: false_block)
-    - DONE Fix grammar so single elements on a line evaluate to just that element, not a list of one element
-    - DONE Failing test: foo(1 2) = (3,)
-    - DONE user can define macros
-
 Next:
     - functions or macros with multi-line blocks
 
@@ -43,8 +37,13 @@ Next:
 
 DONE
 ----
-- REPL
-- Define functions
+    - REPL
+    - Define functions
+    - DONE evaluating a variable fetches it's value
+    - DONE if(predicate true_block else: false_block)
+    - DONE Fix grammar so single elements on a line evaluate to just that element, not a list of one element
+    - DONE Failing test: foo(1 2) = (3,)
+    - DONE user can define macros
 
 
 
