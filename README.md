@@ -1,57 +1,43 @@
-Tychon — An embedded language so users can "program" or "script" within your program
+# Tychon — An experiment in a python-y smalltalk-y lisp-y embedded language.
 
 Usage
 -----
-  ./run_tests.sh
-  ./tychon.py <sourcefile>.ty
+  ./run_tests.sh                        # run the tests
+  ./tychon.py <sourcefile>.ty           # execute a source file
+  ./tychon.py                           # a REPL
 
-TODO
-----
-* minimal language: functions, macros, arithmetic
+Examples
+--------
 
-    - DONE evaluating a variable fetches it's value
-    - DONE if(predicate true_block else: false_block)
-    - DONE Fix grammar so single elements on a line evaluate to just that element, not a list of one element
-    - DONE Failing test: foo(1 2) = (3,)
-    - DONE user can define macros
+Math is familiar:
+```
+>>> 2 + 4
+6
+```
 
-Next:
-    - functions or macros with multi-line blocks
+Function calls are also similar, although note that there are no commas separating arguments
+```
+>>> print('two times four is' 2 * 4)
+two times four is 8
+```
 
-    - user-defined functions (or macros) can manipulate Scope
-    - Tychon program to generate documentation, i.e. doctest
-        - can load a file as AST graph, and evaluate later
-    - make 'func' a macro which evaluates it's args first
+Defining a function looks like a function itself, although it's actually a macro.
+```
+>>> func(double [a] [a * 2])
+>>> double(3)
+6
+```
 
-* Graphical multi-user-dungeon
-    - Rooms with an image
-    - hot spots which activate a script when clicked
-    - script can print a message, or go to another room
+Functions evaulate their arguments before being called. Macros take all arguments as-is,
+without evaluating. So you can evaluate them later, or manipulate them:
+```
+>>> macro(debug_print [sym] [print('log:' sym '=' evaluate(sym))])
+>>> a = 1
+>>> debug_print(a)
+log: a = 1
+```
 
-    - constant(name value scope:@scope)
-    - variable(name value scope:@scope)
-    - range()
-    - map()
-    - for()
-    - Syntax error messages from parser
 
-* Nicer Syntax:
-    - := — set variable
-    - = — define constant
-
-* Apply Tychon to something
-    - DSL or Macros for asserting the shape of data (related to typing)
-    - Replacement for SASS, that can also write unit tests for CSS.
-    - DSL or Macros for automated testing
-    - DSL or Macros for generating html
-
-* WASM engine
-    - execute browser via WASM
-
-DONE
-----
-- REPL
-- Define functions
 
 Goals:
 ------
@@ -101,150 +87,6 @@ Goals:
         - Macro/function for marking functions pure, and checking that it's so
         - Macro/function for enforcing Law of Demeter
         - Macro/function for enforcing knowledge of other modules, e.g. Controllers know all, but Models cannot know Views, and Views cannot know Controllers
-        - macros must be in marked modules, so people don't use them too much
+        - macros definitions must be in marked modules, so people don't use them too much
 
 
-
-Ideas
------
-
-
-Calling functions
-    Mathematical notation
-        sum(1 2)        # returns 3
-
-    Chained calling
-
-        list
-            |> map( _ * 2)
-            |> filter( isEven(_) )
-
-        equivalent to:
-            a = map(list, _ * 2)
-            b = filter(a, isEvent(_) )
-
-    Prefix calling
-
-        static:
-        pure:
-        class User:
-            name: "" type: String doc: "Moniker of person"
-            email: "unknown@example.com" type: String doc: "how to contact them"
-
-        @class User
-            name
-            email
-            greeting: \ 'hello {}'.format(name)
-
-
-All notations have horizontal and vertical notation
-    list:
-        [a b c]                         # one-liner
-        a                               # vertical
-        b
-        c
-
-    strings:
-        "i am a string"
-        'single quote string'
-        """
-        multi
-        line
-        string
-        """
-
-    comments:
-        # one line comment
-        ###
-        multi
-        line
-        comment
-        ###
-
-    function call:
-        f(a b c)                        # one-liner using f() notation
-        @f                              # vertical notation without parentheses
-            a
-            b
-            c
-
-        f( g( n ))                      # function call, regular math notation
-
-        f(): g(): n                       # ??? function call that is more convenient with indention
-        f():
-            g():
-                n
-
-        n |> g |> f                     # reverse function call
-
-    named function arguments
-        print(1 3 end='\n' sep=' ')
-
-    define a constant:
-        constant(pi 3.14)               # f() notation
-        pi = 3.14                      # infix notation
-        @constant
-            pi 3.14
-            tau 6.28
-
-    define a variable, i.e. mutable reference
-        variable(a 55)
-        a := 55
-
-    anonymous function
-        func(a [a * 2])                 # f() notation
-        (a) -> a * 2                    # infix notation
-        (a) ->                          # vertical
-            a * 2
-
-        a                               # more vertical
-        ->
-        a * 2
-
-    writing modes
-        - Tychon code
-        - HTML a la JSX
-        - Human text, i.e. documentation
-        - executable examples within documentation
-
-
-### Automated Testing
-
-func(:) add [a b]:
-    '''
-    Returns the sum of `a` and `b`.
-
-    >>> add(1 2)
-    3
-
-    >>> add(0 0)
-    0
-    '''
-    a + b
-
-describe 'add()':
-    test 'returns the sum of arguments':
-        expect(add(3 4)).to eq(7)
-
-
-### HTML generation, a la JSX
-
-import(render html body h1 div ul li from: TSX)
-
-func<:> MyComponent [explative product_name]
-    div(:)id='MyComponent' class=['first' 'second']
-        h1(:)class='foo' id='blah'
-            "This is my string"
-        p(:) class="plain_paragraph"
-            Ut dolor aliqua dolor dolor culpa aliqua minim non enim aliquip cillum veniam id.  Do ut
-            in cillum laborum ut voluptate.  Sit duis in adipiscing lorem est in ad consequat
-            aliquip laboris.
-
-func<:> MyPage [goods_for_sale]
-    div(:) id="MyPage"
-        goods_for_sale |> map(-> MyComponent('Buy now for a limited time only' %1))
-
-@main
-func<:> [stdin stdout]
-    skews = ['12113' '3342']
-    render(MyPage)
