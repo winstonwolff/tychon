@@ -116,8 +116,20 @@ def test_parse_indented_lists():
 def test_parse_function_call():
     assert parse_without_info('add(1 2)') == Call([Sym('add'), 1, 2])
 
-#  def test_parse_vertical_function_call():
-#      assert parse_without_info('print :: "hello" "world"') == Call([ Sym('print'), "hello", "world"])
+def Xtest_parse_vertical_function_call_one_line():
+    assert parse_without_info('print :: "hello" "world"') == [
+            Call([ Sym('print'), "hello", "world"]),
+        ]
+
+def test_parse_vertical_function_call():
+    assert parse_without_info(trim_margin('''
+        print ::
+            "hello"
+            "world"
+        ''')) == [
+            {'empty_line': '\n'},
+            Call([ Sym('print'), "hello", "world"]),
+        ]
 
 def test_parse_binary_operator():
     assert parse_without_info('foo 1 2') == [Sym('foo'), 1, 2]
@@ -136,18 +148,20 @@ def test_parse_defining_function():
               [Call([Sym('add'), Sym('a'), Sym('b')])]
              ])
 
-def Xtest_parse_define_function_vertical_syntax():
+def test_parse_define_function_vertical_syntax():
     assert parse_without_info(trim_margin('''
         func ::
             addition
             a b
-            a + b
+            [ a + b ]
         ''')) == [
         {'empty_line': '\n'},
         Call([ Sym('func'),
                Sym('addition'),
-               [ Sym('a'), Sym('b') ],
-               Call([ Sym('add'), Sym('a'), Sym('b') ])
+               ( Sym('a'), Sym('b') ),
+               [
+                 Call([ Sym('add'), Sym('a'), Sym('b') ])
+               ]
             ])
     ]
 

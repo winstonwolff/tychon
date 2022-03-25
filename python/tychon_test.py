@@ -30,9 +30,13 @@ def test_function_calling_function():
     tychon.run_string("print( 'the sum is' add(3 4) )", out)
     assert out.getvalue() == 'the sum is 7\n'
 
-def Xtest_double_colon_function_syntax():
+def test_double_colon_function_syntax():
     out = io.StringIO()
-    tychon.run_string("print :: 'the sum is' add(3 4)", out)
+    tychon.run_string(trim_margin("""
+        print ::
+            'the sum is'
+            add(3 4)
+        """), out)
     assert out.getvalue() == 'the sum is 7\n'
 
 def test_defining_a_function():
@@ -43,11 +47,13 @@ def test_defining_a_function():
         """), out)
     assert out.getvalue() == 'foo(1 2) = 3\n'
 
-def Xtest_defining_a_fuction_vertically():
+def test_defining_a_fuction_vertically():
     out = io.StringIO()
     tychon.run_string(trim_margin("""
-        func :: foo [a b]
-            a + b
+        func ::
+            foo
+            [a b]
+            [ a + b ]
         print('foo(1 2) =' foo(1 2))
         """), out)
     assert out.getvalue() == 'foo(1 2) = 3\n'

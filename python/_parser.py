@@ -34,10 +34,9 @@ GRAMMAR = r'''
         multiplication = left:expr2 op:'*' ~ right:function_calls ;
         division = left:expr2 op:'/' ~ right:function_calls ;
 
-    #  function_calls = | function_call | vertical_function_call | expr1 ;
-    function_calls = | function_call | expr1 ;
+    function_calls = | function_call | vertical_function_call | expr1 ;
         function_call = func:identifier '(' args:{ expression } * ')' ;
-        #  vertical_function_call = func:identifier '::' EOL args:indented_list ;
+        vertical_function_call = func:identifier '::' ~ EOL args:line ;
 
     expr1 =
         | '(' ~ @:expression ')'
@@ -115,8 +114,6 @@ AAA
 DDD'''
     assert _insert_indentation_symbols(source) == expected
 
-#  Call = namedtuple('Call', ['args'])
-
 class Call:
     def __init__(self, args):
         assert isinstance(args[0], Sym)
@@ -124,7 +121,10 @@ class Call:
         self.args = args[1:]
 
     def __repr__(self):
-        return "{}({})".format(self.function_name, " ".join(repr(i) for i in self.args))
+        return "{}({})".format(
+            self.function_name,
+            " ".join(repr(i) for i in self.args)
+        )
 
     def __eq__(self, other):
         return isinstance(other, Call) and self.function_name == other.function_name and self.args == other.args
@@ -178,6 +178,9 @@ class TychonSemantics:
                 'parseinfo': [None, 'vertical_function_call', 1, 71, 1, 8]
             }
         '''
+        print('!!! TychonSemantics.vertical_function_call ast=', repr(ast))
+        print('!!!     args=', repr(args))
+        print('!!!     kwargs=', repr(kwargs))
 
         return Call([Sym(ast['func'].name), *ast['args']['indented_list']])
 
@@ -193,7 +196,7 @@ class TychonSemantics:
         return ast['string']
 
     def double_quote_string(self, ast):
-        print('!!! double_quote_string() ast=', repr(ast))
+        #  print('!!! double_quote_string() ast=', repr(ast))
         return ast['string']
 
     def integer(self, ast, *rule_params, **kwparams):
