@@ -12,7 +12,8 @@ define(a 333)
 print('a =' a)
 
 print('--- defining a function')
-func(foo [a b] [a + b])
+func :: foo [a b] [a + b]
+#  func(foo [a b] [a + b])
 print('foo(1 2) =' foo(1 2))
 
 print('--- defining and using a macro - log()')

@@ -2,6 +2,8 @@ import collections
 import _parser
 from pprint import pformat
 
+QUIET = True
+
 class _Ansi:
     RESET = '\x1b[0m'
     GRAY  = '\x1b[90m'
@@ -29,6 +31,7 @@ class Kinds:
 
 def _debug(scope, *args):
     '''debug level logging for Evaluator'''
+    if QUIET: return
     indent = '    ' * scope['_depth']
     msg = '    ' + indent + ' '.join(str(a) for a in args)
     print(_Ansi.PURPLE, msg, _Ansi.RESET, sep='')

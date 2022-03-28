@@ -6,6 +6,7 @@ Next:
     - functions or macros with multi-line blocks
 
     - user-defined functions (or macros) can manipulate Scope
+        - import function
     - Tychon program to generate documentation, i.e. doctest
         - can load a file as AST graph, and evaluate later
     - make 'func' a macro which evaluates it's args first

@@ -1,5 +1,6 @@
 import tatsu
 from collections import namedtuple
+from pprint import pformat
 
 #  SHOW_PARSER_TRACE = True
 SHOW_PARSER_TRACE = False
@@ -9,13 +10,13 @@ GRAMMAR = r'''
 
     start = { @:line }*;
 
-        line = | single_expression | horizontal_list | indented_list | empty_line ;
+        line = | single_expression | list | empty_line ;
             single_expression = (@:expression EOL) ;
-            horizontal_list = { @:expression }+ EOL ;
-            indented_list = '$$INDENT$$' ~ EOL indented_list:{ line }+ '$$OUTDENT$$' EOL ;
             empty_line = empty_line:'\n' ;
 
-        #  vertical_list = vertical_list:{ @:line }*;
+        list = horizontal_list | indented_list;
+            horizontal_list = { @:expression }+ EOL ;
+            indented_list = '$$INDENT$$' ~ EOL @:{ line }+ '$$OUTDENT$$' EOL ;
 
     EOL = '\n' | $;
 
@@ -34,9 +35,9 @@ GRAMMAR = r'''
         multiplication = left:expr2 op:'*' ~ right:function_calls ;
         division = left:expr2 op:'/' ~ right:function_calls ;
 
-    function_calls = | function_call | vertical_function_call | expr1 ;
+    function_calls = | function_call | colon_function_call | expr1 ;
         function_call = func:identifier '(' args:{ expression } * ')' ;
-        vertical_function_call = func:identifier '::' ~ EOL args:line ;
+        colon_function_call = func:identifier '::' ~ ((args: horizontal_list) | (EOL args:indented_list));
 
     expr1 =
         | '(' ~ @:expression ')'
@@ -166,31 +167,9 @@ class TychonSemantics:
     def function_call(self, ast, *args, **kwargs):
         return Call([Sym(ast['func'].name), *ast['args']])
 
-    def vertical_function_call(self, ast, *args, **kwargs):
-        '''
-            ast= {
-                'func': func,
-                'args': {
-                    'indented_list': [addition, [a, b], [add, a, b]],
-                    'parseinfo': [
-                        None, 'indented_list', 9, 71, 2, 8]
-                },
-                'parseinfo': [None, 'vertical_function_call', 1, 71, 1, 8]
-            }
-        '''
-        print('!!! TychonSemantics.vertical_function_call ast=', repr(ast))
-        print('!!!     args=', repr(args))
-        print('!!!     kwargs=', repr(kwargs))
-
-        return Call([Sym(ast['func'].name), *ast['args']['indented_list']])
-
-    def function_definition(self, ast, *args, **kwargs):
-        #  print('!!! function_definition() ast=', repr(ast), 'args=', repr(args), 'kwargs=', repr(kwargs))
-        return Call([Sym('function'),
-                     Sym(ast['func'].name),
-                     ast['args'],
-                     ast['code'],
-                    ])
+    def colon_function_call(self, ast, *args, **kwargs):
+        #  print('!!! colon_function_call ast=\n', pformat(ast))
+        return Call([Sym(ast['func'].name), *ast['args']])
 
     def single_quote_string(self, ast):
         return ast['string']
