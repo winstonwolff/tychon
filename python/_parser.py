@@ -10,13 +10,13 @@ GRAMMAR = r'''
 
     start = { @:line }*;
 
-    EOL = '\n' | $;
+    eol = '\n' | $;
 
     line = solo_expression  | horizontal_list | empty_line ;
-        solo_expression = (@:expression EOL) ;
-        horizontal_list = most:{ expression }+ (EOL | last:indented_list);
-            indented_list = '$$INDENT$$' ~ EOL @:{ line }+ '$$OUTDENT$$' EOL ;
-        empty_line = empty_line:EOL ;
+        solo_expression = (@:expression eol) ;
+        horizontal_list = most:{ expression }+ (eol | last:indented_list);
+            indented_list = '$$INDENT$$' ~ eol @:{ line }+ '$$OUTDENT$$' eol ;
+        empty_line = empty_line:eol ;
 
     #
     # expressions with priority. First is lower priority, Last is higher priority.
