@@ -102,15 +102,16 @@ def test_parse_indented_lists():
         444
         ''')) == [
             {'empty_line': '\n'},
-            111,
-            [
-                222,
-                [333, 333],
+            [111,
+                [
+                    222,
+                    [333, 333],
+                ],
             ],
             444
         ]
-# 
-# traditional math syntax with binary operators
+#
+# traditional math syntax, i.e. binary operators
 #
 
 def test_parse_binary_operator():

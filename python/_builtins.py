@@ -81,6 +81,9 @@ def evaluate(scope, expression):
     #  if show_debug: _debug(scope, 'eval:', repr(expression), '->', repr(result))
     return result
 
+#
+#   Decorators
+#
 
 def _register(callable, name, kind):
     '''adda a function or macro to the list of BUILTINs'''
@@ -121,6 +124,10 @@ def macro_with_name(name):
 def _pass(scope, args):
     pass
 
+#
+#   Math
+#
+
 @_builtin_function
 def add(scope, a, b):
     return a + b
@@ -140,6 +147,10 @@ def divide(scope, a, b):
 @_builtin_function
 def equal(scope, a, b):
     return a == b
+
+#
+#   scope
+#
 
 @_builtin_function
 def scope(scope):

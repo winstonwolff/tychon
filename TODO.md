@@ -3,10 +3,9 @@ TODO
 * minimal language: functions, macros, arithmetic
 
 Next:
-    - functions or macros with multi-line blocks
-
     - user-defined functions (or macros) can manipulate Scope
-        - import function
+        - macro to define a variable or constant
+        - import()
     - Tychon program to generate documentation, i.e. doctest
         - can load a file as AST graph, and evaluate later
     - make 'func' a macro which evaluates it's args first
@@ -38,6 +37,7 @@ Next:
 
 DONE
 ----
+    - functions or macros with multi-line blocks
     - REPL
     - Define functions
     - DONE evaluating a variable fetches it's value

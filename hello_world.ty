@@ -12,12 +12,25 @@ define(a 333)
 print('a =' a)
 
 print('--- defining a function')
-func :: foo [a b] [a + b]
-#  func(foo [a b] [a + b])
+func(foo [a b] [a + b])
 print('foo(1 2) =' foo(1 2))
+
+func :: foo_one_line [a b] [a + b]
+print('foo_one_line(1 2) =' foo_one_line(1 2))
+
+#  func ::
+#      foo_three_lines
+#      a b
+#          a + b
+#  print('foo_three_lines(1 2) =' foo_three_lines(1 2))
 
 print('--- defining and using a macro - log()')
 macro(log [sym] [print('log:' sym '=' evaluate(sym))])
 
 log(a)
+
+#  func ::
+#      import
+#      [scope module_sym]
+#          define(scope module_sym load(module_sym.name))
 

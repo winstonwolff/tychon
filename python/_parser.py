@@ -10,61 +10,52 @@ GRAMMAR = r'''
 
     start = { @:line }*;
 
-        line = | single_expression | list | empty_line ;
-            single_expression = (@:expression EOL) ;
-            empty_line = empty_line:'\n' ;
-
-        list = horizontal_list | indented_list;
-            horizontal_list = { @:expression }+ EOL ;
-            indented_list = '$$INDENT$$' ~ EOL @:{ line }+ '$$OUTDENT$$' EOL ;
-
     EOL = '\n' | $;
 
+    line = solo_expression  | horizontal_list | empty_line ;
+        solo_expression = (@:expression EOL) ;
+        horizontal_list = most:{ expression }+ (EOL | last:indented_list);
+            indented_list = '$$INDENT$$' ~ EOL @:{ line }+ '$$OUTDENT$$' EOL ;
+        empty_line = empty_line:EOL ;
 
     #
     # expressions with priority. First is lower priority, Last is higher priority.
     #
 
-    expression = expr3;
-
-    expr3 = | addition | subtraction | expr2 ;
-        addition = left:expr3 op:'+' ~ right:expr2 ;
-        subtraction = left:expr3 op:'-' ~ right:expr2 ;
-
-    expr2 = | multiplication | division | function_calls ;
-        multiplication = left:expr2 op:'*' ~ right:function_calls ;
-        division = left:expr2 op:'/' ~ right:function_calls ;
-
-    function_calls = | function_call | colon_function_call | expr1 ;
+    expression = bracket_list  | function_call
+                 | colon_function_call | binary_operation;
+        bracket_list = '[' ~ @:{ expression }* ']';
         function_call = func:identifier '(' args:{ expression } * ')' ;
-        colon_function_call = func:identifier '::' ~ ((args: horizontal_list) | (EOL args:indented_list));
+        colon_function_call = func:identifier '::' ~ (
+            (args: horizontal_list) | (args:indented_list)
+        );
 
-    expr1 =
-        | '(' ~ @:expression ')'
-        | bracket_list
-        ;
+    #
+    #     binary operations
+    #
 
-    bracket_list =
-        | '[' ~ @:{ expression }* ']'
-        | term
-        ;
+    binary_operation = binary_operation_3;
+        binary_operation_3 = addition | subtraction | binary_operation_2 ;
+            addition = left:binary_operation_3 op:'+' ~ right:binary_operation_2 ;
+            subtraction = left:binary_operation_3 op:'-' ~ right:binary_operation_2 ;
+
+        binary_operation_2 = multiplication | division | binary_operation_1 ;
+            multiplication = left:binary_operation_2 op:'*' ~ right:binary_operation_1 ;
+            division = left:binary_operation_2 op:'/' ~ right:binary_operation_1 ;
+
+        binary_operation_1 = '(' ~ @:binary_operation_3 ')' | term ;
 
     #
     # terms
     #
 
-    term = string | number | identifier ;
-
-        string = single_quote_string | double_quote_string ;
-            single_quote_string = "'" ~ string:/[^']*/ "'" ;
-            double_quote_string = '"' ~ string:/[^"]*/ '"' ;
-
-        number = float | integer ;
-            float = /\d+\.\d+/ ;
-            integer = /[0-9]+/ ;
-
+    #  term = integer;
+    term = single_quote_string | double_quote_string | float | integer | identifier ;
+        single_quote_string = "'" ~ string:/[^']*/ "'" ;
+        double_quote_string = '"' ~ string:/[^"]*/ '"' ;
+        float = /\d+\.\d+/ ;
+        integer = /[0-9]+/ ;
         identifier = /[a-zA-Z_][a-zA-Z_0-9]*/ ;
-
 '''
 PARSER = tatsu.compile(GRAMMAR)
 
@@ -90,7 +81,7 @@ def _insert_indentation_symbols(source):
         this_indent = len(line) - len(line.lstrip())
 
         if this_indent > last_indent:
-            result.append((' ' * this_indent) + '$$INDENT$$')
+            result[-1] =  result[-1] + ' $$INDENT$$'
         elif this_indent < last_indent:
             result.append((' ' * last_indent) + '$$OUTDENT$$')
 
@@ -107,8 +98,7 @@ AAA
     CCC
 DDD'''
     expected = '''
-AAA
-    $$INDENT$$
+AAA $$INDENT$$
     BBB
     CCC
     $$OUTDENT$$
@@ -148,9 +138,11 @@ class TychonSemantics:
     def vertical_list(self, ast, *rule_params, **kwparams):
         return list(ast)
 
-    #  def horizontal_list(self, ast, *rule_params, **kwparams):
-    #      print('!!! horizontal list', repr(ast), 'rule=', repr(rule_params), 'kw=', repr(kwparams))
-    #      return list(ast)
+    def horizontal_list(self, ast, *rule_params, **kwparams):
+        #  print('!!! horizontal list', repr(ast), 'rule=', repr(rule_params), 'kw=', repr(kwparams))
+        the_list = list(ast['most'])
+        if 'last' in ast: the_list.append(ast['last'])
+        return the_list
 
     def addition(self, ast, *rule_params, **kwparams):
         return Call([Sym('add'), ast['left'], ast['right']])

@@ -89,4 +89,7 @@ Goals:
         - Macro/function for enforcing knowledge of other modules, e.g. Controllers know all, but Models cannot know Views, and Views cannot know Controllers
         - macros definitions must be in marked modules, so people don't use them too much
 
-
+References on PEG & Packrat parsers
+--------------------------------
+- [ PEGs and the Structure of Languages ]( https://blog.bruce-hill.com/pegs-and-the-structure-of-languages )
+- [ Packrat Parsing from Scratch ]( https://blog.bruce-hill.com/packrat-parsing-from-scratch )
