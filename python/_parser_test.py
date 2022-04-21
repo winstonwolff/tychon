@@ -91,6 +91,12 @@ def test_parse_one_line_of_terms():
 def test_parse_bracket_list():
     assert parse_without_info('[123 456]') == [123, 456]
 
+#  def test_parse_bracket_list_on_several_lines():
+#      assert parse_without_info(trim_margin('''
+#          [ 123
+#            456 ]
+#          ''')) == [123, 456]
+
 def test_parse_vertical_list():
     assert parse_without_info("123\n456") == [123, 456]
 
@@ -121,6 +127,7 @@ def test_parse_multiply_operator():
     assert parse_without_info('3.14 * 2') ==  Call([ Sym('multiply'), 3.14, 2])
 
 def test_parse_binary_operator_precedence():
+    #  print('!!! parser output:', parse_without_info('2 + 3 * 4'))
     assert parse_without_info('2 + 3 * 4') == \
         Call([ Sym('add'), 2, Call([ Sym('multiply'), 3, 4])])
 
@@ -172,6 +179,26 @@ def test_parse_define_function_vertical_syntax():
                ]
             ])
     ]
+
+#  def test_parse_define_function_vertical_syntax_2():
+#      assert parse_without_info(trim_margin('''
+#          func ::
+#              addition
+#              a b
+#              [
+#                  a + b
+#              ]
+
+#          ''')) == [
+#          {'empty_line': '\n'},
+#          Call([ Sym('func'),
+#                 Sym('addition'),
+#                 ( Sym('a'), Sym('b') ),
+#                 [
+#                   Call([ Sym('add'), Sym('a'), Sym('b') ])
+#                 ]
+#              ])
+#      ]
 
 #
 # Macros

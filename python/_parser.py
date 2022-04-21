@@ -6,45 +6,43 @@ from pprint import pformat
 SHOW_PARSER_TRACE = False
 
 GRAMMAR = r'''
-    @@whitespace :: / +/
+    @@whitespace :: / /
 
     start = { @:line }*;
 
     eol = '\n' | $;
 
-    line = solo_expression  | horizontal_list | empty_line ;
+    line = empty_line | solo_expression | horizontal_list ;
         solo_expression = (@:expression eol) ;
-        horizontal_list = most:{ expression }+ (eol | last:indented_list);
-            indented_list = '$$INDENT$$' ~ eol @:{ line }+ '$$OUTDENT$$' eol ;
         empty_line = empty_line:eol ;
+        horizontal_list = first:expression more:{expression}+ eol;
+
 
     #
     # expressions with priority. First is lower priority, Last is higher priority.
     #
 
     expression = bracket_list  | function_call
-                 | colon_function_call | binary_operation;
-        bracket_list = '[' ~ @:{ expression }* ']';
+                 | colon_function_call | indented_list | binary_operation;
+        bracket_list = '[' ~ @:{expression}* ']';
         function_call = func:identifier '(' args:{ expression } * ')' ;
-        colon_function_call = func:identifier '::' ~ (
-            (args: horizontal_list) | (args:indented_list)
-        );
+        colon_function_call = func:identifier '::' ~ args:(horizontal_list | indented_list) ;
+        indented_list = '$$INDENT$$' ~ eol @:{ line }+ '$$OUTDENT$$' ;
 
     #
     #     binary operations
     #
 
-    binary_operation = binary_operation_3;
-        binary_operation_3 = addition | subtraction | binary_operation_2 ;
-            addition = left:binary_operation_3 op:'+' ~ right:binary_operation_2 ;
-            subtraction = left:binary_operation_3 op:'-' ~ right:binary_operation_2 ;
+    binary_operation = addition | subtraction | binary_2 ;
+            addition = left:binary_operation op:'+' ~ right:binary_2 ;
+            subtraction = left:binary_operation op:'-' ~ right:binary_2 ;
 
-        binary_operation_2 = multiplication | division | binary_operation_1 ;
-            multiplication = left:binary_operation_2 op:'*' ~ right:binary_operation_1 ;
-            division = left:binary_operation_2 op:'/' ~ right:binary_operation_1 ;
+        binary_2 = multiplication | division | binary_1 ;
+            multiplication = left:binary_2 op:'*' ~ right:binary_1 ;
+            division = left:binary_2 op:'/' ~ right:binary_1 ;
 
-        binary_operation_1 = '(' ~ @:binary_operation_3 ')' | term ;
-
+        binary_1 = parentheses | term ;
+            parentheses = '(' ~ @:expression ')' ;
     #
     # terms
     #
@@ -139,8 +137,8 @@ class TychonSemantics:
         return list(ast)
 
     def horizontal_list(self, ast, *rule_params, **kwparams):
-        #  print('!!! horizontal list', repr(ast), 'rule=', repr(rule_params), 'kw=', repr(kwparams))
-        the_list = list(ast['most'])
+        #  print('!!! horizontal list ast=', repr(ast), 'rule=', repr(rule_params), 'kw=', repr(kwparams))
+        the_list = [ast['first']] + ast['more']
         if 'last' in ast: the_list.append(ast['last'])
         return the_list
 

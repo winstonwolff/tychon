@@ -52,7 +52,7 @@ def test_defining_a_fuction_vertically():
     tychon.run_string(trim_margin("""
         func ::
             foo
-            [a b]
+            a b
             [ a + b ]
         print('foo(1 2) =' foo(1 2))
         """), out)
