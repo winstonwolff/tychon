@@ -180,25 +180,22 @@ def test_parse_define_function_vertical_syntax():
             ])
     ]
 
-#  def test_parse_define_function_vertical_syntax_2():
-#      assert parse_without_info(trim_margin('''
-#          func ::
-#              addition
-#              a b
-#              [
-#                  a + b
-#              ]
-
-#          ''')) == [
-#          {'empty_line': '\n'},
-#          Call([ Sym('func'),
-#                 Sym('addition'),
-#                 ( Sym('a'), Sym('b') ),
-#                 [
-#                   Call([ Sym('add'), Sym('a'), Sym('b') ])
-#                 ]
-#              ])
-#      ]
+def test_parse_define_function_vertical_syntax_2():
+    assert parse_without_info(trim_margin('''
+        func ::
+            addition
+            a b
+            [ a + b ]
+        ''')) == [
+        {'empty_line': '\n'},
+        Call([ Sym('func'),
+               Sym('addition'),
+               ( Sym('a'), Sym('b') ),
+               [
+                 Call([ Sym('add'), Sym('a'), Sym('b') ])
+               ]
+            ])
+    ]
 
 #
 # Macros

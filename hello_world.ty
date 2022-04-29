@@ -1,4 +1,4 @@
-#!/usr/bin/env python3 tychon.py
+#!/usr/bin/env tychon
 
 
 print('--- simple printing')
@@ -18,11 +18,12 @@ print('foo(1 2) =' foo(1 2))
 func :: foo_one_line [a b] [a + b]
 print('foo_one_line(1 2) =' foo_one_line(1 2))
 
-#  func ::
-#      foo_three_lines
-#      a b
-#          a + b
-#  print('foo_three_lines(1 2) =' foo_three_lines(1 2))
+func ::
+    foo_three_lines
+    a b
+    [ a + b ]
+
+print('foo_three_lines(1 2) =' foo_three_lines(1 2))
 
 print('--- defining and using a macro - log()')
 macro(log [sym] [print('log:' sym '=' evaluate(sym))])

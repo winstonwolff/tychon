@@ -15,8 +15,7 @@ def _run_file(source_fname):
     with open(source_fname, 'rt') as f:
         code_str = f.read()
 
-    for code_line in code_str.split('\n'):
-        run_string(code_line, sys.stdout)
+        run_string(code_str, sys.stdout)
 
 def _repl(stdin, stdout):
     print('Tython REPL')
