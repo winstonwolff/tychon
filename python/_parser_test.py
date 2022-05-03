@@ -91,6 +91,9 @@ def test_parse_one_line_of_terms():
 def test_parse_bracket_list():
     assert parse_without_info('[123 456]') == [123, 456]
 
+def test_commas_are_ignored():
+    assert parse_without_info('[123, 456]') == [123, 456]
+
 #  def test_parse_bracket_list_on_several_lines():
 #      assert parse_without_info(trim_margin('''
 #          [ 123

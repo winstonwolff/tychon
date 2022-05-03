@@ -6,7 +6,7 @@ from pprint import pformat
 SHOW_PARSER_TRACE = False
 
 GRAMMAR = r'''
-    @@whitespace :: / /
+    @@whitespace :: / ,/
 
     start = { @:line }*;
 
