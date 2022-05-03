@@ -18,6 +18,11 @@ print('foo(1 2) =' foo(1 2))
 func :: foo_one_line [a b] [a + b]
 print('foo_one_line(1 2) =' foo_one_line(1 2))
 
+func :: foo_two_lines [a b]
+    a + b
+
+print('foo_two_lines(1 2) =' foo_two_lines(1 2))
+
 func ::
     foo_three_lines
     a b
