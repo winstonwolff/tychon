@@ -48,6 +48,11 @@ def evaluate(scope, expression):
     if isinstance(expression, (str, int, float)):
         result = expression
 
+    elif isinstance(expression, _parser.Sym) and expression.name=='__scope__':
+        result = scope
+        #  print('!!! eval:', repr(expression), '->', repr(result))
+        _debug(scope, 'eval:', repr(expression), '->', repr(result))
+
     elif isinstance(expression, _parser.Sym):
         result = scope[expression.name]
         _debug(scope, 'eval:', repr(expression), '->', repr(result))
@@ -167,6 +172,15 @@ def rand_int(scope, low, high):
 def _evaluate(scope, ast):
     '''Executes the AST given'''
     return evaluate(scope, ast)
+
+@_builtin_function
+def dictionary_get(scope, the_dict, key):
+    return the_dict[key]
+
+@_builtin_function
+def dictionary_set(scope, the_dict, key, value):
+    the_dict[key] = value
+    return value
 
 @builtin_macro
 def define(scope, key_sym, value):
