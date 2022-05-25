@@ -4,26 +4,39 @@ import sys
 import _parser
 import _builtins
 from _builtins import Scope, evaluate
+from os import path
 
-def run_string(code_line, stdout):
-    ast = _parser.parse(code_line)
+PRELUDE_TY = path.join(path.dirname(path.realpath(__file__)), 'prelude.ty')
+
+def _scope_with_prelude():
     scope = Scope(_builtins.BUILTIN_FUNCTIONS)
-    scope.update({'stdout': stdout})
-    return evaluate(scope, ast)
+    scope.update({'stdout': sys.stdout})
+
+    with open(PRELUDE_TY, 'rt') as f:
+        prelude_str = f.read()
+        result = evaluate(scope, _parser.parse(prelude_str))
+
+    return scope
+
+def _run_string(scope, code_str):
+    ast = _parser.parse(code_str)
+    result = evaluate(scope, ast)
+    return (scope, result)
 
 def _run_file(source_fname):
+    scope = _scope_with_prelude()
     with open(source_fname, 'rt') as f:
         code_str = f.read()
 
-        run_string(code_str, sys.stdout)
+        scope, result = _run_string(scope, code_str)
 
-def _repl(stdin, stdout):
+def _repl():
     print('Tython REPL')
-
+    scope = _scope_with_prelude()
     try:
         while True:
             code_line = input('>>> ')
-            result = run_string(code_line, sys.stdout)
+            scope, result = _run_string(scope, code_line)
             print(repr(result))
     except EOFError:
         print()
@@ -36,7 +49,7 @@ def main():
         _run_file(source_fname)
 
     else:
-        _repl(sys.stdin, sys.stdout)
+        _repl()
 
 
 if __name__ == '__main__':

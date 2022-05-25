@@ -1,12 +1,15 @@
 TODO
 ====
-* minimal language: functions, macros, arithmetic
 
 Now
 ---
-    - user-defined functions (or macros) can manipulate Scope
-        - macro to define a variable or constant
-        - import()
+    - DONE user-defined functions (or macros) can manipulate Scope
+        DONE - macro to define a variable or constant
+    - DONE bug: prelude is loaded for each line
+    - DONE prelude where I can start building the language until we have imports
+    - import()
+        - read file
+        - evaluate a module and return it's scope
 Next:
 -----
     - Tychon program to generate documentation, i.e. doctest
@@ -28,6 +31,11 @@ Next:
 * Nicer Syntax:
     - := — set variable
     - = — define constant
+    - { a:1 b:2 } — dictionary
+    - argument lists
+        - print('a' sep:'_') — Call with default arguments
+        - args=['a' sep:'_']
+          print(*args)       — splat arguments
 
 * Apply Tychon to something
     - DSL or Macros for asserting the shape of data (related to typing)

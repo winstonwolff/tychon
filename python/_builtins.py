@@ -3,6 +3,7 @@ import _parser
 from pprint import pformat
 
 QUIET = True
+#  QUIET = False
 
 class _Ansi:
     RESET = '\x1b[0m'
@@ -18,7 +19,7 @@ BUILTIN_FUNCTIONS = {
     '_depth': 0,
 }
 
-def Scope(parent, initialize={}):
+def Scope(parent):
     if isinstance(parent, collections.ChainMap):
         return parent.new_child()
     else:
@@ -41,6 +42,7 @@ def evaluate(scope, expression):
     '''
     Execute some code.
 
+    scope = modified in place
     expression = an AST node, or a list of nodes
     '''
     result = None

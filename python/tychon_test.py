@@ -89,13 +89,13 @@ def test_defining_macro():
         """), out)
     assert out.getvalue() == 'a = 333\n'
 
-def test_const_function():
+def test_define_function():
     out = io.StringIO()
     tychon.run_string(trim_margin("""
-        func :: constant [name value scope]
+        func :: define_var [name value scope]
             dictionary_set(scope name value)
-        constant('k' 321 __scope__)
+        define_var('k' 321 __scope__)
 
-        print('the const k=' k)
+        print('the var k=' k)
         """), out)
-    assert out.getvalue() == 'the const k= 321\n'
+    assert out.getvalue() == 'the var k= 321\n'
