@@ -127,48 +127,18 @@ def macro_with_name(name):
         _register(func, name, Kinds.MACRO)
     return inside
 
+#
+#   Language features
+#
+
 @_builtin_function_with_name('pass')
 def _pass(scope, args):
     pass
 
-#
-#   Math
-#
-
 @_builtin_function
-def add(scope, a, b):
-    return a + b
-
-@_builtin_function
-def subtract(scope, a, b):
-    return a - b
-
-@_builtin_function
-def multiply(scope, a, b):
-    return a * b
-
-@_builtin_function
-def divide(scope, a, b):
-    return a / b
-
-@_builtin_function
-def equal(scope, a, b):
-    return a == b
-
-#
-#   scope
-#
-
-@_builtin_function
-def scope(scope):
-    '''Returns current scope as a formatted string'''
-    return pformat(scope)
-
-@_builtin_function
-def rand_int(scope, low, high):
-    '''Returns random integer between "low" and "high"'''
-    import random
-    return random.randint(low, high)
+def parse(scope, code_str):
+    ast = _parser.parse(code_str)
+    return ast
 
 @_builtin_function_with_name('evaluate')
 def _evaluate(scope, ast):
@@ -188,21 +158,13 @@ def dictionary_set(scope, the_dict, key, value):
 def define(scope, key_sym, value):
     #  value = Evaluate.run(scope, value)
     _debug(scope, 'defining:', repr(key_sym), '=', repr(value))
-    scope[key_sym.name] = value
+    scope[key_sym.name] = evaluate(scope, value)
     return value
 
 #  @_builtin_function
 #  def get(scope, key_sym):
 #      _debug(scope, 'getting:', repr(key_sym))
 #      return scope[key_sym.name]
-
-@_builtin_function_with_name('print')
-def _print(scope, *args, sep=' ', end="\n"):
-    msg = sep.join(str(a) for a in args)
-    scope['stdout'].write(msg)
-    scope['stdout'].write(end)
-    scope['stdout'].flush()
-    #  return msg
 
 @builtin_macro
 def func(scope, func_name, arg_syms, program):
@@ -262,3 +224,59 @@ def _if(scope, predicate, true_program, false_program=[]):
     else:
         result = evaluate(scope, false_program)
     return result
+#
+#   File IO
+#
+
+@_builtin_function_with_name('print')
+def _print(scope, *args, sep=' ', end="\n"):
+    msg = sep.join(str(a) for a in args)
+    scope['stdout'].write(msg)
+    scope['stdout'].write(end)
+    scope['stdout'].flush()
+
+@_builtin_function
+def file_read(scope, filename):
+    with open(filename) as f:
+        return f.read()
+
+
+#
+#   Math
+#
+
+@_builtin_function
+def add(scope, a, b):
+    return a + b
+
+@_builtin_function
+def subtract(scope, a, b):
+    return a - b
+
+@_builtin_function
+def multiply(scope, a, b):
+    return a * b
+
+@_builtin_function
+def divide(scope, a, b):
+    return a / b
+
+@_builtin_function
+def equal(scope, a, b):
+    return a == b
+
+#
+#   scope
+#
+
+@_builtin_function
+def scope(scope):
+    '''Returns current scope as a formatted string'''
+    return pformat(scope)
+
+@_builtin_function
+def rand_int(scope, low, high):
+    '''Returns random integer between "low" and "high"'''
+    import random
+    return random.randint(low, high)
+

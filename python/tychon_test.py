@@ -1,24 +1,30 @@
 import io
 import tychon
 from _util import trim_margin
+import tempfile
 
+def testing_scope():
+    scope = tychon._scope_with_prelude()
+    out = io.StringIO()
+    scope.update({'stdout': out})
+    return [scope, out]
 
 def test_hello_world():
-    out = io.StringIO()
-    tychon.run_string("print('hello' 'world')", out)
+    scope, out = testing_scope()
+    tychon.run_string("print('hello' 'world')", scope)
     assert out.getvalue() == 'hello world\n'
 
 def test_inline_addition():
-    out = io.StringIO()
-    tychon.run_string("print(1 + 2)", out)
+    scope, out = testing_scope()
+    tychon.run_string("print(1 + 2)", scope)
     assert out.getvalue() == '3\n'
 
 def test_evaulating_a_symbol():
-    out = io.StringIO()
+    scope, out = testing_scope()
     tychon.run_string(trim_margin("""
         define(a 123)
         print(a)
-        """), out)
+        """), scope)
     assert out.getvalue() == '123\n'
 
 #
@@ -26,36 +32,36 @@ def test_evaulating_a_symbol():
 #
 
 def test_function_calling_function():
-    out = io.StringIO()
-    tychon.run_string("print( 'the sum is' add(3 4) )", out)
+    scope, out = testing_scope()
+    tychon.run_string("print( 'the sum is' add(3 4) )", scope)
     assert out.getvalue() == 'the sum is 7\n'
 
 def test_double_colon_function_syntax():
-    out = io.StringIO()
+    scope, out = testing_scope()
     tychon.run_string(trim_margin("""
         print ::
             'the sum is'
             add(3 4)
-        """), out)
+        """), scope)
     assert out.getvalue() == 'the sum is 7\n'
 
 def test_defining_a_function():
-    out = io.StringIO()
+    scope, out = testing_scope()
     tychon.run_string(trim_margin("""
         func(foo [a b] [a + b])
         print('foo(1 2) =' foo(1 2))
-        """), out)
+        """), scope)
     assert out.getvalue() == 'foo(1 2) = 3\n'
 
 def test_defining_a_fuction_vertically():
-    out = io.StringIO()
+    scope, out = testing_scope()
     tychon.run_string(trim_margin("""
         func ::
             foo
             a b
             [ a + b ]
         print('foo(1 2) =' foo(1 2))
-        """), out)
+        """), scope)
     assert out.getvalue() == 'foo(1 2) = 3\n'
 
 #
@@ -63,17 +69,17 @@ def test_defining_a_fuction_vertically():
 #
 
 def test_if():
-    out = io.StringIO()
+    scope, out = testing_scope()
     tychon.run_string(trim_margin("""
         if(equal(1 2) print('yeah') print('nope'))
-        """), out)
+        """), scope)
     assert out.getvalue() == 'nope\n'
 
 def test_if_as_expression():
-    out = io.StringIO()
+    scope, out = testing_scope()
     tychon.run_string(trim_margin("""
         print(if(equal(1 2) 'yeah' 'nope'))
-        """), out)
+        """), scope)
     assert out.getvalue() == 'nope\n'
 
 #
@@ -81,21 +87,21 @@ def test_if_as_expression():
 #
 
 def test_defining_macro():
-    out = io.StringIO()
+    scope, out = testing_scope()
     tychon.run_string(trim_margin("""
         macro(debug_print [sym] [print(sym '=' evaluate(sym))])
         define(a 333)
         debug_print(a)
-        """), out)
+        """), scope)
     assert out.getvalue() == 'a = 333\n'
 
 def test_define_function():
-    out = io.StringIO()
+    scope, out = testing_scope()
     tychon.run_string(trim_margin("""
         func :: define_var [name value scope]
             dictionary_set(scope name value)
         define_var('k' 321 __scope__)
 
         print('the var k=' k)
-        """), out)
+        """), scope)
     assert out.getvalue() == 'the var k= 321\n'

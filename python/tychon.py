@@ -18,7 +18,8 @@ def _scope_with_prelude():
 
     return scope
 
-def _run_string(scope, code_str):
+def run_string(code_str, scope=None):
+    scope = scope or _scope_with_prelude()
     ast = _parser.parse(code_str)
     result = evaluate(scope, ast)
     return (scope, result)
@@ -28,7 +29,7 @@ def _run_file(source_fname):
     with open(source_fname, 'rt') as f:
         code_str = f.read()
 
-        scope, result = _run_string(scope, code_str)
+        scope, result = run_string(code_str, scope=scope)
 
 def _repl():
     print('Tython REPL')
@@ -36,7 +37,7 @@ def _repl():
     try:
         while True:
             code_line = input('>>> ')
-            scope, result = _run_string(scope, code_line)
+            scope, result = run_string(code_line, scope=scope)
             print(repr(result))
     except EOFError:
         print()
