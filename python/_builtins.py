@@ -2,8 +2,8 @@ import collections
 import _parser
 from pprint import pformat
 
-QUIET = True
-#  QUIET = False
+#  QUIET = True
+QUIET = False
 
 class _Ansi:
     RESET = '\x1b[0m'
@@ -67,6 +67,7 @@ def evaluate(scope, expression):
         args = expression.args
 
         if func.kind == Kinds.FUNC:
+            _debug(scope, 'evaluating args since its a function')
             args = [evaluate(scope, arg) for arg in args]
 
         result = func(scope, *args)
@@ -145,26 +146,19 @@ def _evaluate(scope, ast):
     '''Executes the AST given'''
     return evaluate(scope, ast)
 
-@_builtin_function
-def dictionary_get(scope, the_dict, key):
-    return the_dict[key]
-
-@_builtin_function
-def dictionary_set(scope, the_dict, key, value):
-    the_dict[key] = value
-    return value
-
 @builtin_macro
 def define(scope, key_sym, value):
-    #  value = Evaluate.run(scope, value)
     _debug(scope, 'defining:', repr(key_sym), '=', repr(value))
+    #  scope[key_sym.name] = value
     scope[key_sym.name] = evaluate(scope, value)
     return value
 
-#  @_builtin_function
-#  def get(scope, key_sym):
-#      _debug(scope, 'getting:', repr(key_sym))
-#      return scope[key_sym.name]
+@builtin_macro
+def define_no_eval(scope, key_sym, value):
+    _debug(scope, 'defining no eval:', repr(key_sym), '=', repr(value))
+    #  scope[key_sym.name] = value
+    scope[key_sym.name] = value
+    return value
 
 @builtin_macro
 def func(scope, func_name, arg_syms, program):
@@ -176,8 +170,7 @@ def func(scope, func_name, arg_syms, program):
             sub_scope['__scope__'] = sub_scope
 
             # bind args to names
-            syms_and_args = zip(arg_syms, args)
-            for sym, arg in syms_and_args:
+            for sym, arg in zip(arg_syms, args):
                 define(sub_scope, sym, arg)
 
             results = evaluate(sub_scope, program)
@@ -201,19 +194,18 @@ def macro(scope, macro_name, arg_syms, program):
             sub_scope['__scope__'] = sub_scope
 
             # bind args to names
-            syms_and_args = zip(arg_syms, args)
-            for sym, arg in syms_and_args:
-                define(sub_scope, sym, arg)
+            for sym, arg in zip(arg_syms, args):
+                define_no_eval(sub_scope, sym, arg)
 
             return evaluate(sub_scope, program)
 
         def __repr__(self):
             arg_repr = ' '.join(str(a) for a in arg_syms)
             return f'<macro {macro_name}({arg_repr})>'
-    macro = Macro()
+    new_macro = Macro()
 
-    define(scope, macro_name, macro)
-    return macro
+    define(scope, macro_name, new_macro)
+    return new_macro
 
 @macro_with_name('if')
 def _if(scope, predicate, true_program, false_program=[]):
@@ -224,6 +216,40 @@ def _if(scope, predicate, true_program, false_program=[]):
     else:
         result = evaluate(scope, false_program)
     return result
+
+#
+#   List
+#
+
+
+@_builtin_function
+def list_get(scope, the_list, index):
+    return the_list[index]
+
+def list_length(scope, the_list):
+    return len(index)
+
+@_builtin_function
+def list_append(scope, the_list, new_value):
+    return the_list + (new_value,)
+
+#
+#   Dictionary
+#
+
+@_builtin_function
+def dictionary(scope, *initial_items):
+    return dict(initial_items)
+
+@_builtin_function
+def dictionary_get(scope, the_dict, key):
+    return the_dict[key]
+
+@_builtin_function
+def dictionary_set(scope, the_dict, key, value):
+    the_dict[key] = value
+    return value
+
 #
 #   File IO
 #

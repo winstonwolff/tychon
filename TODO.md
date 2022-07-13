@@ -1,17 +1,27 @@
 TODO
 ====
 
-Now
----
+done
+----
     - DONE user-defined functions (or macros) can manipulate Scope
         DONE - macro to define a variable or constant
     - DONE bug: prelude is loaded for each line
     - DONE prelude where I can start building the language until we have imports
+    - file_read()
+    - DONE macro 'debug_print()' is not working because the macro() command
+        calls define() for each argument, which is inadvertantly evaluating them.
+        But Macro args should NOT be evaluated
+
+NOW
+---
+    - Maps: create, get/__call__, update
+    - Lists: create, get/__call__, update
+    - lang_load_module()
     - import()
-        - read file
         - evaluate a module and return it's scope
-Next:
------
+
+next
+----
     - Tychon program to generate documentation, i.e. doctest
         - can load a file as AST graph, and evaluate later
     - make 'func' a macro which evaluates it's args first
@@ -38,25 +48,13 @@ Next:
           print(*args)       — splat arguments
 
 * Apply Tychon to something
+    - DSL or Macros for automated testing
     - DSL or Macros for asserting the shape of data (related to typing)
     - Replacement for SASS, that can also write unit tests for CSS.
-    - DSL or Macros for automated testing
     - DSL or Macros for generating html
 
 * WASM engine
     - execute browser via WASM
-
-DONE
-----
-    - functions or macros with multi-line blocks
-    - REPL
-    - Define functions
-    - DONE evaluating a variable fetches it's value
-    - DONE if(predicate true_block else: false_block)
-    - DONE Fix grammar so single elements on a line evaluate to just that element, not a list of one element
-    - DONE Failing test: foo(1 2) = (3,)
-    - DONE user can define macros
-
 
 
 Ideas

@@ -83,6 +83,33 @@ def test_if_as_expression():
     assert out.getvalue() == 'nope\n'
 
 #
+#   Collections
+#
+
+def test_list_manipulation():
+    scope, out = testing_scope()
+    tychon.run_string(trim_margin("""
+        define( lst [4 2 5 1] )
+        print("list_length(lst)=" 4)
+        print("list_get(lst, 2)=" list_get(lst, 2))
+
+        define :: lst_2 list_append(lst 99)
+        print("lst_2=" lst_2)
+        """), scope)
+    assert out.getvalue() == 'list_length(lst)= 4\nlist_get(lst, 2)= 5\nlst_2= (4, 2, 5, 1, 99)\n'
+
+def test_dictionary_manipulation():
+    scope, out = testing_scope()
+    tychon.run_string(trim_margin("""
+        define( d dictionary( ["a" 11] ["b" 22] ) )
+        print("d=" d)
+        print("dictionary_get( d 'b' )=" dictionary_get( d 'b' ))
+        dictionary_set( d 'c' 33 )
+        print("dictionary_get( d 'c' )=" dictionary_get( d 'c' ))
+        """), scope)
+    assert out.getvalue() == "d= {'a': 11, 'b': 22}\ndictionary_get( d 'b' )= 22\ndictionary_get( d 'c' )= 33\n"
+
+#
 # Macros
 #
 

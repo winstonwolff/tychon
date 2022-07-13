@@ -51,6 +51,21 @@ Goals:
     Familiar
         - a language that feels like Ruby or Python
 
+    Programming in the Large
+        - has Macros to expand the language (like Lisp/Clojure)
+            - AST looks like Clojure, i.e. `1 + 1` == `add(1 1)` == Call(add 1 1)
+        - Macro/function for marking functions pure, and checking that it's so
+        - Macro/function for enforcing Law of Demeter
+        - Macro/function for enforcing knowledge of other modules, e.g. Controllers know all, but Models cannot know Views, and Views cannot know Controllers
+        - macros definitions must be in marked modules, so people don't use them too much
+
+    Types are programmable
+        - Since there is no compilation phase, just an optimization phase, types
+          can be programmed like normal code.
+        - Type checking means calling a function to see if this is in fact a type.
+        - Some optimizations can use type assertions to simplify code or reduce
+          memory footprint.
+
     Beautiful
         Visually
         - significant indentation for blocks
@@ -74,20 +89,6 @@ Goals:
         - repetitions can be combined to save memory
         - Can indicate if you want to optimize for speed or memory.
 
-    Types are programmable
-        - Since there is no compilation phase, just an optimization phase, types
-          can be programmed like normal code.
-        - Type checking means calling a function to see if this is in fact a type.
-        - Some optimizations can use type assertions to simplify code or reduce
-          memory footprint.
-
-    Programming in the Large
-        - has Macros to expand the language (like Lisp/Clojure)
-            - AST looks like Clojure, i.e. `1 + 1` == `add(1 1)` == Call(add 1 1)
-        - Macro/function for marking functions pure, and checking that it's so
-        - Macro/function for enforcing Law of Demeter
-        - Macro/function for enforcing knowledge of other modules, e.g. Controllers know all, but Models cannot know Views, and Views cannot know Controllers
-        - macros definitions must be in marked modules, so people don't use them too much
 
 References on PEG & Packrat parsers
 --------------------------------
