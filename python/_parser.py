@@ -133,6 +133,9 @@ class Sym:
 
 class TychonSemantics:
 
+    def empty_line(self, ast, *rule_params, **kwparams):
+        return None
+
     def vertical_list(self, ast, *rule_params, **kwparams):
         return list(ast)
 

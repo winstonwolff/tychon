@@ -110,7 +110,6 @@ def test_parse_indented_lists():
             333 333
         444
         ''')) == [
-            {'empty_line': '\n'},
             [111,
                 [
                     222,
@@ -150,10 +149,7 @@ def test_parse_colon_function_call():
         print ::
             "hello"
             "world"
-        ''')) == [
-            {'empty_line': '\n'},
-            Call([ Sym('print'), "hello", "world"]),
-        ]
+        ''')) == Call([ Sym('print'), "hello", "world"])
 
 def test_parse_colon_function_call_one_line():
     assert parse_without_info('print :: "hello" "world"') == Call(
@@ -172,16 +168,13 @@ def test_parse_define_function_vertical_syntax():
             addition
             a b
             [ a + b ]
-        ''')) == [
-        {'empty_line': '\n'},
-        Call([ Sym('func'),
-               Sym('addition'),
-               ( Sym('a'), Sym('b') ),
-               [
-                 Call([ Sym('add'), Sym('a'), Sym('b') ])
-               ]
-            ])
-    ]
+        ''')) == Call([ Sym('func'),
+                     Sym('addition'),
+                     ( Sym('a'), Sym('b') ),
+                     [
+                       Call([ Sym('add'), Sym('a'), Sym('b') ])
+                     ]
+                 ])
 
 def test_parse_define_function_vertical_syntax_2():
     assert parse_without_info(trim_margin('''
@@ -189,16 +182,13 @@ def test_parse_define_function_vertical_syntax_2():
             addition
             a b
             [ a + b ]
-        ''')) == [
-        {'empty_line': '\n'},
-        Call([ Sym('func'),
-               Sym('addition'),
-               ( Sym('a'), Sym('b') ),
-               [
-                 Call([ Sym('add'), Sym('a'), Sym('b') ])
-               ]
-            ])
-    ]
+        ''')) == Call([ Sym('func'),
+                    Sym('addition'),
+                    ( Sym('a'), Sym('b') ),
+                    [
+                      Call([ Sym('add'), Sym('a'), Sym('b') ])
+                    ]
+                 ])
 
 #
 # Macros
