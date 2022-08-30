@@ -1,0 +1,23 @@
+#!/usr/bin/env tychon
+print('tool to generate documentation for Tycho programs')
+
+func :: doc_for_thing [doc_file thing]
+    file_write(doc_file '<p>')
+    file_write(doc_file '<strong>' getattr(thing '__name__') '</strong> — ')
+    file_write(doc_file getattr(thing, '__doc__'))
+    file_write(doc_file '</p>')
+
+define(doc_file file_open('docs.html'))
+file_write(doc_file '<html>')
+file_write(doc_file '<body>')
+file_write(doc_file '<h1> Documentation </h1>')
+
+doc_for_thing(doc_file list_get)
+doc_for_thing(doc_file list_length)
+doc_for_thing(doc_file list_append)
+doc_for_thing(doc_file dictionary)
+doc_for_thing(doc_file dictionary_get)
+doc_for_thing(doc_file dictionary_set)
+
+file_write(doc_file '</body>')
+file_write(doc_file '</html>')

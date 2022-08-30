@@ -53,7 +53,7 @@ Goals:
 
     Programming in the Large
         - has Macros to expand the language (like Lisp/Clojure)
-            - AST looks like Clojure, i.e. `1 + 1` == `add(1 1)` == Call(add 1 1)
+            - AST looks like Clojure, i.e. `1 + 1` == `add(1 1)` == Call(__scope__('add') 1 1)
         - Macro/function for marking functions pure, and checking that it's so
         - Macro/function for enforcing Law of Demeter
         - Macro/function for enforcing knowledge of other modules, e.g. Controllers know all, but Models cannot know Views, and Views cannot know Controllers

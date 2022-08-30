@@ -1,30 +1,22 @@
 TODO
 ====
 
-done
-----
-    - DONE user-defined functions (or macros) can manipulate Scope
-        DONE - macro to define a variable or constant
-    - DONE bug: prelude is loaded for each line
-    - DONE prelude where I can start building the language until we have imports
-    - file_read()
-    - DONE macro 'debug_print()' is not working because the macro() command
-        calls define() for each argument, which is inadvertantly evaluating them.
-        But Macro args should NOT be evaluated
-
 NOW
 ---
-    - Maps: create, get/__call__, update
-    - Lists: create, get/__call__, update
-    - lang_load_module()
-    - import()
-        - evaluate a module and return it's scope
+    - DONE Maps: create, get/__call__, update
+    - DONE Lists: create, get/__call__, update
 
 next
 ----
     - Tychon program to generate documentation, i.e. doctest
-        - can load a file as AST graph, and evaluate later
+        - DONE generate_docs.ty -> docs.html
+        - group functions together in the documentation
+        - add _builtins.py @export decorator
     - make 'func' a macro which evaluates it's args first
+
+    - import()
+        - read_module()
+        - evaluate a module and return it's scope/the things in the module
 
 * Graphical multi-user-dungeon
     - Rooms with an image
@@ -39,11 +31,13 @@ next
     - Syntax error messages from parser
 
 * Nicer Syntax:
-    - := — set variable
-    - = — define constant
+    - a := 1            # set a variable e.g. variable('a' 1)
+    - PI = 3.14         # define constant, e.g. constant('PI' 3.14)
     - { a:1 b:2 } — dictionary
+      dictionary( label('a' 1) label('b' 2) )
     - argument lists
         - print('a' sep:'_') — Call with default arguments
+          print('a' label('sep' '_'))
         - args=['a' sep:'_']
           print(*args)       — splat arguments
 

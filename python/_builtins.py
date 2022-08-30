@@ -128,6 +128,11 @@ def macro_with_name(name):
         _register(func, name, Kinds.MACRO)
     return inside
 
+def doc(doc_str):
+    def inside(decorated_value):
+        decorated_value.__doc__ = doc_str
+        return decorated_value
+    return inside
 #
 #   Language features
 #
@@ -223,13 +228,17 @@ def _if(scope, predicate, true_program, false_program=[]):
 
 
 @_builtin_function
+@doc('returns a value inside `list` at `index`')
 def list_get(scope, the_list, index):
     return the_list[index]
 
+@_builtin_function
+@doc('returns number of elements in `the_list`')
 def list_length(scope, the_list):
     return len(index)
 
 @_builtin_function
+@doc('returns a new list containing `the_list` plus `new_value`')
 def list_append(scope, the_list, new_value):
     return the_list + (new_value,)
 
@@ -238,17 +247,28 @@ def list_append(scope, the_list, new_value):
 #
 
 @_builtin_function
+@doc('create a new dictionary')
 def dictionary(scope, *initial_items):
     return dict(initial_items)
 
 @_builtin_function
+@doc('returns item `key` from `the_dict`')
 def dictionary_get(scope, the_dict, key):
     return the_dict[key]
 
 @_builtin_function
+@doc('Mutates `the_dict` by setting `key` to `value`')
 def dictionary_set(scope, the_dict, key, value):
     the_dict[key] = value
     return value
+
+#
+#   Objects
+#
+
+@_builtin_function_with_name('getattr')
+def _getattr(scope, object, attribute):
+    return getattr(object, attribute)
 
 #
 #   File IO
@@ -265,6 +285,21 @@ def _print(scope, *args, sep=' ', end="\n"):
 def file_read(scope, filename):
     with open(filename) as f:
         return f.read()
+
+@_builtin_function
+def file_open(scope, filename):
+    return open(filename, 'w')
+
+@_builtin_function
+def file_close(scope, file_handle):
+    file_handle.close
+
+@_builtin_function
+def file_write(scope, file_handle, *args, sep=' ', end="\n"):
+    msg = sep.join(str(a) for a in args)
+    file_handle.write(msg)
+    file_handle.write(end)
+    file_handle.flush()
 
 
 #

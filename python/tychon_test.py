@@ -132,3 +132,28 @@ def test_define_function():
         print('the var k=' k)
         """), scope)
     assert out.getvalue() == 'the var k= 321\n'
+
+def test_import_function():
+    scope, out = testing_scope()
+
+    with tempfile.NamedTemporaryFile() as temp_file:
+        temp_file.write('''
+define(a 1)
+define(b 2)
+'''.encode())
+        temp_file.flush()
+        tychon.run_string(trim_margin(f"""
+            define(fname '{temp_file.name}')
+            print( '!!! module=' lang_load_module(fname))
+
+            #  func :: import [ filename ]
+            #      define(module lang_load_module(filename))
+            #      print('module=' module)
+                #  foreach :: module pair
+                #      key value = pair
+                #      define(key value)
+
+            #  print('module.a=' module.a)
+            """), scope)
+        print('!!! OUT:', out.getvalue())
+        assert out.getvalue() == 'module.a= 1\n'
