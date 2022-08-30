@@ -1,7 +1,7 @@
 #!/usr/bin/env tychon
 print('tool to generate documentation for Tycho programs')
 
-func :: doc_for_thing [doc_file thing]
+func:: doc_for_thing [doc_file thing]
     file_write(doc_file '<p>')
     file_write(doc_file '<strong>' getattr(thing '__name__') '</strong> — ')
     file_write(doc_file getattr(thing, '__doc__'))
