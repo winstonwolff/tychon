@@ -2,8 +2,7 @@ import collections
 import _parser
 from pprint import pformat
 
-#  QUIET = True
-QUIET = False
+debug_verbose = False
 
 class _Ansi:
     RESET = '\x1b[0m'
@@ -32,13 +31,13 @@ class Kinds:
 
 def _debug(scope, *args):
     '''debug level logging for Evaluator'''
-    if QUIET: return
+    if not debug_verbose: return
     indent = '    ' * scope['_depth']
     msg = '    ' + indent + ' '.join(str(a) for a in args)
     print(_Ansi.PURPLE, msg, _Ansi.RESET, sep='')
 
 
-def evaluate(scope, expression):
+def evaluate(scope, expression, verbose=None):
     '''
     Execute some code.
 
@@ -46,6 +45,8 @@ def evaluate(scope, expression):
     expression = an AST node, or a list of nodes
     '''
     result = None
+    global debug_verbose
+    if verbose is not None: debug_verbose = verbose
 
     if isinstance(expression, (str, int, float)):
         result = expression
