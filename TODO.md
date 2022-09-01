@@ -1,22 +1,30 @@
+Thoughts on Tychon values and metadata for them
+
+value
+    - name
+    - exported
+    - doc string
+
 TODO
 ====
-
-NOW
----
-    - DONE Maps: create, get/__call__, update
-    - DONE Lists: create, get/__call__, update
-
-next
-----
     - Tychon program to generate documentation, i.e. doctest
         - DONE generate_docs.ty -> docs.html
-        - group functions together in the documentation
+        - DONE --verbose flag
         - add _builtins.py @export decorator
-    - make 'func' a macro which evaluates it's args first
+        - group functions together in the documentation
+
 
     - import()
-        - read_module()
-        - evaluate a module and return it's scope/the things in the module
+        - export() which accumulates values, or marks the values somehow
+        - read_code() which reads file and returns structure of the code, e.g. lists of values
+          and function calls
+        - load_module() which reads module, then executes it, returning the results of those
+          calls, e.g. a bunch of functions, constants, variables
+        - import which loads module and adds values to current scope
+        - write_code()
+
+    - make 'func' a macro which evaluates it's args first
+
 
 * Graphical multi-user-dungeon
     - Rooms with an image
@@ -59,7 +67,7 @@ Ideas
 
     define a constant:
         constant(pi 3.14)               # f() notation
-        pi = 3.14                      # infix notation
+        pi = 3.14                       # infix notation
         @constant
             pi 3.14
             tau 6.28
@@ -70,7 +78,7 @@ Ideas
 
     define function
         func(double [a] [a * 2])
-        double(3)               # -> 6
+        double(3)                       # -> 6
 
     anonymous function
         func([a] [a * 2])

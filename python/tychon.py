@@ -3,7 +3,8 @@
 import sys
 import _parser
 import _builtins
-from _builtins import Scope, evaluate
+from _builtins import Scope
+from _evaluator import evaluate
 from os import path
 import argparse
 
@@ -19,7 +20,7 @@ def _scope_with_prelude():
 
     return scope
 
-def run_string(code_str, scope, verbose):
+def run_string(code_str, scope, verbose=None):
     scope = scope or _scope_with_prelude()
     ast = _parser.parse(code_str)
     result = evaluate(scope, ast, verbose)
@@ -50,7 +51,7 @@ def main():
     parser.add_argument('--verbose', action='store_true', default=False)
     parser.add_argument('tychon_source', nargs='*')
     args = parser.parse_args()
-    print('!!!! args=', args)
+
     if len(args.tychon_source) >= 1:
         source_fname = args.tychon_source[0]
         _run_file(source_fname, verbose=args.verbose)
