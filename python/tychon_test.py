@@ -1,7 +1,10 @@
 import io
+import tempfile
+from pprint import pformat
+
 import tychon
 from _util import trim_margin
-import tempfile
+from _parser import Call, Sym
 
 def testing_scope():
     scope = tychon._scope_with_prelude()
@@ -133,27 +136,34 @@ def test_define_function():
         """), scope)
     assert out.getvalue() == 'the var k= 321\n'
 
-def test_import_function():
+def test_read_code():
     scope, out = testing_scope()
 
-    with tempfile.NamedTemporaryFile() as temp_file:
-        temp_file.write('''
-define(a 1)
-define(b 2)
-'''.encode())
+    with tempfile.NamedTemporaryFile(prefix='test_import', suffix='.ty') as temp_file:
+        temp_file.write(trim_margin('''
+            define(a 1)
+            a + 33
+            ''').encode())
         temp_file.flush()
-        tychon.run_string(trim_margin(f"""
+        (out_scope, result) = tychon.run_string(f"read_code( '{temp_file.name}' )",
+                                               scope)
+        assert len(result) == 2
+        assert result[0] == Call([ Sym('define'), Sym('a'), 1])
+        assert result[1] == Call([ Sym('add'), Sym('a'), 33])
+
+def test_lang_load_module():
+    scope, out = testing_scope()
+
+    with tempfile.NamedTemporaryFile(prefix='test_import', suffix='.ty') as temp_file:
+        temp_file.write(trim_margin('''
+            define(a 1)
+            define(b 2)
+            ''').encode())
+        temp_file.flush()
+        (out_scope, result) = tychon.run_string(trim_margin(f"""
             define(fname '{temp_file.name}')
-            print( '!!! module=' lang_load_module(fname))
-
-            #  func :: import [ filename ]
-            #      define(module lang_load_module(filename))
-            #      print('module=' module)
-                #  foreach :: module pair
-                #      key value = pair
-                #      define(key value)
-
-            #  print('module.a=' module.a)
+            lang_load_module(fname)
             """), scope)
-        print('!!! OUT:', out.getvalue())
-        assert out.getvalue() == 'module.a= 1\n'
+        #  print('!!! result=', pformat(result))
+        module = result[-1]
+        assert module == {'a': 1, 'b': 2 }

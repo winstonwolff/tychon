@@ -1,5 +1,15 @@
-define(PI 3.14)
-define(TAU 6.28)
+define(PI 3.14159)
+define(TAU 6.28318)
 
+
+# Reads file and returns structure of the code, e.g. lists of
+# values and function calls
+func:: read_code [filename]
+    parse( file_read(filename) )
+
+# Reads a Tychon module, then executes it, returning the results of those calls,
+# e.g. a list of each line after evaluation
+func:: lang_load_module [filename]
+    evaluate( read_code(filename) )
 
 print(':: Prelude.ty loaded ::')

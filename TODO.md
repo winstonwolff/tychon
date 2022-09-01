@@ -10,20 +10,24 @@ TODO
     - Tychon program to generate documentation, i.e. doctest
         - DONE generate_docs.ty -> docs.html
         - DONE --verbose flag
-        - add _builtins.py @export decorator
         - group functions together in the documentation
 
 
     - import()
-        - export() which accumulates values, or marks the values somehow
-        - read_code() which reads file and returns structure of the code, e.g. lists of values
+        DONE - read_code() which reads file and returns structure of the code, e.g. lists of values
           and function calls
         - load_module() which reads module, then executes it, returning the results of those
           calls, e.g. a bunch of functions, constants, variables
+        - export() which accumulates values, or marks the values somehow
         - import which loads module and adds values to current scope
-        - write_code()
 
-    - make 'func' a macro which evaluates it's args first
+    - write_code() — opposite of prelude.read_code()
+
+    - We have _buitins.func() which evaluates its arguments, but
+      _evaluator.evaluate() also does that. Do we need both?
+
+    - _builtins.func() defines an inner class. Can that be an outer class instead?
+
 
 
 * Graphical multi-user-dungeon
