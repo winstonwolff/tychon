@@ -166,4 +166,4 @@ def test_lang_load_module():
             """), scope)
         #  print('!!! result=', pformat(result))
         module = result[-1]
-        assert module == {'a': 1, 'b': 2 }
+        assert module == { 'a': 1, 'b': 2 }

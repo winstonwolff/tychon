@@ -57,7 +57,7 @@ def main():
         _run_file(source_fname, verbose=args.verbose)
 
     else:
-        _repl(verbose)
+        _repl(args.verbose)
 
 
 if __name__ == '__main__':
