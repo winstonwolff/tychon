@@ -11,7 +11,7 @@ import argparse
 PRELUDE_TY = path.join(path.dirname(path.realpath(__file__)), 'prelude.ty')
 
 def _scope_with_prelude():
-    scope = Scope(_builtins.BUILTIN_FUNCTIONS)
+    scope = Scope(_builtins.exports)
     scope.update({'stdout': sys.stdout})
 
     with open(PRELUDE_TY, 'rt') as f:
@@ -36,14 +36,16 @@ def _run_file(source_fname, verbose):
 def _repl(verbose):
     print('Tython REPL')
     scope = _scope_with_prelude()
-    try:
-        while True:
+    while True:
+        try:
             code_line = input('>>> ')
             scope, result = run_string(code_line, scope=scope, verbose=verbose)
             print(repr(result))
-    except EOFError:
-        print()
-        return
+        except EOFError:
+            print()
+            return
+        except Exception as exc:
+            print(repr(exc))
 
 
 def main():

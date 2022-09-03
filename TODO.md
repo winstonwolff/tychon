@@ -137,3 +137,31 @@ func:: MyPage [goods_for_sale]
 main :: func :: [stdin stdout]
     skews = ['12113' '3342']
     render(MyPage)
+
+### Abstractions
+
+labeled-things (Label? nomination? reference? tagged?)
+    Can we abstract and generalize these things?
+    - A type which contains a 'name' and a 'value'
+        - key-values when creating a dictionary
+        - function arguments a la Python can be sequential, or labeled?
+
+        - name:value pair when defining a constant or a variable
+        - exporting a symbol from your module takes a label:value pair? -- maybe define() returns a
+          nomination that can be exported.
+
+    - Things that have names
+        - named functions
+
+    a labeled thing:
+    - responds to __label__ and __value__
+
+    type:: Label
+        name: String
+        value: Any
+
+    type:: Function
+        name: String
+        doc: String
+        parameters: [name, doc, type, default]
+

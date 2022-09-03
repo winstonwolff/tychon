@@ -41,7 +41,7 @@ def evaluate(scope, expression, verbose=None):
 
     elif isinstance(expression, _parser.Call):
         _debug(scope, 'eval:', repr(expression))
-        scope['_depth'] += 1
+        scope['_debug_print_depth'] += 1
         func_name = expression.function_name
         func = scope[func_name]
         args = expression.args
@@ -52,15 +52,15 @@ def evaluate(scope, expression, verbose=None):
 
         result = func(scope, *args)
         #  _debug(scope, '->', repr(result))
-        scope['_depth'] -= 1
+        scope['_debug_print_depth'] -= 1
         result = result
         _debug(scope, 'eval:', '->', repr(result))
 
     elif isinstance(expression, (list, tuple)):
         if len(expression) != 0: _debug(scope, 'eval:', repr(expression))
-        scope['_depth'] += 1
+        scope['_debug_print_depth'] += 1
         result = tuple(evaluate(scope, e) for e in expression)
-        scope['_depth'] -= 1
+        scope['_debug_print_depth'] -= 1
         if len(expression) != 0: _debug(scope, 'eval:', repr(result))
 
     else:
@@ -71,7 +71,7 @@ def evaluate(scope, expression, verbose=None):
 def _debug(scope, *args):
     '''debug level logging for Evaluator'''
     if not debug_verbose: return
-    indent = '    ' * scope['_depth']
+    indent = '    ' * scope['_debug_print_depth']
     msg = '    ' + indent + ' '.join(str(a) for a in args)
     print(_Ansi.PURPLE, msg, _Ansi.RESET, sep='')
 

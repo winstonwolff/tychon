@@ -1,10 +1,11 @@
 from pprint import pformat
+import immutables
 
 import _parser
 from _evaluator import Kinds, Scope, evaluate, _debug
 
-BUILTIN_FUNCTIONS = {
-    '_depth': 0,
+exports = {
+    '_debug_print_depth': 0,
 }
 
 
@@ -15,7 +16,7 @@ BUILTIN_FUNCTIONS = {
 def _register(callable, name, kind):
     '''adda a function or macro to the list of BUILTINs'''
     callable.kind = kind
-    BUILTIN_FUNCTIONS[name] = callable
+    exports[name] = callable
 
 
 def tychon_function(func):
@@ -74,9 +75,9 @@ def _evaluate(scope, ast):
 @tychon_macro
 def define(scope, key_sym, value):
     _debug(scope, 'defining:', repr(key_sym), '=', repr(value))
-    #  scope[key_sym.name] = value
-    scope[key_sym.name] = evaluate(scope, value)
-    return value
+    result = evaluate(scope, value)
+    scope[key_sym.name] = result
+    return result
 
 @tychon_macro
 def define_no_eval(scope, key_sym, value):
@@ -163,13 +164,13 @@ def list_append(scope, the_list, new_value):
     return the_list + (new_value,)
 
 #
-#   Dictionary
+#   Immutable Dictionary
 #
 
 @tychon_function
 @doc('create a new dictionary')
-def dictionary(scope, *initial_items):
-    return dict(initial_items)
+def Dictionary(scope, **initial_items):
+    return immutables.Map(**initial_items)
 
 @tychon_function
 @doc('returns item `key` from `the_dict`')
@@ -177,10 +178,9 @@ def dictionary_get(scope, the_dict, key):
     return the_dict[key]
 
 @tychon_function
-@doc('Mutates `the_dict` by setting `key` to `value`')
+@doc('Returns a new immutable Dictionary with `key` set to `value`')
 def dictionary_set(scope, the_dict, key, value):
-    the_dict[key] = value
-    return value
+    return the_dict.set(key, value)
 
 #
 #   Objects

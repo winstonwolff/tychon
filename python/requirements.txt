@@ -1,3 +1,4 @@
 colorama
 git+https://github.com/winstonwolff/TatSu.git@winston/improve-trace-readability
 pytest
+immutables
