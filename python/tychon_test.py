@@ -104,13 +104,13 @@ def test_list_manipulation():
 def test_dictionary_manipulation():
     scope, out = testing_scope()
     tychon.run_string(trim_margin("""
-        define( d dictionary( ["a" 11] ["b" 22] ) )
+        define( d Dictionary( ["a" 11] ["b" 22] ) )
         print("d=" d)
         print("dictionary_get( d 'b' )=" dictionary_get( d 'b' ))
-        dictionary_set( d 'c' 33 )
+        define( d dictionary_set( d 'c' 33 ))
         print("dictionary_get( d 'c' )=" dictionary_get( d 'c' ))
         """), scope)
-    assert out.getvalue() == "d= {'a': 11, 'b': 22}\ndictionary_get( d 'b' )= 22\ndictionary_get( d 'c' )= 33\n"
+    assert out.getvalue() == "d= immutables.Map({'a': 11, 'b': 22})\ndictionary_get( d 'b' )= 22\ndictionary_get( d 'c' )= 33\n"
 
 #
 # Macros
@@ -128,9 +128,9 @@ def test_defining_macro():
 def test_define_function():
     scope, out = testing_scope()
     tychon.run_string(trim_margin("""
-        func :: define_var [name value scope]
-            dictionary_set(scope name value)
-        define_var('k' 321 __scope__)
+        func :: define_var [scope name value]
+            mut_dictionary_set(scope name value)
+        define_var(__scope__ 'k' 321)
 
         print('the var k=' k)
         """), scope)

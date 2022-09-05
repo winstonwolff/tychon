@@ -1,5 +1,5 @@
 from pprint import pformat
-import immutables
+from immutables import Map
 
 import _parser
 from _evaluator import Kinds, Scope, evaluate, _debug
@@ -169,8 +169,8 @@ def list_append(scope, the_list, new_value):
 
 @tychon_function
 @doc('create a new dictionary')
-def Dictionary(scope, **initial_items):
-    return immutables.Map(**initial_items)
+def Dictionary(scope, *initial_items):
+    return Map(initial_items)
 
 @tychon_function
 @doc('returns item `key` from `the_dict`')
@@ -181,6 +181,34 @@ def dictionary_get(scope, the_dict, key):
 @doc('Returns a new immutable Dictionary with `key` set to `value`')
 def dictionary_set(scope, the_dict, key, value):
     return the_dict.set(key, value)
+
+@tychon_function
+def dictionary_in(scope, the_dict, key):
+    return key in the_dict
+
+#
+#   MutDictionary
+#
+
+@tychon_function
+@doc('create a new mutable dictionary')
+def MutDictionary(scope, *initial_items):
+    return dict(initial_items)
+
+@tychon_function
+@doc('returns item `key` from `mut_dict`')
+def mut_dictionary_get(scope, mut_dict, key):
+    return mut_dict[key]
+
+@tychon_function
+@doc('Modifies mutable Dictionary, setting `key` to `value`')
+def mut_dictionary_set(scope, mut_dict, key, value):
+    mut_dict[key] = value
+
+@tychon_function
+def mut_dictionary_in(scope, mut_dict, key):
+    return key in mut_dict
+
 
 #
 #   Objects

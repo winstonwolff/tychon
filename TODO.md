@@ -8,17 +8,14 @@ value
 TODO
 ====
     - Tychon program to generate documentation, i.e. doctest
-        - DONE generate_docs.ty -> docs.html
-        - DONE --verbose flag
         - group functions together in the documentation
 
 
-    - import()
-        DONE - read_code() which reads file and returns structure of the code, e.g. lists of values
-          and function calls
+    - export and import()
         - load_module() which reads module, then executes it, returning the results of those
           calls, e.g. a bunch of functions, constants, variables
         - export() which accumulates values, or marks the values somehow
+
         - import which loads module and adds values to current scope
 
     - write_code() — opposite of prelude.read_code()
