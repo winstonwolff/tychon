@@ -12,4 +12,20 @@ func:: read_code [filename]
 func:: lang_load_module [filename]
     evaluate( read_code(filename) )
 
+#
+#       Testing
+#
+
+macro:: test [description block]
+    print('   ' description)
+    evaluate(block)
+
+func:: assert_equal [a b]
+    if::
+        not(equal(a b))
+        print('        FAIL - Expected' a 'to equal' b)
+        print('        OK   -' a 'equals' b)
+    pass
+
 print(':: Prelude.ty loaded ::')
+

@@ -33,13 +33,17 @@ GRAMMAR = r'''
     #     binary operations
     #
 
-    binary_operation = addition | subtraction | binary_2 ;
-            addition = left:binary_operation op:'+' ~ right:binary_2 ;
-            subtraction = left:binary_operation op:'-' ~ right:binary_2 ;
+    binary_operation = addition | subtraction | binary_3 ;
+            addition = left:binary_operation op:'+' ~ right:binary_3 ;
+            subtraction = left:binary_operation op:'-' ~ right:binary_3 ;
 
-        binary_2 = multiplication | division | binary_1 ;
-            multiplication = left:binary_2 op:'*' ~ right:binary_1 ;
-            division = left:binary_2 op:'/' ~ right:binary_1 ;
+        binary_3 = multiplication | division | binary_1 ;
+            multiplication = left:binary_3 op:'*' ~ right:binary_1 ;
+            division = left:binary_3 op:'/' ~ right:binary_1 ;
+
+        #  binary_2 = equal | not_equal : binary_1;
+        #      equal = left:binary_2 op:'==' ~ right:binary_1;
+        #      not_equal = left:binary_2 op:'!=' ~ right:binary_1;
 
         binary_1 = parentheses | term ;
             parentheses = '(' ~ @:expression ')' ;
@@ -156,6 +160,14 @@ class TychonSemantics:
 
     def division(self, ast, *rule_params, **kwparams):
         return Call([Sym('divide'), ast['left'], ast['right']])
+
+    def equality(self, ast, *rule_params, **kwparams):
+        return Call([Sym('equal'), ast['left'], ast['right']])
+
+    def not_equal(self, ast, *rule_params, **kwparams):
+        return Call([Sym('not'),
+                     Call([Sym('equal'), ast['left'], ast['right']])
+                    ])
 
     def function_call(self, ast, *args, **kwargs):
         return Call([Sym(ast['func'].name), *ast['args']])

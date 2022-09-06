@@ -1,5 +1,6 @@
 from pprint import pformat
 from immutables import Map
+from collections import namedtuple
 
 import _parser
 from _evaluator import Kinds, Scope, evaluate, _debug
@@ -270,9 +271,17 @@ def multiply(scope, a, b):
 def divide(scope, a, b):
     return a / b
 
+#
+#   Comparison and Logic
+#
+
 @tychon_function
 def equal(scope, a, b):
     return a == b
+
+@tychon_function_named('not')
+def _not(scope, a):
+    return not a
 
 #
 #   scope
