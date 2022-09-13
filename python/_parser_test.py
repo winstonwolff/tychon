@@ -118,6 +118,23 @@ def test_parse_indented_lists():
             ],
             444
         ]
+
+def test_indented_lists():
+    '''This was a bug'''
+    assert parse_without_info(trim_margin('''
+        777
+        111
+            222
+            333 333
+        ''')) == [
+            777,
+            [111,
+                [
+                    222,
+                    [333, 333],
+                ],
+            ],
+        ]
 #
 # traditional math syntax, i.e. binary operators
 #

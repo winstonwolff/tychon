@@ -78,6 +78,16 @@ def test_if():
         """), scope)
     assert out.getvalue() == 'nope\n'
 
+def test_if_colon():
+    scope, out = testing_scope()
+    tychon.run_string(trim_margin("""
+        if::
+            equal(33 33)
+            print('yeah')
+            print('nope')
+        """), scope)
+    assert out.getvalue() == 'yeah\n'
+
 def test_if_as_expression():
     scope, out = testing_scope()
     tychon.run_string(trim_margin("""
@@ -110,7 +120,7 @@ def test_dictionary_manipulation():
         define( d dictionary_set( d 'c' 33 ))
         print("dictionary_get( d 'c' )=" dictionary_get( d 'c' ))
         """), scope)
-    assert out.getvalue() == "d= immutables.Map({'a': 11, 'b': 22})\ndictionary_get( d 'b' )= 22\ndictionary_get( d 'c' )= 33\n"
+    assert out.getvalue() == "d= immutables.Map({'b': 22, 'a': 11})\ndictionary_get( d 'b' )= 22\ndictionary_get( d 'c' )= 33\n"
 
 #
 # Macros
