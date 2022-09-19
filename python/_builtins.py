@@ -116,6 +116,7 @@ def macro(scope, macro_name, arg_syms, program):
 
     class Macro:
         kind = Kinds.MACRO
+        __name__ = macro_name
         def __call__(self, scope, *args):
             sub_scope = Scope(scope)
             sub_scope['__scope__'] = sub_scope
@@ -187,6 +188,10 @@ def dictionary_set(scope, the_dict, key, value):
 def dictionary_in(scope, the_dict, key):
     return key in the_dict
 
+@tychon_function
+def dictionary_keys(scope, the_dict):
+    return list(the_dict.keys())
+
 #
 #   MutDictionary
 #
@@ -196,19 +201,19 @@ def dictionary_in(scope, the_dict, key):
 def MutDictionary(scope, *initial_items):
     return dict(initial_items)
 
-@tychon_function
-@doc('returns item `key` from `mut_dict`')
-def mut_dictionary_get(scope, mut_dict, key):
-    return mut_dict[key]
+#  @tychon_function
+#  @doc('returns item `key` from `mut_dict`')
+#  def mut_dictionary_get(scope, mut_dict, key):
+#      return mut_dict[key]
 
 @tychon_function
 @doc('Modifies mutable Dictionary, setting `key` to `value`')
 def mut_dictionary_set(scope, mut_dict, key, value):
     mut_dict[key] = value
 
-@tychon_function
-def mut_dictionary_in(scope, mut_dict, key):
-    return key in mut_dict
+#  @tychon_function
+#  def mut_dictionary_in(scope, mut_dict, key):
+#      return key in mut_dict
 
 
 #
