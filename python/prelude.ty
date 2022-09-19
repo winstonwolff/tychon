@@ -27,5 +27,5 @@ func:: assert_equal [a b]
         print('        OK   -' a 'equals' b)
     pass
 
-print(':: Prelude.ty loaded ::')
+# print(':: Prelude.ty loaded ::')
 

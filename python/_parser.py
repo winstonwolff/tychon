@@ -1,6 +1,7 @@
 import tatsu
 from collections import namedtuple
 from pprint import pformat
+from _util import trim_margin
 
 #  SHOW_PARSER_TRACE = True
 SHOW_PARSER_TRACE = False
@@ -77,34 +78,96 @@ def _insert_indentation_symbols(source):
     '''
     Convert indentation into $$INDENT$$ and $$OUTDENT$$ symbols so that our PEG grammar can see it
     '''
+    INDENT_SIZE = 4
     result = []
     last_indent = 0
-    for line in source.split('\n'):
-        this_indent = len(line) - len(line.lstrip())
+    for line_no, line in enumerate(source.split('\n')):
 
-        if this_indent > last_indent:
-            result[-1] =  result[-1] + ' $$INDENT$$'
-        elif this_indent < last_indent:
-            result.append((' ' * last_indent) + '$$OUTDENT$$')
+        unindented_line = line.lstrip()
+        unindented_len = len(unindented_line)
+        if unindented_len > 0:
+            indent_spaces = len(line) - unindented_len
+            if indent_spaces % INDENT_SIZE != 0:
+                raise IndentationError('Indentation should be 4 spaces {} line: {}'.format(line_no, line))
+            this_indent = int(indent_spaces / INDENT_SIZE)
+
+            if this_indent > last_indent:
+                result[-1] = result[-1] + ' $$INDENT$$'
+            elif this_indent < last_indent:
+                for i in range(last_indent, this_indent, -1):
+                    result.append((' ' * i * INDENT_SIZE) + '$$OUTDENT$$')
+            last_indent = this_indent
 
         result.append(line)
 
-        last_indent = this_indent
+    for i in range(last_indent, 0, -1):
+        result.append((' ' * i * INDENT_SIZE) + '$$OUTDENT$$')
+
 
     return '\n'.join(result)
 
 def test_insert_indentation_symbols():
-    source = '''
-AAA
-    BBB
-    CCC
-DDD'''
-    expected = '''
-AAA $$INDENT$$
-    BBB
-    CCC
-    $$OUTDENT$$
-DDD'''
+    source = trim_margin('''
+        AAA
+            BBB
+            CCC
+        DDD
+        ''')
+    expected = trim_margin('''
+        AAA $$INDENT$$
+            BBB
+            CCC
+            $$OUTDENT$$
+        DDD
+        ''')
+    assert _insert_indentation_symbols(source) == expected
+
+def test_double_indentation_symbols():
+    source = trim_margin('''
+        AAA
+            BBB
+                CCC
+        DDD
+        ''')
+    expected = trim_margin('''
+        AAA $$INDENT$$
+            BBB $$INDENT$$
+                CCC
+                $$OUTDENT$$
+            $$OUTDENT$$
+        DDD
+        ''')
+    assert _insert_indentation_symbols(source) == expected
+
+def test_indentation_with_emtpy_lines():
+    source = trim_margin('''
+        AAA
+            BBB
+
+                CCC
+        DDD
+        ''')
+    expected = trim_margin('''
+        AAA $$INDENT$$
+            BBB
+         $$INDENT$$
+                CCC
+                $$OUTDENT$$
+            $$OUTDENT$$
+        DDD
+        ''')
+    assert _insert_indentation_symbols(source) == expected
+
+def test_indentation_with_no_last_line():
+    source = trim_margin('''
+        AAA
+            BBB
+        ''').strip()
+    expected = trim_margin('''
+        AAA $$INDENT$$
+            BBB
+            $$OUTDENT$$
+        ''').strip()
     assert _insert_indentation_symbols(source) == expected
 
 class Call:
