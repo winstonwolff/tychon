@@ -13,18 +13,20 @@ GRAMMAR = r'''
 
     eol = '\n' | $;
 
-    line = empty_line | solo_expression | horizontal_list ;
-        solo_expression = (@:expression eol) ;
+    line = empty_line | horizontal_list ;
+    #  line = empty_line | solo_expression | horizontal_list ;
         empty_line = empty_line:eol ;
-        horizontal_list = first:expression more:{expression}+ eol;
+        #  solo_expression = (@:expression eol) ;
+        #  horizontal_list = first:expression more:{expression}+ eol;
+        horizontal_list = (@:{ expression }+ eol) ;
 
 
     #
     # expressions with priority. First is lower priority, Last is higher priority.
     #
 
-    expression = bracket_list  | function_call
-                 | colon_function_call | indented_list | binary_operation;
+    expression = bracket_list  | function_call | colon_function_call
+            | indented_list | binary_operation;
         bracket_list = '[' ~ @:{expression}* ']';
         function_call = func:identifier '(' args:{ expression } * ')' ;
         colon_function_call = func:identifier '::' ~ args:(horizontal_list | indented_list) ;
@@ -52,7 +54,6 @@ GRAMMAR = r'''
     # terms
     #
 
-    #  term = integer;
     term = single_quote_string | double_quote_string | float | integer | identifier ;
         single_quote_string = "'" ~ string:/[^']*/ "'" ;
         double_quote_string = '"' ~ string:/[^"]*/ '"' ;
@@ -162,10 +163,13 @@ def test_indentation_with_no_last_line():
     source = trim_margin('''
         AAA
             BBB
+                CCC
         ''').strip()
     expected = trim_margin('''
         AAA $$INDENT$$
-            BBB
+            BBB $$INDENT$$
+                CCC
+                $$OUTDENT$$
             $$OUTDENT$$
         ''').strip()
     assert _insert_indentation_symbols(source) == expected
@@ -203,14 +207,15 @@ class TychonSemantics:
     def empty_line(self, ast, *rule_params, **kwparams):
         return None
 
-    def vertical_list(self, ast, *rule_params, **kwparams):
+    def indented_list(self, ast, *rule_params, **kwparams):
         return list(ast)
 
     def horizontal_list(self, ast, *rule_params, **kwparams):
-        #  print('!!! horizontal list ast=', repr(ast), 'rule=', repr(rule_params), 'kw=', repr(kwparams))
-        the_list = [ast['first']] + ast['more']
-        if 'last' in ast: the_list.append(ast['last'])
-        return the_list
+        if len(ast) == 1:
+            result = ast[0]
+        else:
+            result = list(ast)
+        return result
 
     def addition(self, ast, *rule_params, **kwparams):
         return Call([Sym('add'), ast['left'], ast['right']])

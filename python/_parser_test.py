@@ -59,11 +59,13 @@ def test_map_tree_deep_dict():
 def test_map_tree_parse_info_call():
     assert map_tree(without_parseinfo, Call([Sym('foo'), 33, 44])) == Call([Sym('foo'), 33, 44])
 
+def simple_ast(ast):
+    return map_tree(without_parseinfo, ast)
 
 def parse_without_info(source):
+    #  print('!!! parse_without_info source=\n', source)
     ast = parse(source)
-    simpler_ast = map_tree(without_parseinfo, ast)
-    return simpler_ast
+    return simple_ast(ast)
 
 #
 # terms
@@ -135,6 +137,52 @@ def test_indented_lists():
                 ],
             ],
         ]
+
+def test_2d_matrix():
+    '''This was a bug'''
+    assert parse_without_info(trim_margin(
+        '''
+        11 12
+        21 22
+        ''')) == [[ 11, 12 ],
+                  [ 21, 22 ]]
+
+def test_double_indenting_2():
+    '''This was a bug'''
+    assert parse_without_info(trim_margin(
+        '''
+        111 111
+        111 111
+            222 222
+            222 222
+                333 333
+                333 333
+        ''')) == [
+            [111, 111],
+            [111, 111, [
+                [222, 222],
+                [222, 222, [
+                    [333, 333],
+                    [333, 333],
+                ]]
+            ]]
+        ]
+
+def test_double_indenting():
+    '''This was a bug'''
+    assert parse_without_info(trim_margin(
+        '''
+        111
+            222
+                333
+        ''')) == [
+            111, [
+                [222, [
+                    333
+                ]]
+            ]
+        ]
+
 #
 # traditional math syntax, i.e. binary operators
 #
