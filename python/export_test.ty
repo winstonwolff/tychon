@@ -1,0 +1,33 @@
+# Exporting of symbols from a module
+
+macro:: export [value_sym]
+    if::
+        not(dictionary_in(caller_scope '__exports__'))
+        mut_dictionary_set(caller_scope '__exports__' MutDictionary())
+
+    print('  BBB scope=' dictionary_keys(caller_scope))
+
+    define(value evaluate(value_sym))
+    print('  CCC value name=' getattr(value '__name__'))
+    print('  DDD exports=' dictionary_get(caller_scope '__exports__'))
+    mut_dictionary_set::
+        dictionary_get(caller_scope '__exports__')
+        getattr(value '__name__')
+        evaluate(value_sym)
+    print('  EEE exports=' dictionary_get(caller_scope '__exports__'))
+    print('  FFF')
+
+print('KKK')
+
+test:: 'export() adds an item to the __exports__ dictionary'
+    func:: double [a] [a * 2]
+    export( double )
+    print('LLL')
+    print('MMM scope keys=' dictionary_keys(__scope__))
+    print('OOO exports=' dictionary_keys(dictionary_get(__scope__ '__exports__')))
+    print('NNN exports=' dictionary_get(__scope__ '__exports__'))
+    print('PPP double=' dictionary_get(dictionary_get(__scope__ '__exports__') 'double'))
+    print('QQQ double=' double)
+    assert_equal::
+        dictionary_get(dictionary_get(__scope__ '__exports__') 'double')
+        double

@@ -83,18 +83,17 @@ def define(scope, key_sym, value):
 @tychon_macro
 def define_no_eval(scope, key_sym, value):
     _debug(scope, 'defining no eval:', repr(key_sym), '=', repr(value))
-    #  scope[key_sym.name] = value
     scope[key_sym.name] = value
     return value
 
 @tychon_macro
-def func(scope, func_name, arg_syms, program):
+def func(scope, func_sym, arg_syms, program):
 
     class Func:
         kind = Kinds.FUNC
+        __name__ = func_sym.name
         def __call__(self, scope, *args):
             sub_scope = Scope(scope)
-            sub_scope['__scope__'] = sub_scope
 
             # bind args to names
             for sym, arg in zip(arg_syms, args):
@@ -105,10 +104,10 @@ def func(scope, func_name, arg_syms, program):
 
         def __repr__(self):
             arg_repr = ' '.join(str(a) for a in arg_syms)
-            return f'<func {func_name}({arg_repr})>'
+            return f'<func {func_sym.name}({arg_repr})>'
     new_function = Func()
 
-    define(scope, func_name, new_function)
+    define(scope, func_sym, new_function)
     return new_function
 
 @tychon_macro
@@ -118,14 +117,14 @@ def macro(scope, macro_name, arg_syms, program):
         kind = Kinds.MACRO
         __name__ = macro_name
         def __call__(self, scope, *args):
-            sub_scope = Scope(scope)
-            sub_scope['__scope__'] = sub_scope
+            new_scope = Scope(scope)
+            new_scope['caller_scope'] = scope
 
             # bind args to names
             for sym, arg in zip(arg_syms, args):
-                define_no_eval(sub_scope, sym, arg)
+                define_no_eval(new_scope, sym, arg)
 
-            return evaluate(sub_scope, program)
+            return evaluate(new_scope, program)
 
         def __repr__(self):
             arg_repr = ' '.join(str(a) for a in arg_syms)
@@ -144,6 +143,7 @@ def _if(scope, predicate, true_program, false_program=[]):
     else:
         result = evaluate(scope, false_program)
     return result
+
 
 #
 #   List
@@ -201,19 +201,10 @@ def dictionary_keys(scope, the_dict):
 def MutDictionary(scope, *initial_items):
     return dict(initial_items)
 
-#  @tychon_function
-#  @doc('returns item `key` from `mut_dict`')
-#  def mut_dictionary_get(scope, mut_dict, key):
-#      return mut_dict[key]
-
 @tychon_function
 @doc('Modifies mutable Dictionary, setting `key` to `value`')
 def mut_dictionary_set(scope, mut_dict, key, value):
     mut_dict[key] = value
-
-#  @tychon_function
-#  def mut_dictionary_in(scope, mut_dict, key):
-#      return key in mut_dict
 
 
 #
