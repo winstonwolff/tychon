@@ -2,10 +2,22 @@
 
 
 print('--- simple printing')
-print('hello' 'world')
+print('   ' 'hello' 'world')
+
+print::
+    '   '
+    'hello'
+    'world'
+
+print("--- IF statements:")
+if:: equal(1 1)
+    print('    i=  1 and 1 are equal')
+
+if:: equal(2 3)
+    print('  2 and 3 are equal')
 
 print('--- calling a function')
-print('1+2 =' add(1 2))
+print('    1+2 =' add(1 2))
 
 print('--- defining a variable')
 define(a 333)

@@ -63,7 +63,7 @@ def simple_ast(ast):
     return map_tree(without_parseinfo, ast)
 
 def parse_without_info(source):
-    #  print('!!! parse_without_info source=\n', source)
+    print('!!! parse_without_info source=\n', source)
     ast = parse(source)
     return simple_ast(ast)
 
@@ -209,12 +209,21 @@ def test_parse_parenthesis():
 def test_parse_function_call():
     assert parse_without_info('add(1 2)') == Call([Sym('add'), 1, 2])
 
-def test_parse_colon_function_call():
+def test_parse_colon_function_call_multi_line():
     assert parse_without_info(trim_margin('''
-        print ::
+        print::
             "hello"
             "world"
-        ''')) == Call([ Sym('print'), "hello", "world"])
+            multiply::
+                3
+                4
+        ''').strip()) == (
+            Call([ Sym('print'),
+                "hello",
+                "world",
+                Call([ Sym('multiply'), 3, 4])
+            ])
+        )
 
 def test_parse_colon_function_call_one_line():
     assert parse_without_info('print :: "hello" "world"') == Call(

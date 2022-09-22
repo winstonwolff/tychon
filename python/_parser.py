@@ -14,10 +14,7 @@ GRAMMAR = r'''
     eol = '\n' | $;
 
     line = empty_line | horizontal_list ;
-    #  line = empty_line | solo_expression | horizontal_list ;
         empty_line = empty_line:eol ;
-        #  solo_expression = (@:expression eol) ;
-        #  horizontal_list = first:expression more:{expression}+ eol;
         horizontal_list = (@:{ expression }+ eol) ;
 
 
@@ -28,8 +25,8 @@ GRAMMAR = r'''
     expression = bracket_list  | function_call | colon_function_call
             | indented_list | binary_operation;
         bracket_list = '[' ~ @:{expression}* ']';
-        function_call = func:identifier '(' args:{ expression } * ')' ;
-        colon_function_call = func:identifier '::' ~ args:(horizontal_list | indented_list) ;
+        function_call = func:identifier '(' args:{expression}* ')' ;
+        colon_function_call = func:identifier '::' ~ args: (indented_list | {expression}+);
         indented_list = '$$INDENT$$' ~ eol @:{ line }+ '$$OUTDENT$$' ;
 
     #
@@ -66,6 +63,7 @@ PARSER = tatsu.compile(GRAMMAR)
 def parse(source):
     '''Parse a string and return the AST'''
     source = _insert_indentation_symbols(source)
+    print('!!! parse() source===\n', source, '\n===')
     tychon_ast = PARSER.parse(source,
                           parseinfo=True,
                           comments_re=None,
@@ -241,7 +239,7 @@ class TychonSemantics:
         return Call([Sym(ast['func'].name), *ast['args']])
 
     def colon_function_call(self, ast, *args, **kwargs):
-        #  print('!!! colon_function_call ast=\n', pformat(ast))
+        print('!!! colon_function_call ast=\n', pformat(ast))
         return Call([Sym(ast['func'].name), *ast['args']])
 
     def single_quote_string(self, ast):
