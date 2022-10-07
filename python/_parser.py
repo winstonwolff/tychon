@@ -63,7 +63,7 @@ PARSER = tatsu.compile(GRAMMAR)
 def parse(source):
     '''Parse a string and return the AST'''
     source = _insert_indentation_symbols(source)
-    print('!!! parse() source===\n', source, '\n===')
+    #  print('!!! parse() source===\n', source, '\n===')
     tychon_ast = PARSER.parse(source,
                           parseinfo=True,
                           comments_re=None,
@@ -239,7 +239,7 @@ class TychonSemantics:
         return Call([Sym(ast['func'].name), *ast['args']])
 
     def colon_function_call(self, ast, *args, **kwargs):
-        print('!!! colon_function_call ast=\n', pformat(ast))
+        #  print('!!! colon_function_call ast=\n', pformat(ast))
         return Call([Sym(ast['func'].name), *ast['args']])
 
     def single_quote_string(self, ast):
