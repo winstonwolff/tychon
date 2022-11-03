@@ -63,7 +63,7 @@ def simple_ast(ast):
     return map_tree(without_parseinfo, ast)
 
 def parse_without_info(source):
-    print('!!! parse_without_info source=\n', source)
+    #  print('!!! parse_without_info source=\n', source)
     ast = parse(source)
     return simple_ast(ast)
 

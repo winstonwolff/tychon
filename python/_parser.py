@@ -56,15 +56,16 @@ GRAMMAR = r'''
         double_quote_string = '"' ~ string:/[^"]*/ '"' ;
         float = /\d+\.\d+/ ;
         integer = /[0-9]+/ ;
-        identifier = /[a-zA-Z_][a-zA-Z_0-9]*/ ;
+        identifier = value:/[a-zA-Z_][a-zA-Z_0-9]*/ ;
 '''
 PARSER = tatsu.compile(GRAMMAR)
 
-def parse(source):
+def parse(source, source_fname=None):
     '''Parse a string and return the AST'''
     source = _insert_indentation_symbols(source)
     #  print('!!! parse() source===\n', source, '\n===')
     tychon_ast = PARSER.parse(source,
+                          filename=source_fname,
                           parseinfo=True,
                           comments_re=None,
                           semantics=TychonSemantics(),
@@ -172,8 +173,13 @@ def test_indentation_with_no_last_line():
         ''').strip()
     assert _insert_indentation_symbols(source) == expected
 
-class Call:
-    def __init__(self, args):
+class AstNode:
+    def __init__(self, parseinfo):
+        self.parseinfo = parseinfo
+
+class Call(AstNode):
+    def __init__(self, args, parseinfo=None):
+        super().__init__(parseinfo)
         assert isinstance(args[0], Sym)
         self.function_name = args[0].name
         self.args = args[1:]
@@ -185,10 +191,13 @@ class Call:
         )
 
     def __eq__(self, other):
-        return isinstance(other, Call) and self.function_name == other.function_name and self.args == other.args
+        return isinstance(other, Call) \
+                and self.function_name == other.function_name \
+                and self.args == other.args
 
-class Sym:
-    def __init__(self, name):
+class Sym(AstNode):
+    def __init__(self, name, parseinfo=None):
+        super().__init__(parseinfo)
         self.name = name
 
     def __repr__(self):
@@ -199,6 +208,7 @@ class Sym:
 
     def __hash__(self):
         return self.name.__hash__()
+
 
 class TychonSemantics:
 
@@ -216,31 +226,32 @@ class TychonSemantics:
         return result
 
     def addition(self, ast, *rule_params, **kwparams):
-        return Call([Sym('add'), ast['left'], ast['right']])
+        return Call([Sym('add', ast['parseinfo']), ast['left'], ast['right']], ast['parseinfo'])
 
     def subtraction(self, ast, *rule_params, **kwparams):
-        return Call([Sym('subtract'), ast['left'], ast['right']])
+        return Call([Sym('subtract', ast['parseinfo']), ast['left'], ast['right']], ast['parseinfo'])
 
     def multiplication(self, ast, *rule_params, **kwparams):
-        return Call([Sym('multiply'), ast['left'], ast['right']])
+        return Call([Sym('multiply', ast['parseinfo']), ast['left'], ast['right']], ast['parseinfo'])
 
     def division(self, ast, *rule_params, **kwparams):
-        return Call([Sym('divide'), ast['left'], ast['right']])
+        return Call([Sym('divide', ast['parseinfo']), ast['left'], ast['right']], ast['parseinfo'])
 
     def equality(self, ast, *rule_params, **kwparams):
-        return Call([Sym('equal'), ast['left'], ast['right']])
+        return Call([Sym('equal', ast['parseinfo']), ast['left'], ast['right']], ast['parseinfo'])
 
     def not_equal(self, ast, *rule_params, **kwparams):
-        return Call([Sym('not'),
-                     Call([Sym('equal'), ast['left'], ast['right']])
-                    ])
+        return Call([Sym('not', ast['parseinfo']),
+                     Call([Sym('equal', ast['parseinfo']), ast['left'], ast['right']], ast['parseinfo'])
+                    ], ast['parseinfo'])
 
     def function_call(self, ast, *args, **kwargs):
-        return Call([Sym(ast['func'].name), *ast['args']])
+        #  print('!!! function_call ast=\n', pformat(ast))
+        return Call([Sym(ast['func'].name, ast['parseinfo']), *ast['args']], ast['parseinfo'])
 
     def colon_function_call(self, ast, *args, **kwargs):
         #  print('!!! colon_function_call ast=\n', pformat(ast))
-        return Call([Sym(ast['func'].name), *ast['args']])
+        return Call([Sym(ast['func'].name, ast['parseinfo']), *ast['args']], ast['parseinfo'])
 
     def single_quote_string(self, ast):
         return ast['string']
@@ -255,6 +266,6 @@ class TychonSemantics:
     def float(self, ast, *rule_params, **kwparams):
         return float(ast)
 
-    def identifier(self, name, *args, **kwargs):
+    def identifier(self, ast, *args, **kwargs):
         #  print('!!! identifier() name=', repr(name), 'args=', repr(args), 'kwargs=', repr(kwargs))
-        return Sym(name)
+        return Sym(ast['value'], ast['parseinfo'])

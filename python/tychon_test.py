@@ -176,3 +176,22 @@ def test_lang_load_module():
         #  print('!!! result=', pformat(result))
         module = result[-1]
         assert module == { 'a': 1, 'b': 2 }
+
+def test_error_reporting():
+    scope, out = testing_scope()
+
+    with tempfile.NamedTemporaryFile(prefix='test_import', suffix='.ty') as temp_file:
+        temp_file.write(trim_margin('''
+            print('line 1')
+            print('line 2')
+            syntax error on line_3
+            print('line 4')
+            ''').encode())
+        temp_file.flush()
+        try:
+            tychon.run_file(temp_file.name)
+            assert false # should have raised error
+        except tychon.TychonError as exc:
+            assert 'TychonError' in repr(exc)
+            assert 'line_3' in repr(exc)
+
