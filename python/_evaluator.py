@@ -82,7 +82,7 @@ def evaluate(scope, expression, verbose=None):
             #     repr(exc),
             #     expression.parseinfo,
             #      file_and_line)
-        raise TychonError(exc, file_and_line)
+        raise TychonError(file_and_line) from exc
 
     return result
 
