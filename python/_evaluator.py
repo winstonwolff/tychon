@@ -1,5 +1,6 @@
 import collections
 
+from _constants import Ansi
 import _parser
 
 class Kinds:
@@ -95,20 +96,10 @@ def _debug(scope, *args):
     if not debug_verbose: return
     indent = '    ' * (1 + scope['_debug_print_depth'])
     msg = indent + ' '.join(str(a) for a in args)
-    print(_Ansi.PURPLE, msg, _Ansi.RESET, sep='')
+    print(Ansi.PURPLE, msg, Ansi.RESET, sep='')
 
 #  def _error(scope, *args):
 #      '''error level logging for Evaluator'''
 #      indent = '    ' * (1 + scope['_debug_print_depth'])
 #      msg = indent + ' '.join(str(a) for a in args)
-#      print(_Ansi.RED, msg, _Ansi.RESET, sep='')
-
-
-class _Ansi:
-    RESET = '\x1b[0m'
-    GRAY  = '\x1b[90m'
-    PURPLE= '\x1b[95m'
-    RED   = '\x1b[31m'
-    GREEN = '\x1b[32m'
-    BLUE  = '\x1b[34m'
-    CYAN  = '\x1b[36m'
+#      print(Ansi.RED, msg, Ansi.RESET, sep='')

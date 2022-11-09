@@ -4,9 +4,14 @@ from collections import namedtuple
 
 import _parser
 from _evaluator import Kinds, Scope, evaluate, _debug
+from _constants import Ansi
 
 exports = {
     '_debug_print_depth': 0,
+    'ANSI_RESET': Ansi.RESET,
+    'ANSI_RED': Ansi.RED,
+    'ANSI_GREEN': Ansi.GREEN,
+    'ANSI_GRAY': Ansi.GRAY,
 }
 
 
@@ -280,13 +285,8 @@ def _not(scope, a):
     return not a
 
 #
-#   scope
+#   other
 #
-
-@tychon_function
-def scope(scope):
-    '''Returns current scope as a formatted string'''
-    return pformat(scope)
 
 @tychon_function
 def rand_int(scope, low, high):
