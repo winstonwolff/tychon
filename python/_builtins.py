@@ -1,6 +1,7 @@
 from pprint import pformat
 from immutables import Map
 from collections import namedtuple
+from pathlib import Path
 
 import _parser
 from _evaluator import Kinds, Scope, evaluate, _debug
@@ -11,7 +12,7 @@ exports = {
     'ANSI_RESET': Ansi.RESET,
     'ANSI_RED': Ansi.RED,
     'ANSI_GREEN': Ansi.GREEN,
-    'ANSI_GRAY': Ansi.GRAY,
+    'ANSI_CYAN': Ansi.CYAN,
 }
 
 
@@ -237,8 +238,8 @@ def file_read(scope, filename):
         return f.read()
 
 @tychon_function
-def file_open(scope, filename):
-    return open(filename, 'w')
+def file_open(scope, filename, mode='wt'):
+    return open(filename, mode)
 
 @tychon_function
 def file_close(scope, file_handle):
@@ -250,6 +251,14 @@ def file_write(scope, file_handle, *args, sep=' ', end="\n"):
     file_handle.write(msg)
     file_handle.write(end)
     file_handle.flush()
+
+#
+#   file paths
+#
+@tychon_function
+def path_stem(scope, filename):
+    Path(filename).stem
+
 
 
 #

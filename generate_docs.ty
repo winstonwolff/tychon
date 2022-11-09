@@ -7,7 +7,7 @@ func:: doc_for_thing [doc_file thing]
     file_write(doc_file getattr(thing, '__doc__'))
     file_write(doc_file '</p>')
 
-define(doc_file file_open('docs.html'))
+define(doc_file file_open('docs.html' 'wt'))
 file_write(doc_file '<html>')
 file_write(doc_file '<body>')
 file_write(doc_file '<h1> Documentation </h1>')

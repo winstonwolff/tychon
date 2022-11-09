@@ -23,8 +23,8 @@ macro:: test [description block]
 func:: assert_equal [a b]
     if::
         not(equal(a b))
-        print('       ' ANSI_RED 'FAIL' ANSI_RESET '- Expected' a 'to equal' b)
-        print('       ' ANSI_GREEN 'OK' ANSI_GRAY '-' a 'equals' b ANSI_RESET)
+        print('       ' ANSI_RED 'FAIL - Expected' a 'to equal' b ANSI_RESET)
+        print('       ' ANSI_GREEN 'OK -' a 'equals' b ANSI_RESET)
     pass
 
 # print(':: Prelude.ty loaded ::')
