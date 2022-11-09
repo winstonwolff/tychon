@@ -27,6 +27,22 @@ TODO
 
     - _builtins.func() defines an inner class. Can that be an outer class instead?
 
+    - implied arguments:
+        - current class — self
+            myobj.mymethod(a b) == mymethod(myobj a b)
+            @mymethod == self.mymethod == mymethod(self)
+
+        - current scope
+            %import('mylib.ty')
+            == scope.import('mylib.ty')
+            == import(scope
+            'mylib.ty')
+
+        - last result
+            [1 3 7 13] | map(double)
+            == map([1 3 7 13] double)
+
+
 
 
 * Graphical multi-user-dungeon

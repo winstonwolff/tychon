@@ -1,6 +1,9 @@
 # Exporting of symbols from a module
 
 macro:: export [value_sym]
+    __export__(caller_scope value_sym)
+
+func:: __export__ [caller_scope value]
     if::
         not(dictionary_in(caller_scope '__exports__'))
         mut_dictionary_set(caller_scope '__exports__' MutDictionary())
@@ -9,7 +12,7 @@ macro:: export [value_sym]
     mut_dictionary_set::
         dictionary_get(caller_scope '__exports__')
         getattr(value '__name__')
-        evaluate(value_sym)
+        value
 
 test:: 'export() adds an item to the __exports__ dictionary'
     func:: double [a] [a * 2]
