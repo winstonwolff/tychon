@@ -11,3 +11,4 @@ python3 -m pytest -vv --log-format="%(message)s"\
   _parser_test.py \
   tychon_test.py $1 $2 $3 $4
 
+tychon export_test.ty

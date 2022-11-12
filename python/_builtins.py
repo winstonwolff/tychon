@@ -67,11 +67,11 @@ def doc(doc_str):
 #
 
 @tychon_function_named('pass')
-def _pass(scope, args):
+def _pass(_unused_scope, args):
     pass
 
 @tychon_function
-def parse(scope, code_str):
+def parse(_unused_scope, code_str):
     ast = _parser.parse(code_str)
     return ast
 
@@ -159,17 +159,17 @@ def _if(scope, predicate, true_program, false_program=[]):
 
 @tychon_function
 @doc('returns a value inside `list` at `index`')
-def list_get(scope, the_list, index):
+def list_get(_unused_scope, the_list, index):
     return the_list[index]
 
 @tychon_function
 @doc('returns number of elements in `the_list`')
-def list_length(scope, the_list):
+def list_length(_unused_scope, the_list):
     return len(index)
 
 @tychon_function
 @doc('returns a new list containing `the_list` plus `new_value`')
-def list_append(scope, the_list, new_value):
+def list_append(_unused_scope, the_list, new_value):
     return the_list + (new_value,)
 
 #
@@ -178,25 +178,25 @@ def list_append(scope, the_list, new_value):
 
 @tychon_function
 @doc('create a new dictionary')
-def Dictionary(scope, *initial_items):
+def Dictionary(_unused_scope, *initial_items):
     return Map(initial_items)
 
 @tychon_function
 @doc('returns item `key` from `the_dict`')
-def dictionary_get(scope, the_dict, key):
+def dictionary_get(_unused_scope, the_dict, key):
     return the_dict[key]
 
 @tychon_function
 @doc('Returns a new immutable Dictionary with `key` set to `value`')
-def dictionary_set(scope, the_dict, key, value):
+def dictionary_set(_unused_scope, the_dict, key, value):
     return the_dict.set(key, value)
 
 @tychon_function
-def dictionary_in(scope, the_dict, key):
+def dictionary_in(_unused_scope, the_dict, key):
     return key in the_dict
 
 @tychon_function
-def dictionary_keys(scope, the_dict):
+def dictionary_keys(_unused_scope, the_dict):
     return list(the_dict.keys())
 
 #
@@ -205,12 +205,12 @@ def dictionary_keys(scope, the_dict):
 
 @tychon_function
 @doc('create a new mutable dictionary')
-def MutDictionary(scope, *initial_items):
+def MutDictionary(_unused_scope, *initial_items):
     return dict(initial_items)
 
 @tychon_function
 @doc('Modifies mutable Dictionary, setting `key` to `value`')
-def mut_dictionary_set(scope, mut_dict, key, value):
+def mut_dictionary_set(_unused_scope, mut_dict, key, value):
     mut_dict[key] = value
 
 
@@ -219,7 +219,7 @@ def mut_dictionary_set(scope, mut_dict, key, value):
 #
 
 @tychon_function_named('getattr')
-def _getattr(scope, object, attribute):
+def _getattr(_unused_scope, object, attribute):
     return getattr(object, attribute)
 
 #
@@ -234,20 +234,20 @@ def _print(scope, *args, sep=' ', end="\n"):
     scope['stdout'].flush()
 
 @tychon_function
-def file_read(scope, filename):
+def file_read(_unused_scope, filename):
     with open(filename) as f:
         return f.read()
 
 @tychon_function
-def file_open(scope, filename, mode='wt'):
+def file_open(_unused_scope, filename, mode='wt'):
     return open(filename, mode)
 
 @tychon_function
-def file_close(scope, file_handle):
+def file_close(_unused_scope, file_handle):
     file_handle.close
 
 @tychon_function
-def file_write(scope, file_handle, *args, sep=' ', end="\n"):
+def file_write(_unused_scope, file_handle, *args, sep=' ', end="\n"):
     msg = sep.join(str(a) for a in args)
     file_handle.write(msg)
     file_handle.write(end)
@@ -257,7 +257,7 @@ def file_write(scope, file_handle, *args, sep=' ', end="\n"):
 #   file paths
 #
 @tychon_function
-def path_stem(scope, filename):
+def path_stem(_unused_scope, filename):
     Path(filename).stem
 
 
@@ -267,19 +267,19 @@ def path_stem(scope, filename):
 #
 
 @tychon_function
-def add(scope, a, b):
+def add(_unused_scope, a, b):
     return a + b
 
 @tychon_function
-def subtract(scope, a, b):
+def subtract(_unused_scope, a, b):
     return a - b
 
 @tychon_function
-def multiply(scope, a, b):
+def multiply(_unused_scope, a, b):
     return a * b
 
 @tychon_function
-def divide(scope, a, b):
+def divide(_unused_scope, a, b):
     return a / b
 
 #
@@ -287,11 +287,11 @@ def divide(scope, a, b):
 #
 
 @tychon_function
-def equal(scope, a, b):
+def equal(_unused_scope, a, b):
     return a == b
 
 @tychon_function_named('not')
-def _not(scope, a):
+def _not(_unused_scope, a):
     return not a
 
 #
@@ -299,7 +299,7 @@ def _not(scope, a):
 #
 
 @tychon_function
-def rand_int(scope, low, high):
+def rand_int(_unused_scope, low, high):
     '''Returns random integer between "low" and "high"'''
     import random
     return random.randint(low, high)

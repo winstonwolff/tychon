@@ -132,7 +132,7 @@ def test_defining_macro():
         define(a 333)
         debug_print(a)
         """), scope)
-    assert out.getvalue() == 'a = 333\n'
+    assert out.getvalue() == '`a` = 333\n'
 
 def test_define_function():
     scope, out = testing_scope()
@@ -145,37 +145,37 @@ def test_define_function():
         """), scope)
     assert out.getvalue() == 'the var k= 321\n'
 
-def test_read_code():
-    scope, out = testing_scope()
+#  def test_read_code():
+#      scope, out = testing_scope()
 
-    with tempfile.NamedTemporaryFile(prefix='test_import', suffix='.ty') as temp_file:
-        temp_file.write(trim_margin('''
-            define(a 1)
-            a + 33
-            ''').encode())
-        temp_file.flush()
-        (out_scope, result) = tychon.run_string(f"read_code( '{temp_file.name}' )",
-                                               scope)
-        assert len(result) == 2
-        assert result[0] == Call([ Sym('define'), Sym('a'), 1])
-        assert result[1] == Call([ Sym('add'), Sym('a'), 33])
+#      with tempfile.NamedTemporaryFile(prefix='test_import', suffix='.ty') as temp_file:
+#          temp_file.write(trim_margin('''
+#              define(a 1)
+#              a + 33
+#              ''').encode())
+#          temp_file.flush()
+#          (out_scope, result) = tychon.run_string(f"read_code( '{temp_file.name}' )",
+#                                                 scope)
+#          assert len(result) == 2
+#          assert result[0] == Call([ Sym('define'), Sym('a'), 1])
+#          assert result[1] == Call([ Sym('add'), Sym('a'), 33])
 
-def test_lang_load_module():
-    scope, out = testing_scope()
+#  def test_lang_load_module():
+#      scope, out = testing_scope()
 
-    with tempfile.NamedTemporaryFile(prefix='test_import', suffix='.ty') as temp_file:
-        temp_file.write(trim_margin('''
-            define(a 1)
-            define(b 2)
-            ''').encode())
-        temp_file.flush()
-        (out_scope, result) = tychon.run_string(trim_margin(f"""
-            define(fname '{temp_file.name}')
-            lang_load_module(fname)
-            """), scope)
-        #  print('!!! result=', pformat(result))
-        module = result[-1]
-        assert module == { 'a': 1, 'b': 2 }
+#      with tempfile.NamedTemporaryFile(prefix='test_import', suffix='.ty') as temp_file:
+#          temp_file.write(trim_margin('''
+#              define(a 1)
+#              define(b 2)
+#              ''').encode())
+#          temp_file.flush()
+#          (out_scope, result) = tychon.run_string(trim_margin(f"""
+#              define(fname '{temp_file.name}')
+#              lang_load_module(fname)
+#              """), scope)
+#          #  print('!!! result=', pformat(result))
+#          module = result[-1]
+#          assert module == { 'a': 1, 'b': 2 }
 
 def test_error_reporting():
     scope, out = testing_scope()
