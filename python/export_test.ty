@@ -1,3 +1,5 @@
+
+
 #
 # export()
 #
@@ -31,17 +33,16 @@ test:: 'export() adds an item to the __exports__ dictionary'
 func:: read_code [filename]
     parse( file_read(filename) )
 
-test:: 'read_code() returns graph of values and function calls'
+test:: 'read_code() returns  of values and function calls'
     define:: filename '/tmp/read_code_test.ty'
     define:: f file_open(filename 'wt')
     file_write(f "print('hello' 'code')")
+    file_write(f "add(123 456)")
     file_close(f)
+    define(expected Dictionary(['value' quote([print('hello' 'code') add(123 456)])]))
+    define(actual Dictionary(['value' read_code(filename)]))
 
-    define:: the_code read_code(filename)
-    define_no_eval:: expected print('hello' 'code')
-    # assert_equal:: no_eval(the_code) no_eval(expected)
-
-xtest('read_code() returns list of AST graphs')
+    assert_equal:: expected actual
 
 #
 #       load_module()

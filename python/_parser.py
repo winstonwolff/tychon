@@ -185,7 +185,7 @@ class Call(AstNode):
         self.args = args[1:]
 
     def __repr__(self):
-        return "Call({} {})".format(
+        return "{}({})".format(
             self.function_name,
             " ".join(repr(i) for i in self.args)
         )
