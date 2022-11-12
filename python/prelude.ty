@@ -2,16 +2,6 @@ define(PI 3.14159)
 define(TAU 6.28318)
 
 
-# Reads file and returns structure of the code, e.g. lists of
-# values and function calls
-func:: read_code [filename]
-    parse( file_read(filename) )
-
-# Reads a Tychon module, then executes it, returning the results of those calls,
-# e.g. a list of each line after evaluation
-func:: lang_load_module [filename]
-    evaluate( read_code(filename) )
-
 #
 #       Testing
 #
@@ -19,6 +9,9 @@ func:: lang_load_module [filename]
 macro:: test [description block]
     print('   ' description)
     evaluate(block)
+
+macro:: xtest [description block]
+    print('  ' ANSI_YELLOW description ANSI_RESET)
 
 func:: assert_equal [a b]
     if::
@@ -28,4 +21,3 @@ func:: assert_equal [a b]
     pass
 
 # print(':: Prelude.ty loaded ::')
-

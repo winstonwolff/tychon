@@ -13,6 +13,7 @@ exports = {
     'ANSI_RED': Ansi.RED,
     'ANSI_GREEN': Ansi.GREEN,
     'ANSI_CYAN': Ansi.CYAN,
+    'ANSI_YELLOW': Ansi.YELLOW,
 }
 
 

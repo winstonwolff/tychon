@@ -1,5 +1,6 @@
-# Exporting of symbols from a module
-
+#
+# export()
+#
 macro:: export [value_sym]
     __export__(caller_scope value_sym)
 
@@ -20,3 +21,63 @@ test:: 'export() adds an item to the __exports__ dictionary'
     assert_equal::
         dictionary_get(dictionary_get(__scope__ '__exports__') 'double')
         double
+
+#
+# read_code()
+#
+
+# Reads file and returns structure of the code, e.g. lists of
+# values and function calls
+func:: read_code [filename]
+    parse( file_read(filename) )
+
+test:: 'read_code() returns graph of values and function calls'
+    define:: filename '/tmp/read_code_test.ty'
+    define:: f file_open(filename 'wt')
+    file_write(f "print('hello' 'code')")
+    file_close(f)
+
+    define:: the_code read_code(filename)
+    define_no_eval:: expected print('hello' 'code')
+    assert_equal:: the_code expected
+
+#
+#       load_module()
+#
+
+# Reads a Tychon module, then executes it, returning the results of those calls,
+# e.g. a list of each line after evaluation
+func:: lang_load_module [filename]
+    define(module evaluate(__scope__ read_code(filename)))
+
+
+#
+#       import()
+#
+
+#   Want:
+#     import('mylibrary.ty') # `mylibrary` will be imported
+#     import('mylibrary.ty' as: 'foo') # `foo`
+#     import('mylibrary.ty' as: '*') # `myfunc` `otherfunc`
+#     import('mylibrary.ty' 'myfunc' ) # only `myfunc`
+
+macro:: import [filename]
+    __import__(caller_scope filename)
+
+func:: __import__ [caller_scope filename]
+    define:: the_module lang_load_module(filename)
+    print:: '!!! the_module' the_module
+    define:: module_name path_stem(filename)
+    define:: exported_symbols dictionary_get(the_module '__exports__')
+    mut_dictionary_set::
+        caller_scope
+        module_name
+        exported_symbols
+
+xtest:: 'import() adds an item to the current scope'
+    define(f file_open('/tmp/import_test.ty' 'wt'))
+    file_write(f 'export:: func:: double [a] [a * 2]')
+    file_close(f)
+
+    import('/tmp/import_test.ty')
+    assert_equal:: double(4) 8
