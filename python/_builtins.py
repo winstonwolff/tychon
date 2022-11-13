@@ -179,6 +179,10 @@ def list_append(_unused_scope, the_list, new_value):
 @tychon_function
 @doc('create a new dictionary')
 def Dictionary(_unused_scope, *initial_items):
+    '''
+        >>> define:: d Dictionary(['a' 1] ['b' 2])
+        immutables.Map({'b': 2, 'a': 1})
+    '''
     return Map(initial_items)
 
 @tychon_function
@@ -187,9 +191,20 @@ def dictionary_get(_unused_scope, the_dict, key):
     return the_dict[key]
 
 @tychon_function
-@doc('Returns a new immutable Dictionary with `key` set to `value`')
 def dictionary_set(_unused_scope, the_dict, key, value):
+    '''
+    Returns a new immutable Dictionary with `key` set to `value` e.g.
+
+        >>> define:: d Dictionary()
+        immutables.Map({})
+        >>> dictionary_set:: d 'key' 'value'
+        immutables.Map({'key': 'value'})
+    '''
     return the_dict.set(key, value)
+
+@tychon_function
+def dictionary_update(_unused_scope, the_dict, other_dict):
+    return the_dict.update(other_dict)
 
 @tychon_function
 def dictionary_in(_unused_scope, the_dict, key):
@@ -209,9 +224,17 @@ def MutDictionary(_unused_scope, *initial_items):
     return dict(initial_items)
 
 @tychon_function
-@doc('Modifies mutable Dictionary, setting `key` to `value`')
 def mut_dictionary_set(_unused_scope, mut_dict, key, value):
+    '''
+    Modifies mutable Dictionary, setting `key` to `value`'.
+    Returns the `mut_dict` in modified form.
+        >>> define(md MutDictionary())
+        {}
+        >>> mut_dictionary_set(md 'foo' 33)
+        {'foo': 33}
+    '''
     mut_dict[key] = value
+    return mut_dict
 
 
 #

@@ -5,10 +5,47 @@ define(TAU 6.28318)
 macro:: quote [ast] ast
 
 #
+# read_code()
+#
+
+# Reads file and returns structure of the code, e.g. lists of
+# values and function calls
+func:: read_code [filename]
+    parse( file_read(filename) )
+
+#
+# export()
+#
+macro:: export [value_sym]
+    __export__(caller_scope value_sym)
+
+func:: __export__ [caller_scope value]
+    if::
+        not(dictionary_in(caller_scope '__exports__'))
+        mut_dictionary_set(caller_scope '__exports__' MutDictionary())
+
+    define(value evaluate(value_sym))
+    mut_dictionary_set::
+        dictionary_get(caller_scope '__exports__')
+        getattr(value '__name__')
+        value
+#
+#       import()
+#
+macro:: import [filename]
+    __import__(caller_scope filename)
+
+func:: __import__ [caller_scope filename]
+    define(lines evaluate(read_code(filename)))
+    define:: exports dictionary_get(__scope__ '__exports__')
+    dictionary_update:: caller_scope exports
+
+#
 #       Testing
 #
 
 macro:: test [description block]
+    'Print a decription and the run the passed block'
     print('   ' description)
     evaluate(block)
 
