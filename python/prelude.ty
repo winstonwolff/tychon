@@ -20,11 +20,12 @@ macro:: export [value_sym]
     __export__(caller_scope value_sym)
 
 func:: __export__ [caller_scope value]
+    # create empty '__export__' if it doesnt exist
     if::
         not(dictionary_in(caller_scope '__exports__'))
         mut_dictionary_set(caller_scope '__exports__' MutDictionary())
 
-    define(value evaluate(value_sym))
+    define(value evaluate(__scope__ value_sym))
     mut_dictionary_set::
         dictionary_get(caller_scope '__exports__')
         getattr(value '__name__')
@@ -36,7 +37,7 @@ macro:: import [filename]
     __import__(caller_scope filename)
 
 func:: __import__ [caller_scope filename]
-    define(lines evaluate(read_code(filename)))
+    define(lines evaluate(__scope__ read_code(filename)))
     define:: exports dictionary_get(__scope__ '__exports__')
     dictionary_update:: caller_scope exports
 
@@ -47,7 +48,7 @@ func:: __import__ [caller_scope filename]
 macro:: test [description block]
     'Print a decription and the run the passed block'
     print('   ' description)
-    evaluate(block)
+    evaluate(__scope__ block)
 
 macro:: xtest [description block]
     print('  ' ANSI_YELLOW description ANSI_RESET)

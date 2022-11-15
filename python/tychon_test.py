@@ -128,7 +128,7 @@ def test_dictionary_manipulation():
 def test_defining_macro():
     scope, out = testing_scope()
     tychon.run_string(trim_margin("""
-        macro(debug_print [sym] [print(sym '=' evaluate(sym))])
+        macro(debug_print [sym] [print(sym '=' evaluate(__scope__ sym))])
         define(a 333)
         debug_print(a)
         """), scope)

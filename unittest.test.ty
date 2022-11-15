@@ -1,6 +1,0 @@
-test:: 'this test should pass'
-    assert_equal(2+2 4)
-
-test:: 'this test should fail'
-    assert_equal('abc' 99)
-

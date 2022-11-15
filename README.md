@@ -51,7 +51,7 @@ Goals:
         - but even less syntax: no commas
         - notation for tree structures
         Conceptually
-        - Unify concept of writing: (a) lines of a function, (2) dictionaries, and (3) calling parameters
+        - Unify concept of writing: (a) lines of a function, (b) dictionaries, and (c) calling parameters
         - Macro/function for docstrings
 
     Functional

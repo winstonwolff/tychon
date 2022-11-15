@@ -34,24 +34,26 @@ TODO
 
         - current scope
             %import('mylib.ty')
-            == scope.import('mylib.ty')
-            == import(scope
-            'mylib.ty')
+            == __scope__.import('mylib.ty')
+            == import(__scope__ 'mylib.ty')
 
         - last result
             [1 3 7 13] | map(double)
             == map([1 3 7 13] double)
+            == [1 3 7 13]
+               map(_ double)
 
-
-
+        - globals/builtins/context
+            - loaded modules
+            - stdin, stdout, stderr
 
 * Graphical multi-user-dungeon
     - Rooms with an image
     - hot spots which activate a script when clicked
     - script can print a message, or go to another room
 
-    - constant(name value scope:@scope)
-    - variable(name value scope:@scope)
+    - constant(name value)
+    - variable(name value)
     - range()
     - map()
     - for()

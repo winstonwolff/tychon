@@ -76,7 +76,7 @@ def parse(_unused_scope, code_str):
     return ast
 
 @tychon_function_named('evaluate')
-def _evaluate(scope, ast):
+def _evaluate(_unused, scope, ast):
     '''Executes the AST given'''
     return evaluate(scope, ast)
 

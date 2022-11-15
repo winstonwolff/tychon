@@ -43,6 +43,7 @@ func ::
 print('foo_three_lines(1 2) =' foo_three_lines(1 2))
 
 print('--- defining and using a macro - log()')
-macro(log [sym] [print('log:' sym '=' evaluate(sym))])
+macro:: log [sym]
+    print('log:' sym '=' evaluate(__scope__ sym))
 
 log(a)
