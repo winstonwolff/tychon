@@ -80,9 +80,14 @@ def test_parse_symbol():
 def test_parse_integer():
     assert parse_without_info('123') == 123
 
+def test_parse_negative_integer():
+    assert parse_without_info('-123') == -123
+
 def test_parse_float():
     assert parse_without_info('123.4') == 123.4
 
+def test_parse_negative_float():
+    assert parse_without_info('-123.4') == -123.4
 #
 # lists
 #

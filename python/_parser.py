@@ -54,8 +54,8 @@ GRAMMAR = r'''
     term = single_quote_string | double_quote_string | float | integer | identifier ;
         single_quote_string = "'" ~ string:/[^']*/ "'" ;
         double_quote_string = '"' ~ string:/[^"]*/ '"' ;
-        float = /\d+\.\d+/ ;
-        integer = /[0-9]+/ ;
+        float = /-?\d+\.\d+/ ;
+        integer = /-?[0-9]+/ ;
         identifier = value:/[a-zA-Z_][a-zA-Z_0-9]*/ ;
 '''
 PARSER = tatsu.compile(GRAMMAR)
