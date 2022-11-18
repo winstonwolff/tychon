@@ -15,7 +15,24 @@ def Scope(parent):
     if isinstance(parent, collections.ChainMap):
         return parent.new_child()
     else:
-        return collections.ChainMap(parent)
+        return collections.ChainMap(parent).new_child()
+
+def test_scope():
+    one = Scope({'a': 1})
+    one['aa'] = 22
+
+    two = Scope(one)
+    two['b'] = 33
+
+    assert isinstance(one, collections.ChainMap)
+    assert one.maps == [{'aa': 22}, {'a':1}]
+    assert one['a'] == 1
+    assert 'b' not in one
+
+    assert isinstance(two, collections.ChainMap)
+    assert two.maps == [{'b': 33}, {'aa': 22}, {'a':1}]
+    assert two['a'] == 1
+    assert two['b'] == 33
 
 
 def evaluate(scope, expression, verbose=None):

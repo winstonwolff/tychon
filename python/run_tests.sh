@@ -9,6 +9,8 @@ python3 -m pytest -vv --log-format="%(message)s"\
   --capture=no \
   _parser.py \
   _parser_test.py \
+  _evaluator.py \
   tychon_test.py $1 $2 $3 $4
 
+tychon dictionary.test.ty
 tychon export_test.ty
