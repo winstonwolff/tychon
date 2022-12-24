@@ -53,11 +53,16 @@ macro:: test [description block]
 macro:: xtest [description block]
     print('  ' ANSI_YELLOW description ANSI_RESET)
 
-func:: assert_equal [a b]
+macro:: assert_equal [a b]
+    define(a_str a)
+    define(b_str b)
+    __assert_equal(String(a_str ' == ' b_str) a b)
+
+func:: __assert_equal [desc a b]
     if::
         not(equal(a b))
-        print('       ' ANSI_RED 'FAIL - Expected' a 'to equal' b ANSI_RESET)
-        print('       ' ANSI_GREEN 'OK -' a 'equals' b ANSI_RESET)
+        print('       ' ANSI_RED 'FAIL -' desc '; Expected' a '==' b ANSI_RESET)
+        print('       ' ANSI_GREEN 'OK -' desc ';' a '==' b ANSI_RESET)
     pass
 
 # print(':: Prelude.ty loaded ::')

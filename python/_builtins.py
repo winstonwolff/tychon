@@ -246,6 +246,20 @@ def _getattr(_unused_scope, object, attribute):
     return getattr(object, attribute)
 
 #
+#   Strings
+#
+
+@tychon_function
+def String(scope, *args):
+    return ''.join(str(a) for a in args)
+
+@tychon_macro
+def inspect(scope, expression):
+    '''Return String representation of 'expression'''
+    print('!!! inspect() expr=', repr(expression))
+    return str(expression)
+
+#
 #   File IO
 #
 

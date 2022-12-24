@@ -98,7 +98,7 @@ Ideas
         a := 55
 
     define function
-        func(double [a] [a * 2])
+        func:: double |a| [a * 2]
         double(3)                       # -> 6
 
     anonymous function
@@ -106,6 +106,9 @@ Ideas
         func :: [a]
             a * 2
         lambda( _ * 3)
+        do [a]
+            a * 2
+
 
     writing modes
         - Tychon code
