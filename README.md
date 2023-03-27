@@ -6,50 +6,22 @@ Usage
   ./tychon.py <sourcefile>.ty           # execute a source file
   ./tychon.py                           # a REPL
 
-Examples
---------
-
-Math is familiar:
-```
->>> 2 + 4
-6
-```
-
-Function calls are also similar, although note that there are no commas separating arguments
-```
->>> print('two times four is' 2 * 4)
-two times four is 8
-```
-
-Defining a function looks like a function itself, although it's actually a macro.
-```
->>> func(double [a] [a * 2])
->>> double(3)
-6
-```
-
-Functions evaulate their arguments before being called. Macros take all arguments as-is,
-without evaluating. So you can evaluate them later, or manipulate them:
-```
->>> macro(debug_print [sym] [print('log:' sym '=' evaluate(sym))])
->>> a = 1
->>> debug_print(a)
-log: a = 1
-```
-
-
 
 Goals:
 ------
 
     Driving Feature? Who would adopt it?
+        - *** Native and nice syntax for JSX like structures
+        - *** Scaffolds beginner programmers to building reliable systems / programming in the large
+            - separation of concerns
+            - de coupling
+            - emphasizig pure functions
+            - automated testing
+            - programming by contract -- programmable types
         - compiles to WebASM. Run it on CloudFlare.
             WHO: Cloudflare
         - embeddable in other people's programs as text editor or graphical block language
             WHO: Zapier, Slack Workflows, Logic AND OR statements, Gitlab or CirceCI yaml, AirTable
-
-    Familiar
-        - a language that feels like Ruby or Python
 
     Programming in the Large
         - has Macros to expand the language (like Lisp/Clojure)
@@ -58,6 +30,13 @@ Goals:
         - Macro/function for enforcing Law of Demeter
         - Macro/function for enforcing knowledge of other modules, e.g. Controllers know all, but Models cannot know Views, and Views cannot know Controllers
         - macros definitions must be in marked modules, so people don't use them too much
+
+    Familiar
+        - a language that feels like Ruby or Python
+
+    Embeddable in other programs easily
+        - block editor that can be external, or embedded in user's program
+        - small and simple run-time to execute code
 
     Types are programmable
         - Since there is no compilation phase, just an optimization phase, types

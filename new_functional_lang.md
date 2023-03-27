@@ -13,6 +13,7 @@ Want (top priority first):
     - or only modules marked 'global-unsafe' can modify global variables.
   - A function may not modify globals unless it is marked.
   - A DSL for specs
+- concurrency friendly language to take advantage of immutability
 - coffeescript-like notation
 - nice notation for tree & xml structures
 - block based language for building data structures (which can also be programs)
