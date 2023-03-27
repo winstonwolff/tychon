@@ -6,5 +6,9 @@ https://rustwasm.github.io/book/game-of-life/hello-world.html
 To build the app:
 -----------------
 
-    wasm-pack build --target web
-    cd webasm ; python3 -m http.server
+    make run
+
+Developer Setup
+---------------
+    brew install rustup-init
+    rustup-init
