@@ -1,3 +1,4 @@
+# Makefile
 
 .PHONY: web
 web:
@@ -5,7 +6,7 @@ web:
 
 .PHONY: watch
 watch:
-	while true; do make --silent build; sleep .5; done
+	ls *.* src/* | entr make build
 
 build: pkg/webasm.js index.html
 

@@ -11,5 +11,5 @@ To build and run
 
 Developer Setup
 ---------------
-    brew install rustup-init
+    brew install rustup-init entr
     rustup-init
