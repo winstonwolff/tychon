@@ -27,3 +27,8 @@ pub fn greet() {
     alert("Hello, Wally!");
     // log("Hello, webasm!");
 }
+
+#[wasm_bindgen]
+pub fn twice(i: f32) -> f32 {
+    return i * 2.0;
+}
