@@ -3,10 +3,11 @@ Rust/WASM port of tychon
 
 https://rustwasm.github.io/book/game-of-life/hello-world.html
 
-To build the app:
------------------
+To build and run
+----------------
 
-    make run
+    make web    # run web server
+    make watch  # watch and compile changes
 
 Developer Setup
 ---------------
