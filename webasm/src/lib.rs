@@ -1,6 +1,7 @@
-mod utils;
+// mod utils;
 
 use wasm_bindgen::prelude::*;
+use lisp_rs::*; 
 
 // extern crate web_sys;
 
@@ -49,3 +50,10 @@ pub fn hello_rusty() -> Result<(), JsValue> {
 
     Ok(())
 }
+
+#[wasm_bindgen]
+pub fn eval_lisp_prg(program: &str) -> String
+{
+    lisp_rs_eval(program)
+}
+

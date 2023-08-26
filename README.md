@@ -7,59 +7,55 @@ Usage
   ./tychon.py                           # a REPL
 
 
-Goals:
-------
+Driving Features
+----------------
 
-    Driving Feature? Who would adopt it?
-        - *** Native and nice syntax for JSX like structures
-        - *** Scaffolds beginner programmers to building reliable systems / programming in the large
-            - separation of concerns
-            - de coupling
-            - emphasizig pure functions
-            - automated testing
-            - programming by contract -- programmable types
-        - compiles to WebASM. Run it on CloudFlare.
-            WHO: Cloudflare
-        - embeddable in other people's programs as text editor or graphical block language
-            WHO: Zapier, Slack Workflows, Logic AND OR statements, Gitlab or CirceCI yaml, AirTable
-        - multi-threading & messaging to take advantage of cores and immutable data
+    - **Scaffolds beginner programmers** to building reliable systems / programming in the large
 
-    Programming in the Large
-        - has Macros to expand the language (like Lisp/Clojure)
-            - AST looks like Clojure, i.e. `1 + 1` == `add(1 1)` == Call(__scope__('add') 1 1)
-        - Macro/function for marking functions pure, and checking that it's so
-        - Macro/function for enforcing Law of Demeter
-        - Macro/function for enforcing knowledge of other modules, e.g. Controllers know all, but Models cannot know Views, and Views cannot know Controllers
-        - macros definitions must be in marked modules, so people don't use them too much
+        - separation of concerns
+            - network
+            - db
+            - view
 
-    Familiar
-        - a language that feels like Ruby or Python
+        - de coupling
 
-    Embeddable in other programs easily
-        - block editor that can be external, or embedded in user's program
-        - small and simple run-time to execute code
+        - emphasizing pure functions
 
-    Types are programmable
-        - Since there is no compilation phase, just an optimization phase, types
-          can be programmed like normal code.
-        - Type checking means calling a function to see if this is in fact a type.
-        - Some optimizations can use type assertions to simplify code or reduce
-          memory footprint.
+        - automated testing
 
-    Beautiful
-        Visually
-        - significant indentation for blocks
-        - but even less syntax: no commas
-        - notation for tree structures
-        Conceptually
-        - Unify concept of writing: (a) lines of a function, (b) dictionaries, and (c) calling parameters
-        - Macro/function for docstrings
+        - programming by contract -- programmable types
+
+        - **Overview of system** integrated documation so new developer can get overview of
+          system without reviewing every file.
+
+    - multi-threading & messaging to take advantage of cores and immutable data
+
+    - Notation for tree structures
+        Since a line of source describes a list of symbols, a tree structure is very
+        natural to express. E.g.
+
+            a b c
+                d
+                e f
+        is the same as:
+            [a b c [
+                d
+                [e f]
+            ]
+
 
     Functional
         - mostly immutable data structures like Clojure
         - "functions" are pure, and are clearly marked
-        - procedures are like functions but may have side-effects. Unlike Pascal, procedures may
-          return values
+        - dot-lookup of functions that operate on immutable data structures, e.g.
+            def:: Person
+                 Record::
+                    name: String
+                    phone: Integer
+                    set_phone: pure func(person new_phone):: <implementation returns new Person>
+            p = Person(name: 'joe')
+            p = p.set_phone('415 555 1212')
+
 
     Compilation is just a form of Optimization
         - Macro for enforcing constraints, e.g. on inputs and outputs, which can be used by

@@ -1,6 +1,6 @@
 Thoughts on Tychon values and metadata for them
 
-[ Shortcut — list of stories ]( https://app.shortcut.com/nitidbit/stories/space/unsaved )
+[ Notion — list of stories ]( https://www.notion.so/063cf248db5e4d91876cf733c521526f?v=1f3688146fce49f79615280f10df0c3c&p=b413a2287af548638c2c892197c89009&pm=s )
 
 value
     - name
@@ -9,6 +9,14 @@ value
 
 TODO
 ====
+    - LISP -- WASM
+        - https://github.com/vishpat/lisp-rs
+        - https://github.com/vishpat/lisp-rs-wasm
+        - https://github.com/mbrock/wisp
+        - https://lupyuen.github.io/articles/wasm#emscripten-and-webassembly
+            - https://github.com/technoblogy/ulisp/blob/master/ulisp-nano.ino
+
+
     - Tychon program to generate documentation, i.e. doctest
         - group functions together in the documentation
 

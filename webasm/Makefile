@@ -14,6 +14,6 @@ pkg/webasm.js: src/*.rs
 	wasm-pack build --target web
 
 clean:
-	mv target ~/.Trash
-	mv pkg ~/.Trash
+	rm -rf target
+	rm -rf pkg
 
