@@ -19,23 +19,7 @@ use lisp_rs::*;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
-extern {
-    fn alert(s: &str);
-}
-
-#[wasm_bindgen]
-pub fn greet() {
-    alert("Hello, Wally!");
-    // log("Hello, webasm!");
-}
-
-#[wasm_bindgen]
-pub fn twice(i: f32) -> f32 {
-    return i * 2.0;
-}
-
-#[wasm_bindgen]
-pub fn hello_rusty() -> Result<(), JsValue> {
+pub fn test_writing_html() -> Result<(), JsValue> {
     // Use `web_sys`'s global `window` function to get a handle on the global
     // window object.
     let window = web_sys::window().expect("no global `window` exists");
@@ -44,7 +28,7 @@ pub fn hello_rusty() -> Result<(), JsValue> {
 
     // Manufacture the element we're gonna append
     let val = document.create_element("p")?;
-    val.set_text_content(Some("Hello from Rust!"));
+    val.set_text_content(Some("Hello. This HTML was generated from Rust!"));
 
     body.append_child(&val)?;
 

@@ -6,14 +6,14 @@ web:
 
 .PHONY: watch
 watch:
-	ls *.* src/* | entr make build
+	ls *.* rust/src/* | entr make build
 
 build: pkg/webasm.js index.html
 
-pkg/webasm.js: src/*.rs
-	wasm-pack build --target web
+pkg/webasm.js: rust/src/*.rs
+	cd rust; wasm-pack build --target web
 
 clean:
-	rm -rf target
-	rm -rf pkg
+	rm -rf rust/target
+	rm -rf rust/pkg
 

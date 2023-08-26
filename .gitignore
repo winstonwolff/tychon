@@ -1,3 +1,5 @@
 .pytest_cache
 docs.html
 vim-tychon/
+webasm/rust/target
+webasm/rust/pkg
