@@ -10,19 +10,30 @@ Usage
 Goals:
 ------
 
-    Driving Feature? Who would adopt it?
-        - *** Native and nice syntax for JSX like structures
-        - *** Scaffolds beginner programmers to building reliable systems / programming in the large
-            - separation of concerns
-            - de coupling
-            - emphasizig pure functions
-            - automated testing
-            - programming by contract -- programmable types
-        - compiles to WebASM. Run it on CloudFlare.
-            WHO: Cloudflare
-        - embeddable in other people's programs as text editor or graphical block language
-            WHO: Zapier, Slack Workflows, Logic AND OR statements, Gitlab or CirceCI yaml, AirTable
-        - multi-threading & messaging to take advantage of cores and immutable data
+    - Programming language for teams
+        - communication
+            - reference docs
+            - tutorial docs
+            - examples
+            - executable specifications
+        - overview of system — tools to build SVG illustrations of how subsystems relate, with
+          hyperlinks into the generated documentation so new developer can get overview of system
+          without reviewing every file.
+        - relationships - what files are imported by other files? What functions are used by other
+          functions?
+        - architectural rules — set contraints for how the subsystems may communicate.
+            - separation of concerns - E.g.  controllers and views can call models, but not vice versa
+            - mark functions as 'pure', and they can only call other 'pure' functions.
+            - Eifel style contracts
+
+    -----
+
+    - ** Fix JS warts
+        - Cannot use [] notation with my own collection classes
+        - . and [] mix the idea of methods and keys
+        - I'd like to write JSX-like code without needing a special JSX compiler
+
+    - **Scaffolds beginner programmers** to building reliable systems / programming in the large
 
     Programming in the Large
         - has Macros to expand the language (like Lisp/Clojure)
@@ -39,12 +50,25 @@ Goals:
         - block editor that can be external, or embedded in user's program
         - small and simple run-time to execute code
 
-    Types are programmable
-        - Since there is no compilation phase, just an optimization phase, types
-          can be programmed like normal code.
-        - Type checking means calling a function to see if this is in fact a type.
-        - Some optimizations can use type assertions to simplify code or reduce
-          memory footprint.
+        - automated testing
+
+        - programming by contract -- programmable types
+
+
+    - multi-threading & messaging to take advantage of cores and immutable data
+
+    - Notation for tree structures
+        Since a line of source describes a list of symbols, a tree structure is very
+        natural to express. E.g.
+
+            a b c
+                d
+                e f
+        is the same as:
+            [a b c [
+                d
+                [e f]
+            ]
 
     Beautiful
         Visually
