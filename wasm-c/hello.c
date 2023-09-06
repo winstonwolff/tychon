@@ -1,19 +1,19 @@
 #include <stdio.h>
-/* #include "gc.h" */
+#include "lib/hamt/hamt.h"
 
 int main() {
-    printf("Hello San Francisco\n");
+    printf("Hello San Fred\n");
     int i;
 
-    /* GC_INIT();	[> Optional on Linux/X86; see below.  <] */
-    /* for (i = 0; i < 10000000; ++i) */
-    /*  { */
-    /*    int **p = (int **) GC_MALLOC(sizeof(int *)); */
-    /*    int *q = (int *) GC_MALLOC_ATOMIC(sizeof(int)); */
-    /*    assert(*p == 0); */
-    /*    *p = (int *) GC_REALLOC(q, 2 * sizeof(int)); */
-    /*    if (i % 100000 == 0) */
-    /*      printf("Heap size = %d\n", GC_get_heap_size()); */
-    /*  } */
-    /* return 0; */
+    struct hamt_t *hamt = create_hamt();
+
+    hamt = hamt_set(hamt, "hello", "world");
+    hamt = hamt_set(hamt, "hey", "over there");
+    hamt = hamt_set(hamt, "hey2", "over there again");
+    char *value1 = (char *)hamt_get(hamt, "hello");
+    char *value2 = (char *)hamt_get(hamt, "hey");
+    char *value3 = (char *)hamt_get(hamt, "hey2");
+    printf("value1: %s\n", value1);
+    printf("value2: %s\n", value2);
+    printf("value3: %s\n", value3);
 }
