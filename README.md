@@ -9,6 +9,21 @@ Usage
 
 Goals:
 ------
+    - Programming language for teams
+        - communication
+            - reference docs
+            - tutorial docs
+            - examples
+            - executable specifications
+        - overview of system — tools to build SVG illustrations of how subsystems relate, with
+          hyperlinks into the generated documentation so new developer can get overview of system
+          without reviewing every file.
+        - relationships - what files are imported by other files? What functions are used by other
+          functions?
+        - architectural rules — set contraints for how the subsystems may communicate.
+            - separation of concerns - E.g.  controllers and views can call models, but not vice versa
+            - mark functions as 'pure', and they can only call other 'pure' functions.
+            - Eifel style contracts
 
     Driving Feature? Who would adopt it?
         - *** Native and nice syntax for JSX like structures
