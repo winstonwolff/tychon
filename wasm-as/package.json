@@ -10,7 +10,8 @@
     "test": "node tests",
     "asbuild:debug": "asc assembly/*.ts --target debug",
     "asbuild:release": "asc assembly/*.ts --target release",
-    "asbuild": "npm run asbuild:debug && npm run asbuild:release",
+    "asbuild": "echo '\n\n' && npm run asbuild:debug && npm run asbuild:release",
+    "watch": "ls package.json assembly/*.ts | entr npm run asbuild",
     "start": "npx serve .",
     "clean": "rm -rf build/"
   },
