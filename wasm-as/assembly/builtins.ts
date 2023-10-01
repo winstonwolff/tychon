@@ -1,37 +1,13 @@
 import { JSON } from "assemblyscript-json/assembly"
+import { List, ArgumentList, TychonFunction } from "./constants"
+import { evalValue } from "./interpreter"
+import { LayeredDictionary } from "./LayeredDictionary"
 
-
-type List = Array<JSON.Value>
-type ArgumentList = Array<JSON.Value>
-type TyFunction = (args:ArgumentList) => JSON.Value
-
-export function evaluate(code: string): string {
-  let v: JSON.Arr = <JSON.Arr>(JSON.parse(code));
-  // console.log(`!!! evaluate() code = ${v.stringify()}`)
-  return call(v).toString()
-}
-
-function evalValue(value: JSON.Value): JSON.Value {
-  // console.log(`!!! evalValue() value=${value.toString()}`)
-  if (value.isArr) {
-    return call(<JSON.Arr>value)
-  } else {
-    return value
-  }
-}
-
-function call(args: JSON.Arr):JSON.Value {
-  const a = args.valueOf()
-  const functionName = a[0].toString()
-  // console.log(`!!! call() functionName = ${functionName}`)
-  const f = lookup(functionName)
-  return f(a.slice(1))
-}
-
-function lookup(functionName: string): TyFunction {
+export function lookup(scope: LayeredDictionary, functionName: string): TychonFunction {
   if (functionName === "print") return print
   if (functionName === "list") return list
   if (functionName === "module") return module
+  if (functionName === "define") return define(scope)
 
   return print
 }
@@ -61,4 +37,17 @@ function module(arguments:ArgumentList): JSON.Value {
     result.push(evalValue(arguments[i]))
   }
   return result
+}
+
+function define(scope: LayeredDictionary): TychonFunction {
+  return function(args: ArgumentList): JSON.Value {
+    // inputs:
+    const name = args[0]
+    const value = args[1]
+    if (! scope instanceof LayeredDictionary) throw new Error("Invalid args")
+    if (! name instanceof LayeredDictionary) throw new Error("Invalid args")
+
+    scope.set([name, value])
+    scope.inspect()
+  }
 }

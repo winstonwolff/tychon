@@ -93,3 +93,9 @@ References on PEG & Packrat parsers
 --------------------------------
 - [ PEGs and the Structure of Languages ]( https://blog.bruce-hill.com/pegs-and-the-structure-of-languages )
 - [ Packrat Parsing from Scratch ]( https://blog.bruce-hill.com/packrat-parsing-from-scratch )
+
+## References for assembly script
+- [ AssemblyScript ](https://www.assemblyscript.org/concepts.html)
+- [ TypeScript ](https://www.typescriptlang.org)
+- [ AS-pect ](https://as-pect.gitbook.io/as-pect/as-api/expectations)
+- [ assemblyscript-json ](https://github.com/near/assemblyscript-json/tree/main/docs)

@@ -2,8 +2,13 @@
 <html lang="en">
   <head>
     <script type="module">
-      import { add, evaluate } from "./build/release.js";
-      document.body.innerText = evaluate(' ["module", ["print",  "hello", "world"], ["print",  "moo", "moo"], ]');
+      import { evaluate } from "./build/release.js";
+      document.body.innerText = evaluate(`
+        ["module",
+          ["print",  "hello", "world"],
+          ["print",  "foo", "moo"],
+          ["send", "scope", "define", "greeting", "hello"],
+        ]`);
     </script>
   </head>
   <body>

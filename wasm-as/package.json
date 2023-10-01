@@ -1,13 +1,13 @@
 {
-  "name": "tychon-interpeter",
+  "name": "tychon-interpreter",
   "description": "Interprets Tychon low-level S-expressions",
   "version": "1.0.0",
   "main": "index.js",
   "license": "ISC",
   "type": "module",
-
   "scripts": {
-    "test": "node tests",
+    "test": "npx asp --verbose",
+    "test:watch": "npx asp --watch",
     "asbuild:debug": "asc assembly/*.ts --target debug",
     "asbuild:release": "asc assembly/*.ts --target release",
     "asbuild": "echo '\n\n' && npm run asbuild:debug && npm run asbuild:release",
@@ -15,19 +15,18 @@
     "start": "npx serve .",
     "clean": "rm -rf build/"
   },
-
   "exports": {
     ".": {
       "import": "./build/release.js",
       "types": "./build/release.d.ts"
     }
   },
-
   "dependencies": {
     "assemblyscript-json": "^1.1.0"
   },
-
   "devDependencies": {
-    "assemblyscript": "^0.27.9"
+    "@as-pect/cli": "^8.1.0",
+    "aspect": "^0.0.2",
+    "assemblyscript": "^0.27.10"
   }
 }
