@@ -10,7 +10,7 @@ export function evaluate(code: string): string {
   return call(scope, v).toString()
 }
 
-export function evalValue(scope: LayeredDictionary, value: JSON.Value): JSON.Value {
+export function evalValue(scope: LayeredDictionary, value: TyValue): TyValue {
   // console.log(`!!! evalValue() value=${value.toString()}`)
   if (value.isArr) {
     return call(scope, <JSON.Arr>value)
@@ -19,7 +19,7 @@ export function evalValue(scope: LayeredDictionary, value: JSON.Value): JSON.Val
   }
 }
 
-function call(scope: LayeredDictionary, args: JSON.Arr):JSON.Value {
+function call(scope: LayeredDictionary, args: ArgumentList):TyValue {
   const a = args.valueOf()
   const functionName = a[0].toString()
   const funcArgs = a.slice(1)
@@ -29,7 +29,7 @@ function call(scope: LayeredDictionary, args: JSON.Arr):JSON.Value {
   return func(funcArgs)
 }
 
-function send(args: ArgumentList): JSON.Value {
+function send(args: ArgumentList): TyValue {
   // inputs:
   const obj = args[0]
   const methodName = args[1]

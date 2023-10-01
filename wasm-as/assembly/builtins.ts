@@ -12,7 +12,7 @@ export function lookup(scope: LayeredDictionary, functionName: string): TychonFu
   return print
 }
 
-function print(arguments: ArgumentList):JSON.Value {
+function print(arguments: ArgumentList):TyValue {
   // const msg = arguments.toString()
   const msg:string = arguments.map<string>( function(v){ return v.toString() } ).join(" ")
 
@@ -20,7 +20,7 @@ function print(arguments: ArgumentList):JSON.Value {
   return JSON.from(msg)
 }
 
-function list( arguments:ArgumentList ):JSON.Value {
+function list( arguments:ArgumentList ):TyValue {
   const msg = arguments.toString()
   // console.log('!!! list() msg='); console.log(msg)
   const result = new JSON.Arr()
@@ -31,7 +31,7 @@ function list( arguments:ArgumentList ):JSON.Value {
   return result
 }
 
-function module(arguments:ArgumentList): JSON.Value {
+function module(arguments:ArgumentList): TyValue {
   const result = new JSON.Arr()
   for(let i = 0; i < arguments.length; i++) {
     result.push(evalValue(arguments[i]))
@@ -40,7 +40,7 @@ function module(arguments:ArgumentList): JSON.Value {
 }
 
 function define(scope: LayeredDictionary): TychonFunction {
-  return function(args: ArgumentList): JSON.Value {
+  return function(args: ArgumentList): TyValue {
     // inputs:
     const name = args[0]
     const value = args[1]
