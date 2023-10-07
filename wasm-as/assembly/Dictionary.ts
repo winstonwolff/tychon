@@ -1,6 +1,6 @@
 import { JSON } from "assemblyscript-json/assembly"
 import { ArgumentList } from "./constants.ts"
-import { TyValue, TyString, TyNumber } from './TyValue'
+import { TyValue, TyString, TyNumber, TyList } from './TyValue'
 
 export class Dictionary {
   namedValues: Map<string, TyValue>
@@ -9,25 +9,36 @@ export class Dictionary {
     this.namedValues = new Map()
   }
 
-  // associates 'value' with 'name' in the scope. It can be retrieved later.
-  set(args: ArgumentList): TyValue {
-    // inputs:
-    const name = args[0]
-    const value = args[1]
-
-    this.namedValues.set(this._internedKey(name), value)
+  // store 'value' under 'key'
+  set(key: TyValue, value: TyValue): TyValue {
+    this.namedValues.set(this._normalizedKey(key), value)
     return value
   }
 
-  // Returns the value by 'name'
-  get(args: ArgumentList): TyValue {
+  // same as set(), but with Tychon args
+  tySet(args: ArgumentList): TyValue {
     // inputs:
-    const name = args[0] // The name of the value you want
+    const key = (args as TyList).get(0)
+    const value = (args as TyList).get(1)
 
-    return this.namedValues.get(this._internedKey(name))
+    this.set(key, value)
+    return value
   }
 
-  _internedKey(k: TyValue): string {
+  // Returns the value by 'key'
+  get(key: TyValue): TyValue {
+    return this.namedValues.get(this._normalizedKey(key))
+  }
+
+  // same as get() but with Tychon args
+  tyGet(args: ArgumentList): TyValue {
+    // inputs:
+    const key = (args as TyList).get(0) // The key of the value you want
+
+    return this.get(key)
+  }
+
+  _normalizedKey(k: TyValue): string {
     return k.inspect()
   }
 }

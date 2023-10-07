@@ -1,41 +1,44 @@
 import { JSON } from "assemblyscript-json/assembly"
 import { lookup } from "./builtins.ts"
 import { ArgumentList } from "./constants.ts"
-import { LayeredDictionary } from "./LayeredDictionary.ts"
+import { Dictionary } from "./Dictionary.ts"
+import { TyValue, TyList, TyNumber, TyString } from "./TyValue"
 
-export function evaluate(code: string): string {
-  const scope = new LayeredDictionary()
-  let v: JSON.Arr = <JSON.Arr>(JSON.parse(code));
-  // console.log(`!!! evaluate() code = ${v.stringify()}`)
-  return call(scope, v).toString()
+export function evaluate(codeJson: string): string {
+  const scope = new Dictionary()
+
+  let listOfExpressions: TyList = TyValue.parseJSON(codeJson) as TyList
+  return call(scope, listOfExpressions).inspect()
 }
 
-export function evalValue(scope: LayeredDictionary, value: TyValue): TyValue {
+export function evalValue(scope: Dictionary, value: TyValue): TyValue {
   // console.log(`!!! evalValue() value=${value.toString()}`)
-  if (value.isArr) {
-    return call(scope, <JSON.Arr>value)
+  if (value instanceof TyList) {
+    return call(scope, value as TyList)
   } else {
     return value
   }
 }
 
-function call(scope: LayeredDictionary, args: ArgumentList):TyValue {
-  const a = args.valueOf()
-  const functionName = a[0].toString()
-  const funcArgs = a.slice(1)
+function call(scope: Dictionary, args: ArgumentList):TyValue {
+  if (! args instanceof TyList) throw new Error('args should be TyList')
+
+  // input:
+  const functionName:TyValue = (args as TyList).get(0)
+  const funcArgs = new TyList((args as TyList).slice(1))
 
   // console.log(`!!! call() functionName = ${functionName}`)
-  const func = lookup(scope, functionName)
-  return func(funcArgs)
+  const func = lookup(scope, (functionName as TyString).nativeString())
+  return func(scope, funcArgs)
 }
 
-function send(args: ArgumentList): TyValue {
-  // inputs:
-  const obj = args[0]
-  const methodName = args[1]
-  const methodArgs = args.slice(2)
+// function send(args: ArgumentList): TyValue {
+//   // inputs:
+//   const obj = args[0]
+//   const methodName = args[1]
+//   const methodArgs = args.slice(2)
 
-  const func = obj[methodName]
-  obj.apply(obj, methodName, methodArgs)
-}
+//   const func = obj[methodName]
+//   obj.apply(obj, methodName, methodArgs)
+// }
 

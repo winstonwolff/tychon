@@ -1,5 +1,5 @@
 import { JSON } from "assemblyscript-json/assembly"
-import { TyValue, TyString, TyNumber } from "./TyValue"
+import { TyValue, TyString, TyNumber, TyList } from "./TyValue"
 
 describe('TyValue.ts', ():void => {
 
@@ -20,6 +20,22 @@ describe('TyValue.ts', ():void => {
   describe('TyNumber', ():void => {
     test('constructor()', ():void => {
       expect(new TyNumber(345).toString()).toStrictEqual('345.0')
+    })
+  })
+
+  describe('TyList', ():void => {
+    describe('get()', ():void => {
+      test('returns value at given index', ():void => {
+        const list = new TyList([new TyString('A')])
+        expect(list.get(0)).toStrictEqual(new TyString('A'))
+      })
+    })
+
+    describe('tyGet()', ():void => {
+      test('returns value at given index', ():void => {
+        const list = new TyList([new TyString('A')])
+        expect(list.tyGet(new TyList([new TyNumber(0)]))).toStrictEqual(new TyString('A'))
+      })
     })
   })
 
@@ -47,17 +63,17 @@ describe('TyValue.ts', ():void => {
     })
   })
 
-  describe('fromJSON()', ():void => {
+  describe('parseJSON()', ():void => {
     test('can parse lists', ():void => {
-      expect(TyValue.fromJSON('["abc"]').inspect()).toStrictEqual('TyList(TyString("abc"))')
+      expect(TyValue.parseJSON('["abc"]').inspect()).toStrictEqual('TyList(TyString("abc"))')
     })
 
     test('can parse list of 2', ():void => {
-      expect(TyValue.fromJSON('["abc", "def"]').inspect()).toStrictEqual('TyList(TyString("abc") TyString("def"))')
+      expect(TyValue.parseJSON('["abc", "def"]').inspect()).toStrictEqual('TyList(TyString("abc") TyString("def"))')
     })
 
     test('can parse list of 3', ():void => {
-      expect(TyValue.fromJSON('["abc", 123.0, "def"]').inspect()).toStrictEqual('TyList(TyString("abc") TyNumber(123.0) TyString("def"))')
+      expect(TyValue.parseJSON('["abc", 123.0, "def"]').inspect()).toStrictEqual('TyList(TyString("abc") TyNumber(123.0) TyString("def"))')
     })
   })
 })

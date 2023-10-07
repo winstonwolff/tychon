@@ -1,53 +1,62 @@
 import { JSON } from "assemblyscript-json/assembly"
-import { List, ArgumentList, TychonFunction } from "./constants"
+import { ArgumentList, TychonFunction, TychonMacro } from "./constants"
+import { TyValue, TyString, TyList } from "./TyValue"
 import { evalValue } from "./interpreter"
-import { LayeredDictionary } from "./LayeredDictionary"
+import { Dictionary } from "./Dictionary"
 
-export function lookup(scope: LayeredDictionary, functionName: string): TychonFunction {
+export function lookup(scope: Dictionary, functionName: string):TychonMacro {
   if (functionName === "print") return print
-  if (functionName === "list") return list
+  // if (functionName === "list") return list
   if (functionName === "module") return module
-  if (functionName === "define") return define(scope)
+  // if (functionName === "define") return define(scope)
 
   return print
 }
 
-function print(arguments: ArgumentList):TyValue {
-  // const msg = arguments.toString()
-  const msg:string = arguments.map<string>( function(v){ return v.toString() } ).join(" ")
+function print(scope: Dictionary, args: ArgumentList):TyValue {
+  const msg = args.toString()
+  // const msg:string = (args as TyList)
+  //   .map( function(v: TyValue): TyList { return v.toString() })
+  //   .join(" ")
 
-  console.log(`!!! print msg= "${msg}"`)
-  return JSON.from(msg)
+  // console.log(`!!! print msg= "${msg}"`)
+  return new TyString(msg)
 }
 
-function list( arguments:ArgumentList ):TyValue {
-  const msg = arguments.toString()
-  // console.log('!!! list() msg='); console.log(msg)
-  const result = new JSON.Arr()
-  for(let i = 0; i < arguments.length; i++) {
-    result.push(arguments[i])
-  }
+// function list( args:ArgumentList ):TyValue {
+//   const msg = args.toString()
+//   const result = new JSON.Arr()
+//   for(let i = 0; i < args.length; i++) {
+//     result.push(args[i])
+//   }
 
-  return result
+//   return result
+// }
+
+function module(scope: Dictionary, args:ArgumentList): TyValue {
+  // const result = (args as TyList).map( function(v) { return evalValue(scope, v) } )
+  const result = new Array<TyValue>()
+  for(let i = 0; i < (args as TyList).length(); i++) {
+    result.push(evalValue(scope, (args as TyList).get(i)))
+  }
+  return new TyList(result)
 }
 
-function module(arguments:ArgumentList): TyValue {
-  const result = new JSON.Arr()
-  for(let i = 0; i < arguments.length; i++) {
-    result.push(evalValue(arguments[i]))
-  }
-  return result
-}
+// function define(scope: Dictionary): TychonFunction {
+//   return function(args: ArgumentList): TyValue {
+//     // inputs:
+//     const name = args[0]
+//     const value = args[1]
+//     if (! scope instanceof Dictionary) throw new Error("Invalid args")
+//     if (! name instanceof Dictionary) throw new Error("Invalid args")
 
-function define(scope: LayeredDictionary): TychonFunction {
-  return function(args: ArgumentList): TyValue {
-    // inputs:
-    const name = args[0]
-    const value = args[1]
-    if (! scope instanceof LayeredDictionary) throw new Error("Invalid args")
-    if (! name instanceof LayeredDictionary) throw new Error("Invalid args")
+//     scope.set([name, value])
+//     scope.inspect()
+//   }
+// }
 
-    scope.set([name, value])
-    scope.inspect()
-  }
+// Conveniently call both AS functions and Tychon functions with one syntax.
+function call(scope: Dictionary, args: ArgumentList): TyValue {
+  // inputs
+
 }
