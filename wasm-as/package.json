@@ -8,9 +8,10 @@
   "scripts": {
     "clean": "rm -rf build/",
     "test": "npx asp --verbose",
-    "test:watch": "ls package.json assembly/*.ts | entr -n npm test",
-    "asbuild:watch": "ls package.json assembly/*.ts | entr -n npm run asbuild",
-    "asbuild": "echo '\n\n' && npm run asbuild:debug && npm run asbuild:release",
+    "test:watch": "npm run dependencies | entr -n npm test",
+    "dependencies": "ls as-pect.config.js package.json assembly/*.ts",
+    "asbuild:watch": "npm run dependencies | entr -n npm run asbuild",
+    "asbuild": "echo '--BUILDING--\n\n' && npm run clean && npm run asbuild:debug && npm run asbuild:release",
     "asbuild:debug": "asc assembly/index.ts assembly/interpreter.ts --target debug",
     "asbuild:release": "asc assembly/index.ts assembly/interpreter.ts --target release"
   },
