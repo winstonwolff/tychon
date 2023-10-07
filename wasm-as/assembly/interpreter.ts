@@ -5,6 +5,7 @@ import { Dictionary } from "./Dictionary.ts"
 import { TyValue, TyList, TyNumber, TyString } from "./TyValue"
 
 export function evaluate(codeJson: string): string {
+  // console.log('!!! Tychon evaluator')
   const scope = new Dictionary()
 
   let listOfExpressions: TyList = TyValue.parseJSON(codeJson) as TyList

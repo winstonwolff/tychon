@@ -6,14 +6,13 @@
   "license": "ISC",
   "type": "module",
   "scripts": {
+    "clean": "rm -rf build/",
     "test": "npx asp --verbose",
-    "test:watch": "npx asp --watch",
-    "asbuild:debug": "asc assembly/*.ts --target debug",
-    "asbuild:release": "asc assembly/*.ts --target release",
+    "test:watch": "ls package.json assembly/*.ts | entr -n npm test",
+    "asbuild:watch": "ls package.json assembly/*.ts | entr -n npm run asbuild",
     "asbuild": "echo '\n\n' && npm run asbuild:debug && npm run asbuild:release",
-    "watch": "ls package.json assembly/*.ts | entr npm run asbuild",
-    "start": "npx serve .",
-    "clean": "rm -rf build/"
+    "asbuild:debug": "asc assembly/index.ts assembly/interpreter.ts --target debug",
+    "asbuild:release": "asc assembly/index.ts assembly/interpreter.ts --target release"
   },
   "exports": {
     ".": {
@@ -22,11 +21,11 @@
     }
   },
   "dependencies": {
-    "assemblyscript-json": "^1.1.0"
+    "assemblyscript-json": "^1.1.0",
+    "assemblyscript": "^0.27.10"
   },
   "devDependencies": {
     "@as-pect/cli": "^8.1.0",
-    "aspect": "^0.0.2",
-    "assemblyscript": "^0.27.10"
+    "aspect": "^0.0.2"
   }
 }
