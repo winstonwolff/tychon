@@ -100,7 +100,7 @@ export const TyFalse = new TyBoolean(false)
 export class TyList extends TyValue {
   arrayOfValues: Array<TyValue>
 
-  constructor(list:Array<TyValue>) {
+  constructor(list:Array<TyValue> = []) {
     super()
     this.arrayOfValues = list
   }
@@ -121,6 +121,11 @@ export class TyList extends TyValue {
 
   slice(startIndex: i32): Array<TyValue> {
     return this.arrayOfValues.slice(startIndex)
+  }
+
+  append(v: TyValue): TyValue {
+    this.arrayOfValues.push(v)
+    return this
   }
 
   tySlice(args: ArgumentList): TyList {

@@ -42,6 +42,15 @@ function module(scope: Dictionary, args:ArgumentList): TyValue {
   return new TyList(result)
 }
 
+export function zip(_unused: Dictionary, seq_1: TyList, seq_2: TyList): TyList {
+  if (seq_1.length() != seq_2.length()) throw new Error('Sequences must be the same length.')
+  const result = new TyList()
+  for(let i = 0; i < seq_1.length(); i++) {
+    result.append( new TyList([seq_1.get(i), seq_2.get(i)]) )
+  }
+  return result
+}
+
 // function define(scope: Dictionary): TychonFunction {
 //   return function(args: ArgumentList): TyValue {
 //     // inputs:

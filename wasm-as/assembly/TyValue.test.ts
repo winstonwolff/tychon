@@ -37,6 +37,14 @@ describe('TyValue.ts', ():void => {
         expect(list.tyGet(new TyList([new TyNumber(0)]))).toStrictEqual(new TyString('A'))
       })
     })
+
+    describe('append()', ():void => {
+      test('adds element to the end', ():void => {
+        const list = new TyList([new TyString('A')])
+        list.append(new TyString('B'))
+        expect(list).toStrictEqual(new TyList([new TyString('A'), new TyString('B')]))
+      })
+    })
   })
 
   describe('fromJsonValue()', ():void => {
