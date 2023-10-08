@@ -31,9 +31,8 @@ describe('bulitins.ts', ():void => {
         new TyString("apple"),
         new TyString("banana"),
         new TyString("cantelope")])
-      const unused = new Dictionary()
 
-      expect(zip(unused, a, b)).toStrictEqual(new TyList([
+      expect(zip(null, a, b)).toStrictEqual(new TyList([
         new TyList([ new TyNumber(1), new TyString("apple") ]),
         new TyList([ new TyNumber(2), new TyString("banana") ]),
         new TyList([ new TyNumber(3), new TyString("cantelope") ]),

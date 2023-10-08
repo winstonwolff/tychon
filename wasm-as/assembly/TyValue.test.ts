@@ -17,11 +17,13 @@ describe('TyValue.ts', ():void => {
     })
   })
 
+
   describe('TyNumber', ():void => {
     test('constructor()', ():void => {
       expect(new TyNumber(345).toString()).toStrictEqual('345.0')
     })
   })
+
 
   describe('TyList', ():void => {
     describe('get()', ():void => {
@@ -45,7 +47,30 @@ describe('TyValue.ts', ():void => {
         expect(list).toStrictEqual(new TyList([new TyString('A'), new TyString('B')]))
       })
     })
+
+    describe('any()', ():void => {
+      const is_negative = function (x: TyValue, i:i32, s: Array<TyValue>): boolean { return x.nativeInteger() < 0 }
+
+      test('returns True when any element evaluates to True', ():void => {
+        const list = new TyList([
+          new TyNumber(3),
+          new TyNumber(-2),
+          new TyNumber(5),
+        ])
+        expect(list.any(is_negative)).toStrictEqual(true)
+      })
+      test('returns False when no elements evaluates to True', ():void => {
+        const list = new TyList([
+          new TyNumber(3),
+          new TyNumber(4),
+          new TyNumber(5),
+        ])
+        // function is_negative(x: TyValue) { return x.nativeInteger() < 0 }
+        expect(list.any(is_negative)).toStrictEqual(false)
+      })
+    })
   })
+
 
   describe('fromJsonValue()', ():void => {
     test('converts from JSON.Nums', ():void => {
@@ -70,6 +95,7 @@ describe('TyValue.ts', ():void => {
       expect(TyValue.fromJsonValue(array).inspect()).toStrictEqual('TyList(TyNumber(123.0) TyString("abc"))')
     })
   })
+
 
   describe('parseJSON()', ():void => {
     test('can parse lists', ():void => {

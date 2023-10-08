@@ -152,5 +152,9 @@ export class TyList extends TyValue {
     const parts: string[] = this.arrayOfValues.map<string>( function(v){ return v.inspect() } )
     return `TyList(${parts.join(" ")})`
   }
+
+  any( is_true: (value: TyValue, index: i32, self: Array<TyValue>) => boolean ): boolean {
+    return this.arrayOfValues.some(is_true)
+  }
 }
 
