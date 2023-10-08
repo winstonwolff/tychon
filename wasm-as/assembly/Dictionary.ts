@@ -2,11 +2,24 @@ import { JSON } from "assemblyscript-json/assembly"
 import { ArgumentList } from "./constants.ts"
 import { TyValue, TyString, TyNumber, TyList } from './TyValue'
 
-export class Dictionary {
+export class Dictionary extends TyValue {
   namedValues: Map<string, TyValue>
 
   constructor() {
+    super()
     this.namedValues = new Map()
+  }
+
+  toString(): string {
+    return this.namedValues.toString()
+  }
+
+  inspect(): string {
+    return `Dictionary( ${this.toString()} )`
+  }
+
+  has(key: TyValue): boolean {
+    return this.namedValues.has(key)
   }
 
   // store 'value' under 'key'

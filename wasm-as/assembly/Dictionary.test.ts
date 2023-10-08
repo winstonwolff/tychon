@@ -4,12 +4,29 @@ import { ArgumentList } from "./constants"
 import { TyString, TyNumber, TyList } from './TyValue'
 
 
-function argList(args: Array<string>): ArgumentList {
-  const jsonArr = (<JSON.Arr>JSON.from(['a', 'foo foo']))
-  return jsonArr.valueOf()
-}
-
 describe('Dictionary', ():void => {
+
+  describe('toString()', ():void => {
+
+    xtest('returns a string describing the contents', ():void => {
+      const d = new Dictionary()
+      d.set(new TyString('A'), new TyString("FOO FOO"))
+      expect(d.toString()).toStrictEqual('{"A": "FOO FOO"}')
+    })
+  })
+
+
+  describe('inspect()', ():void => {})
+    xtest('returns a string describing the contents for a programmer', ():void => {
+      const d = new Dictionary()
+      d.set(new TyString('A'), new TyString("FOO FOO"))
+      expect(d.toString()).toStrictEqual('Dictionary( {"A": "FOO FOO"} )')
+    })
+
+
+  describe('nativeDictionary()', ():void => {})
+
+
   describe('set() and get()', ():void => {
     test('returns the value that was set', ():void => {
       const d = new Dictionary()
