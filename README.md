@@ -6,6 +6,10 @@ Usage
   ./tychon.py <sourcefile>.ty           # execute a source file
   ./tychon.py                           # a REPL
 
+Docs
+----
+  [To Do List](TODO.md)
+  [Abstractions](docs/abstractions.md)
 
 Goals:
 ------
