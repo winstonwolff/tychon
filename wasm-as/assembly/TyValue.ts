@@ -2,6 +2,11 @@ import { JSON } from "assemblyscript-json/assembly"
 import { ArgumentList, TychonFunction } from "./constants"
 
 export class TyValue {
+  type_name:string
+
+  constructor(type_name:string="TyValue") {
+    this.type_name = type_name
+  }
 
   // Takes a JSON string, and converts to a graph of TyValues
   static parseJSON(jsonString:string): TyValue {
@@ -47,7 +52,7 @@ export class TyString extends TyValue {
   value: string = "";
 
   constructor(s:string) {
-    super()
+    super("TyString")
     this.value = s
   }
 
@@ -67,7 +72,7 @@ export class TyNumber extends TyValue {
   value: number = 0;
 
   constructor(n:number) {
-    super()
+    super("TyNumber")
     this.value = n
   }
 
@@ -83,7 +88,7 @@ export class TyBoolean extends TyValue {
   value: boolean = false;
 
   constructor(b:boolean) {
-    super()
+    super("TyBoolean")
     this.value = b
   }
 
@@ -101,7 +106,7 @@ export class TyList extends TyValue {
   arrayOfValues: Array<TyValue>
 
   constructor(list:Array<TyValue> = []) {
-    super()
+    super("TyList")
     this.arrayOfValues = list
   }
 
@@ -157,4 +162,5 @@ export class TyList extends TyValue {
     return this.arrayOfValues.some(is_true)
   }
 }
+
 

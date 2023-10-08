@@ -1,26 +1,27 @@
 import { ArgumentDescription } from "./ArgumentList"
-import { TyValue, TyString } from "./TyValue"
+import { TyValue, TyNumber, TyList, TyString } from "./TyValue"
 
 describe('ArgumentDescription', ():void => {
 
-  describe('new', ():void => {
-    test('takes a list of arguments', ():void => {
-      const ad = new ArgumentDescription([
-        ["key", "String"],
-        ["value", "String"]
-      ])
-    })
-  })
-
   describe('is_valid()', ():void => {
     test('returns False when args dont match ArgumentDescription', ():void => {
-      const ad = new ArgumentDescription([
-        ["key", "TyString"],
-        ["value", "TyString"]
-      ])
+      const arg_desc = new ArgumentDescription(new TyList([
+        new TyList([new TyString("key"), new TyString("TyString")]),
+        new TyList([new TyString("value"), new TyString("TyString")])
+      ]))
       expect(
-        ad.is_valid(new TyList([ new TyString('first value'), new TyString('second value')]))
+        arg_desc.is_valid(new TyList([
+          new TyString('first value'),
+          new TyString('second value')
+        ]))
       ).toBe(true)
+
+      expect(
+        arg_desc.is_valid(new TyList([
+          new TyString('first value'),
+          new TyNumber(99)
+        ]))
+      ).toBe(false)
     })
   })
 

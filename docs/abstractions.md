@@ -14,7 +14,9 @@ aka Interfaces, or Abstract Base Classes
    list_of_animals.contains("duck")
 
 - a.get(b) = retrieves value
-- a.set(b, c) = set values, but only for mutable containers
+
+### Mutable Container
+- a.set(b, c) = set values
 
 
 ## Length
@@ -37,7 +39,7 @@ aka Interfaces, or Abstract Base Classes
 
 - a.hash()
 
-## Comparison
+## Comparison / Ordered
 
 - a.compare(b)
   returns -1 if a < b
