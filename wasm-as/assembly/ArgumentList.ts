@@ -1,4 +1,4 @@
-import { TyValue, TyString, TyList } from "./TyValue"
+import { TyValue, TyString, TyList, TyFalse } from "./TyValue"
 import { ArgumentList } from "./constants.ts"
 import { zip } from "./builtins"
 
@@ -11,22 +11,28 @@ import { zip } from "./builtins"
 export class ArgumentDescription extends TyValue {
   parameter_names_and_types: TyList
 
-  constructor(parameter_names_and_types: ArgumentList) {
+  constructor(args: ArgumentList) {
     super()
-    this.parameter_names_and_types = parameter_names_and_types
+    this.parameter_names_and_types = args.get(0) as TyList
   }
 
-  is_valid(args: ArgumentList): boolean {
+  throw_if_invalid(args: ArgumentList): ArgumentDescription {
     const params_and_args = zip(null, this.parameter_names_and_types, args)
-    const args_types_dont_match = params_and_args.any(
-      function is_matching_type(param_and_arg: TyValue, i:i32, s:Array<TyValue>){
-        const param_pair = (param_and_arg as TyList).get(0)
-        const arg: TyValue = (param_and_arg as TyList).get(1)
-        const param_type_str = (param_pair as TyList).get(1)
+    params_and_args.tyMap( (args: ArgumentList):TyValue => {
+      // input:
+      const param_and_arg:TyList = (args as TyList).get(0) as TyList
 
-        return arg.type_name != param_type_str.nativeString()
-      })
+      const param_pair: TyList = param_and_arg.get(0) as TyList
+      const param_name = param_pair.get(0)
+      const param_type_str = param_pair.get(1)
+      const arg = (param_and_arg as TyList).get(1)
 
-    return ! args_types_dont_match
+      if (arg.type_name != param_type_str.nativeString()) {
+        throw new Error(`Parameter '${param_name}' must be a ${param_type_str} but was ${arg.inspect()}`)
+      }
+      return TyFalse
+    })
+
+    return this
   }
 }

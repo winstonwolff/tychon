@@ -67,6 +67,7 @@ describe('TyValue.ts', ():void => {
         ])
       })
     })
+
     describe('tyMap()', ():void => {
       test('returns new TyList with results of callback(v)', ():void => {
         const list = new TyList([
