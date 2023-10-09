@@ -1,25 +1,9 @@
 import { Dictionary } from "./Dictionary.ts"
-import { zip } from "./builtins"
 import { TyList, TyValue, TyNumber, TyString } from "./TyValue"
+import { ArgumentList, TychonFunction, TychonMacro } from "./constants"
+import { zip, define, new_lookup } from "./builtins"
 
 describe('bulitins.ts', ():void => {
-
-  describe('call()', ():void => {
-
-    // test('works with AssemblyScript functions', ():void => {
-    //   const scope = new Dictionary()
-    //   expect(
-    //     call(scope, TyList( TyString('Math.imul'), TyInteger(3), TyInteger(4) ))
-    //   ).equals(TyInteger(12) ).toBe(true)
-    // })
-
-    // test('works with Tychon functions', ():void => {
-    //   const scope = new Dictionary()
-    //   expect(
-    //     call(scope, TyList( TyString('add'), TyInteger(3), TyInteger(4) ))
-    //   ).equals(TyInteger(7) ).toBe(true)
-    // })
-  })
 
   describe('zip()', ():void => {
     test('returns two lists combined', ():void => {
@@ -41,13 +25,38 @@ describe('bulitins.ts', ():void => {
     })
   })
   describe('define()', ():void => {
-    // it('saves a value in "scope"', ():void => {
-    //   const scope = new Dictionary()
-    //   expect(scope.get('my_var')).toStrictEqual(
+    it('saves a value in "scope"', ():void => {
+      const scope = new Dictionary()
+      define(scope, new TyList([new TyString("my_var"), new TyString("Teapot")]))
 
-    // })
+      expect(scope.get(new TyString('my_var'))).toStrictEqual(new TyString("Teapot"))
+    })
+
+    it('returns the value', ():void => {
+      const scope = new Dictionary()
+      const result = define(scope, new TyList([new TyString("my_var"), new TyString("Teapot")]))
+
+      expect(result).toStrictEqual(new TyString("Teapot"))
+    })
   })
 
+  describe('lookup()', ():void => {
+    const double = (args: ArgumentList): TyValue => {
+      return new TyNumber(args.get(0).nativeInteger() * 2 )
+    }
 
+    it('fetches the value in scope', ():void => {
+      const scope = new Dictionary()
+      const result = define(scope, new TyList([new TyString("my_var"), new TyString("Teapot")]))
+
+      expect(new_lookup(scope, new TyList([new TyString("my_var")]))).toStrictEqual(new TyString("Teapot"))
+    })
+
+    it('fetches functions too', ():void => {
+      const scope = new Dictionary()
+      define(scope, new TyFunction([new TyString("double"), double]))
+      expect(new_lookup(scope, new TyList([new TyString("double")]))).toStrictEqual(double)
+    })
+  })
 })
 

@@ -1,6 +1,6 @@
 import { JSON } from "assemblyscript-json/assembly"
 import { ArgumentList, TychonFunction, TychonMacro } from "./constants"
-import { TyValue, TyString, TyList } from "./TyValue"
+import { TyValue, TyString, TyList, TyFalse } from "./TyValue"
 import { evalValue } from "./interpreter"
 import { Dictionary } from "./Dictionary"
 
@@ -51,21 +51,19 @@ export function zip(_unused: null | Dictionary, seq_1: TyList, seq_2: TyList): T
   return result
 }
 
-// function define(scope: Dictionary): TychonFunction {
-//   return function(args: ArgumentList): TyValue {
-//     // inputs:
-//     const name = args[0]
-//     const value = args[1]
-//     if (! scope instanceof Dictionary) throw new Error("Invalid args")
-//     if (! name instanceof Dictionary) throw new Error("Invalid args")
+export function define(scope: Dictionary, args: ArgumentList): TyValue {
+  // inputs:
+  const name = args.get(0)
+  const value = args.get(1)
 
-//     scope.set([name, value])
-//     scope.inspect()
-//   }
-// }
-
-// Conveniently call both AS functions and Tychon functions with one syntax.
-function call(scope: Dictionary, args: ArgumentList): TyValue {
-  // inputs
-
+  scope.tySet(args)
+  return value
 }
+
+export function new_lookup(scope: Dictionary, args: ArgumentList): TyValue {
+  // inputs:
+  const name = args.get(0)
+
+  return scope.tyGet(args)
+}
+
