@@ -140,12 +140,16 @@ export class TyList extends TyValue {
     return new TyList(this.slice(index))
   }
 
-  map(callback: TychonFunction): Array<TyValue> {
+  map(callback: (v: TyValue, index:i32, self:Array<TyValue>)=>TyValue): Array<TyValue> {
     return this.arrayOfValues.map(callback)
   }
 
   tyMap(callback: TychonFunction): TyList {
-    return new TyList(this.map(callback))
+    const result = new TyList()
+    for(let i=0; i < this.arrayOfValues.length; i++) {
+      result.append(callback(new TyList([this.arrayOfValues[i]])))
+    }
+    return result
   }
 
   toString(): string {

@@ -1,5 +1,6 @@
 import { JSON } from "assemblyscript-json/assembly"
 import { TyValue, TyString, TyNumber, TyList } from "./TyValue"
+import { ArgumentList, TychonFunction } from "./constants"
 
 describe('TyValue.ts', ():void => {
 
@@ -45,6 +46,44 @@ describe('TyValue.ts', ():void => {
         const list = new TyList([new TyString('A')])
         list.append(new TyString('B'))
         expect(list).toStrictEqual(new TyList([new TyString('A'), new TyString('B')]))
+      })
+    })
+
+    describe('map()', ():void => {
+      test('returns new Array with results of callback(v)', ():void => {
+        const list = new TyList([
+          new TyNumber(3),
+          new TyNumber(-2),
+          new TyNumber(5),
+        ])
+        const f = (v: TyValue, index:i32, self:Array<TyValue>):TyValue => {
+          return new TyNumber(v.nativeInteger() * 2)
+        }
+
+        expect(list.map(f)).toStrictEqual([
+          new TyNumber(6),
+          new TyNumber(-4),
+          new TyNumber(10),
+        ])
+      })
+    })
+    describe('tyMap()', ():void => {
+      test('returns new TyList with results of callback(v)', ():void => {
+        const list = new TyList([
+          new TyNumber(3),
+          new TyNumber(-2),
+          new TyNumber(5),
+        ])
+        const f = (args: ArgumentList):TyValue => {
+          const v = args.get(0)
+          return new TyNumber(v.nativeInteger() * 2)
+        }
+
+        expect(list.tyMap(f)).toStrictEqual(new TyList([
+          new TyNumber(6),
+          new TyNumber(-4),
+          new TyNumber(10),
+        ]))
       })
     })
 
