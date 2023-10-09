@@ -1,4 +1,4 @@
-import { ArgumentDescription } from "./ArgumentList"
+import { ArgumentDescription } from "./ArgumentDescription"
 import { TyValue, TyNumber, TyList, TyString } from "./TyValue"
 
 describe('ArgumentDescription', ():void => {
@@ -32,7 +32,6 @@ describe('ArgumentDescription', ():void => {
     })
   })
 
-    // test('it raises an error when parameters dont match types'
-    // it raises an error when return value doesn't match type
-    // it raises an error when number of args don't match
+  // it raises an error when return value doesn't match type
+  // it raises an error when number of args don't match
 })
