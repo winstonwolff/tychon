@@ -1,5 +1,5 @@
 import { Dictionary } from "./Dictionary.ts"
-import { TyList, TyValue, TyNumber, TyString } from "./TyValue"
+import { TyList, TyValue, TyNumber, TyString, TyASFunction } from "./TyValue"
 import { ArgumentList, TychonFunction, TychonMacro } from "./constants"
 import { zip, define, new_lookup } from "./builtins"
 
@@ -47,15 +47,16 @@ describe('bulitins.ts', ():void => {
 
     it('fetches the value in scope', ():void => {
       const scope = new Dictionary()
-      const result = define(scope, new TyList([new TyString("my_var"), new TyString("Teapot")]))
+      define(scope, new TyList([new TyString("my_var"), new TyString("Teapot")]))
 
       expect(new_lookup(scope, new TyList([new TyString("my_var")]))).toStrictEqual(new TyString("Teapot"))
     })
 
     it('fetches functions too', ():void => {
       const scope = new Dictionary()
-      define(scope, new TyFunction([new TyString("double"), double]))
-      expect(new_lookup(scope, new TyList([new TyString("double")]))).toStrictEqual(double)
+      const tyDouble = new TyASFunction(double, 'double')
+      define(scope, new TyList([new TyString("double"), tyDouble]))
+      expect(new_lookup(scope, new TyList([new TyString("double")]))).toStrictEqual(tyDouble)
     })
   })
 })

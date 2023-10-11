@@ -6,9 +6,9 @@ import { Dictionary } from "./Dictionary"
 
 export function lookup(scope: Dictionary, functionName: string):TychonMacro {
   if (functionName === "print") return print
-  // if (functionName === "list") return list
   if (functionName === "module") return module
-  // if (functionName === "define") return define(scope)
+  if (functionName === "define") return define
+  if (functionName === "lookup") return new_lookup
 
   return print
 }

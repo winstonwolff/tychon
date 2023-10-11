@@ -167,4 +167,21 @@ export class TyList extends TyValue {
   }
 }
 
+export class TyASFunction extends TyValue {
+  name: string
+  func: TychonFunction
 
+  constructor(func: TychonFunction, name: string="(unnamed)") {
+    super("TyASFunction")
+    this.func = func
+    this.name = name
+  }
+
+  toString(): string {
+    return `${this.type_name}(${this.func})`
+  }
+
+  inspect(): string {
+    return `${this.type_name}(${this.func})`
+  }
+}

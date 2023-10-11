@@ -18,10 +18,10 @@ describe('interpreter.ts', ():void => {
 
     test('can define variable', ():void => {
       const code = `["module",
-          ["print", "hello", "world"],
-          ["print", "I'm", "a", "Module"],
+          ["define", "name", "winston"],
+          ["print", "hello", ["lookup", "winston"]],
         ]`
-      expect(evaluate(code)).toStrictEqual(`TyList(TyString("[hello world]") TyString("[I'm a Module]"))`)
+      expect(evaluate(code)).toStrictEqual(`TyList(TyString("winston") TyString("[hello winston]"))`)
     })
   })
 })
