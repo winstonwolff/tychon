@@ -6,7 +6,7 @@ Parser Usage
   ./tychon.py <sourcefile>.ty           # execute a source file
   ./tychon.py                           # a REPL
 
-Interpreter Usage
+Wasm Interpreter Usage
 -----------------
   cd wasm-as
   ./runit.sh                            # launch server and compiler

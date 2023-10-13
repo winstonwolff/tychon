@@ -58,3 +58,28 @@ Compilation is just a form of Optimization
       pre-computed or unrolled for speed.
     - repetitions can be combined to save memory
     - Can indicate if you want to optimize for speed or memory.
+
+SmallTalk like:
+    - message oriented programming — parts of your system can operate as separate
+      entities, analagous to a network. They interact via sending messages.
+        - Why would this be good? Less coupling? It's how 
+        - messages could be made via some RPC protocal like JSON-RPC. Then calls
+          could actually go across network--it would be the same as on local
+          machine.
+
+# What does the interpreter provide:
+- evaluates nodes of the program
+- ALU: math, e.g. + - * / ^
+    - primitives
+- CPU: Memory allocation
+    - Fundamental data types
+    - Object
+        - List
+        - String
+        - Dictionary
+        - ArgList
+    - Macro
+- I/O:
+  - network access
+  - DOM access
+  - stdin, stdout, stderr
