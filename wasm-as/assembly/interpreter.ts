@@ -1,24 +1,28 @@
 import { JSON } from "assemblyscript-json/assembly"
-import { lookup } from "./builtins.ts"
-import { ArgumentList } from "./constants.ts"
+import * as builtins from "./builtins.ts"
+import { ArgumentList, TychonMacro } from "./constants.ts"
 import { Dictionary } from "./Dictionary.ts"
 import { TyValue, TyList, TyNumber, TyString } from "./TyValue"
 
-export function evaluate(codeJson: string): string {
+export function evaluateJson(codeJson: string): string {
   // console.log('!!! Tychon evaluator')
   const scope = new Dictionary()
 
   let listOfExpressions: TyList = TyValue.parseJSON(codeJson) as TyList
-  return call(scope, listOfExpressions).inspect()
+  return evaluate(scope, listOfExpressions).inspect()
 }
 
-export function evalValue(scope: Dictionary, value: TyValue): TyValue {
-  // console.log(`!!! evalValue() value=${value.toString()}`)
+export function evaluate(scope: Dictionary, value: TyValue): TyValue {
+  // console.log(`!!! evaluate() value=${value.toString()}`)
   if (value instanceof TyList) {
     return call(scope, value as TyList)
   } else {
     return value
   }
+}
+
+export function tyEvaluate(scope: Dictionary, args: TyList): TyValue {
+  return evaluate(scope, args.get(0))
 }
 
 function call(scope: Dictionary, args: ArgumentList):TyValue {
@@ -33,13 +37,13 @@ function call(scope: Dictionary, args: ArgumentList):TyValue {
   return func(scope, funcArgs)
 }
 
-// function send(args: ArgumentList): TyValue {
-//   // inputs:
-//   const obj = args[0]
-//   const methodName = args[1]
-//   const methodArgs = args.slice(2)
+function lookup(scope: Dictionary, functionName: string):TychonMacro {
+  if (functionName === "evaluate") return tyEvaluate
+  if (functionName === "print") return builtins.print
+  if (functionName === "module") return builtins.module
+  if (functionName === "define") return builtins.define
+  if (functionName === "symbol") return builtins.symbol
 
-//   const func = obj[methodName]
-//   obj.apply(obj, methodName, methodArgs)
-// }
+  return builtins.print
+}
 

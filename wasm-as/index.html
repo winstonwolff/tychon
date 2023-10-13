@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <script type="module">
-      import { evaluate } from "./build/debug.js";
-      // import { evaluate } from "./build/release.js";
-      document.querySelector('#tychon-placeholder').innerText = evaluate(`
+      import { evaluateJson } from "./build/debug.js";
+      // import { evaluateJson } from "./build/release.js";
+      document.querySelector('#tychon-placeholder').innerText = evaluateJson(`
         ["module",
           ["print",  "hello", "world"],
           ["print",  "FOO", "moo"],

@@ -1,43 +1,22 @@
 import { JSON } from "assemblyscript-json/assembly"
 import { ArgumentList, TychonFunction, TychonMacro } from "./constants"
-import { TyValue, TyString, TyList, TyFalse } from "./TyValue"
-import { evalValue } from "./interpreter"
+import { tyList, TyValue, TyString, TyList, TyFalse } from "./TyValue"
+import { tyEvaluate, evaluate } from "./interpreter"
 import { Dictionary } from "./Dictionary"
 
-export function lookup(scope: Dictionary, functionName: string):TychonMacro {
-  if (functionName === "print") return print
-  if (functionName === "module") return module
-  if (functionName === "define") return define
-  if (functionName === "lookup") return new_lookup
-
-  return print
-}
-
-function print(scope: Dictionary, args: ArgumentList):TyValue {
-  const msg = args.toString()
-  // const msg:string = (args as TyList)
-  //   .map( function(v: TyValue): TyList { return v.toString() })
-  //   .join(" ")
-
-  // console.log(`!!! print msg= "${msg}"`)
+export function print(scope: Dictionary, args: ArgumentList):TyValue {
+  const result = new Array<string>()
+  for(let i = 0; i < args.length(); i++) {
+    result.push(evaluate(scope, args.get(i)).toString())
+  }
+  const msg = result.join(' ')
   return new TyString(msg)
 }
 
-// function list( args:ArgumentList ):TyValue {
-//   const msg = args.toString()
-//   const result = new JSON.Arr()
-//   for(let i = 0; i < args.length; i++) {
-//     result.push(args[i])
-//   }
-
-//   return result
-// }
-
-function module(scope: Dictionary, args:ArgumentList): TyValue {
-  // const result = (args as TyList).map( function(v) { return evalValue(scope, v) } )
+export function module(scope: Dictionary, args:ArgumentList): TyValue {
   const result = new Array<TyValue>()
   for(let i = 0; i < (args as TyList).length(); i++) {
-    result.push(evalValue(scope, (args as TyList).get(i)))
+    result.push(evaluate(scope, args.get(i)))
   }
   return new TyList(result)
 }
@@ -60,10 +39,7 @@ export function define(scope: Dictionary, args: ArgumentList): TyValue {
   return value
 }
 
-export function new_lookup(scope: Dictionary, args: ArgumentList): TyValue {
-  // inputs:
-  const name = args.get(0)
-
+export function symbol(scope: Dictionary, args: ArgumentList): TyValue {
   return scope.tyGet(args)
 }
 

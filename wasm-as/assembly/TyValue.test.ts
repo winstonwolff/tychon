@@ -1,5 +1,5 @@
 import { JSON } from "assemblyscript-json/assembly"
-import { TyValue, TyString, TyNumber, TyList } from "./TyValue"
+import { TyValue, TyString, tyString, TyNumber, tyNumber, TyBoolean, TyTrue, TyFalse, tyList, TyList } from "./TyValue"
 import { ArgumentList, TychonFunction } from "./constants"
 
 describe('TyValue.ts', ():void => {

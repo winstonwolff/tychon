@@ -48,6 +48,7 @@ export class TyValue {
   inspect(): string { throw new Error(`not implemented in '${typeof(this)}'`) }
 }
 
+export const tyString = (s: string):TyValue => new TyString(s)
 export class TyString extends TyValue {
   value: string = "";
 
@@ -68,6 +69,7 @@ export class TyString extends TyValue {
   instance_of(): TyBool { throw new Error(`not implemented in ${this.class.name}`) }
 }
 
+export const tyNumber = (n: number):TyValue => new TyNumber(n)
 export class TyNumber extends TyValue {
   value: number = 0;
 
@@ -102,6 +104,7 @@ export class TyBoolean extends TyValue {
 export const TyTrue = new TyBoolean(true)
 export const TyFalse = new TyBoolean(false)
 
+export const tyList = (list: Array<TyValue>):TyValue => new TyList(list)
 export class TyList extends TyValue {
   arrayOfValues: Array<TyValue>
 
@@ -164,24 +167,5 @@ export class TyList extends TyValue {
 
   any( is_true: (value: TyValue, index: i32, self: Array<TyValue>) => boolean ): boolean {
     return this.arrayOfValues.some(is_true)
-  }
-}
-
-export class TyASFunction extends TyValue {
-  name: string
-  func: TychonFunction
-
-  constructor(func: TychonFunction, name: string="(unnamed)") {
-    super("TyASFunction")
-    this.func = func
-    this.name = name
-  }
-
-  toString(): string {
-    return `${this.type_name}(${this.func})`
-  }
-
-  inspect(): string {
-    return `${this.type_name}(${this.func})`
   }
 }
