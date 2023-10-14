@@ -1,5 +1,8 @@
 import { JSON } from "assemblyscript-json/assembly"
+import { Dictionary } from "./Dictionary"
 import { ArgumentList, TychonFunction } from "./constants"
+import { ArgumentDescription } from "./ArgumentDescription"
+import { evaluate } from "./interpreter"
 
 export class TyValue {
   type_name:string
@@ -104,13 +107,23 @@ export class TyBoolean extends TyValue {
 export const TyTrue = new TyBoolean(true)
 export const TyFalse = new TyBoolean(false)
 
-export const tyList = (list: Array<TyValue>):TyValue => new TyList(list)
+export const tyList = (list: Array<TyValue> = []):TyList => new TyList(list)
 export class TyList extends TyValue {
   arrayOfValues: Array<TyValue>
 
   constructor(list:Array<TyValue> = []) {
     super("TyList")
     this.arrayOfValues = list
+  }
+
+  toString(): string {
+    const parts: string[] = this.arrayOfValues.map<string>( function(v){ return v.toString() } )
+    return `[${parts.join(" ")}]`
+  }
+
+  inspect(): string {
+    const parts: string[] = this.arrayOfValues.map<string>( function(v){ return v.inspect() } )
+    return `TyList(${parts.join(" ")})`
   }
 
   get(index: i32): TyValue {
@@ -155,17 +168,38 @@ export class TyList extends TyValue {
     return result
   }
 
+  any( is_true: (value: TyValue, index: i32, self: Array<TyValue>) => boolean ): boolean {
+    return this.arrayOfValues.some(is_true)
+  }
+}
+
+export const tyMacro = (name:string, argDesc:ArgumentDescription, code: TyValue):TyMacro =>
+  ( new TyMacro(name, argDesc, code) )
+export class TyMacro extends TyValue {
+  name: string
+  argDesc: ArgumentDescription
+  code: TyValue
+
+  constructor(name:string, argDesc:ArgumentDescription, code: TyValue ) {
+    super("TyMacro")
+    this.name = name
+    this.argDesc = argDesc
+    this.code = code
+  }
+
   toString(): string {
-    const parts: string[] = this.arrayOfValues.map<string>( function(v){ return v.toString() } )
-    return `[${parts.join(" ")}]`
+    return this.inspect()
   }
 
   inspect(): string {
-    const parts: string[] = this.arrayOfValues.map<string>( function(v){ return v.inspect() } )
-    return `TyList(${parts.join(" ")})`
+    return `TyMacro(${this.name})`
   }
 
-  any( is_true: (value: TyValue, index: i32, self: Array<TyValue>) => boolean ): boolean {
-    return this.arrayOfValues.some(is_true)
+  call(args: ArgumentList): TyValue {
+    this.argDesc.throw_if_invalid(args)
+    // inputs:
+    const scope = args.get(0) as Dictionary
+
+    return evaluate(scope, this.code)
   }
 }

@@ -1,5 +1,8 @@
 import { JSON } from "assemblyscript-json/assembly"
-import { TyValue, TyString, tyString, TyNumber, tyNumber, TyBoolean, TyTrue, TyFalse, tyList, TyList } from "./TyValue"
+import { TyValue, TyString, tyString, TyNumber, tyNumber, TyBoolean, TyTrue, TyFalse,
+  tyList, TyList, tyMacro, TyMacro } from "./TyValue"
+import { tyArgumentDescription, ArgumentDescription } from "./ArgumentDescription"
+import { Dictionary } from "./Dictionary"
 import { ArgumentList, TychonFunction } from "./constants"
 
 describe('TyValue.ts', ():void => {
@@ -148,6 +151,21 @@ describe('TyValue.ts', ():void => {
 
     test('can parse list of 3', ():void => {
       expect(TyValue.parseJSON('["abc", 123.0, "def"]').inspect()).toStrictEqual('TyList(TyString("abc") TyNumber(123.0) TyString("def"))')
+    })
+  })
+
+
+  describe('TyMacro', ():void => {
+    test('executes the code', ():void => {
+      const m:TyMacro = tyMacro(
+        'double',
+        tyArgumentDescription(tyList([tyList([
+          tyList([tyString("scope"), tyString("Dictionary")])
+        ])])),
+        tyNumber(3)
+      )
+      const scope = new Dictionary()
+      expect<TyValue>(m.call(tyList([scope]))).toStrictEqual(tyNumber(3))
     })
   })
 })

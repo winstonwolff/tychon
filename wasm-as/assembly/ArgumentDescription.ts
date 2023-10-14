@@ -8,6 +8,9 @@ import { zip } from "./builtins"
   Mnenomic: parameter -> placeholder;  argument -> actual value
 
 */
+export const tyArgumentDescription = (parameter_names_and_types: TyList):ArgumentDescription =>
+  ( new ArgumentDescription(parameter_names_and_types) )
+
 export class ArgumentDescription extends TyValue {
   parameter_names_and_types: TyList
 
@@ -16,7 +19,19 @@ export class ArgumentDescription extends TyValue {
     this.parameter_names_and_types = args.get(0) as TyList
   }
 
+  toString(): string {
+    return this.inspect()
+  }
+
+  inspect(): string {
+    return `ArgumentDescription(${this.parameter_names_and_types.inspect()})`
+  }
+
   throw_if_invalid(args: ArgumentList): ArgumentDescription {
+    if (this.parameter_names_and_types.length() != args.length()) {
+      throw new Error(`ArgumentDescription: ${args.length()} args provided for args: ${this}`)
+    }
+
     const params_and_args = zip(null, this.parameter_names_and_types, args)
     params_and_args.tyMap( (args: ArgumentList):TyValue => {
       // input:
@@ -27,8 +42,8 @@ export class ArgumentDescription extends TyValue {
       const param_type_str = param_pair.get(1)
       const arg = (param_and_arg as TyList).get(1)
 
-      if (arg.type_name != param_type_str.nativeString()) {
-        throw new Error(`Parameter '${param_name}' must be a ${param_type_str} but was ${arg.inspect()}`)
+      if (param_type_str.nativeString() != arg.type_name) {
+        throw new Error(`Parameter '${param_name}' must be a ${param_type_str.nativeString()} but was ${arg.inspect()}`)
       }
       return TyFalse
     })

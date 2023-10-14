@@ -6,7 +6,7 @@ export class Dictionary extends TyValue {
   namedValues: Map<string, TyValue>
 
   constructor() {
-    super()
+    super("Dictionary")
     this.namedValues = new Map()
   }
 
