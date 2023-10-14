@@ -8,15 +8,15 @@ import { zip } from "./builtins"
   Mnenomic: parameter -> placeholder;  argument -> actual value
 
 */
-export const tyArgumentDescription = (parameter_names_and_types: TyList):ArgumentDescription =>
-  ( new ArgumentDescription(parameter_names_and_types) )
+export const tyArgumentDescription = (argDesc: TyList):ArgumentDescription =>
+  ( new ArgumentDescription(argDesc) )
 
 export class ArgumentDescription extends TyValue {
-  parameter_names_and_types: TyList
+  argDesc: TyList
 
   constructor(args: ArgumentList) {
     super()
-    this.parameter_names_and_types = args.get(0) as TyList
+    this.argDesc = args
   }
 
   toString(): string {
@@ -24,15 +24,15 @@ export class ArgumentDescription extends TyValue {
   }
 
   inspect(): string {
-    return `ArgumentDescription(${this.parameter_names_and_types.inspect()})`
+    return `ArgumentDescription(${this.argDesc.inspect()})`
   }
 
   throw_if_invalid(args: ArgumentList): ArgumentDescription {
-    if (this.parameter_names_and_types.length() != args.length()) {
+    if (this.argDesc.length() != args.length()) {
       throw new Error(`ArgumentDescription: ${args.length()} args provided for args: ${this}`)
     }
 
-    const params_and_args = zip(null, this.parameter_names_and_types, args)
+    const params_and_args = zip(null, this.argDesc, args)
     params_and_args.tyMap( (args: ArgumentList):TyValue => {
       // input:
       const param_and_arg:TyList = (args as TyList).get(0) as TyList

@@ -159,9 +159,8 @@ describe('TyValue.ts', ():void => {
     test('executes the code', ():void => {
       const m:TyMacro = tyMacro(
         'double',
-        tyArgumentDescription(tyList([tyList([
           tyList([tyString("scope"), tyString("Dictionary")])
-        ])])),
+        ),
         tyNumber(3)
       )
       const scope = new Dictionary()

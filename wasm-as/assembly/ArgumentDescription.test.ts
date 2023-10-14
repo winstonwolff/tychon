@@ -1,22 +1,20 @@
 import { ArgumentDescription } from "./ArgumentDescription"
-import { TyValue, TyNumber, TyList, TyString } from "./TyValue"
+import { tyNumber, tyList, tyString } from "./TyValue"
 
 describe('ArgumentDescription', ():void => {
 
   describe('throw_if_invalid()', ():void => {
-    const subject = ():ArgumentDescription => (new ArgumentDescription(new TyList([
-      new TyList([
-        new TyList([new TyString("key"), new TyString("TyString")]),
-        new TyList([new TyString("value"), new TyString("TyString")])
-      ])
+    const subject = ():ArgumentDescription => (new ArgumentDescription(tyList([
+      tyList([tyString("key"), tyString("TyString")]),
+      tyList([tyString("value"), tyString("TyString")])
     ])))
 
     test('returns False when args dont match ArgumentDescription', ():void => {
       const arg_desc = subject()
       expect(
-        arg_desc.throw_if_invalid(new TyList([
-          new TyString('first value'),
-          new TyString('second value')
+        arg_desc.throw_if_invalid(tyList([
+          tyString('first value'),
+          tyString('second value')
         ]))
       ).toBe(arg_desc)
     })
@@ -24,9 +22,9 @@ describe('ArgumentDescription', ():void => {
     test('raises an error when args don\'t match', ():void => {
       expect( () => {
         const arg_desc = subject()
-        arg_desc.throw_if_invalid(new TyList([
-          new TyString('first value'),
-          new TyNumber(99)
+        arg_desc.throw_if_invalid(tyList([
+          tyString('first value'),
+          tyNumber(99)
         ]))
       }).toThrow()
     })
