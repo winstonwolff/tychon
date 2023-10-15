@@ -1,0 +1,32 @@
+{
+  "name": "tychon-interpreter",
+  "description": "Interprets Tychon low-level S-expressions",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "ISC",
+  "type": "module",
+  "scripts": {
+    "clean": "rm -rf build/",
+    "test": "printf '\\33c\\e[3J' && npx asp --verbose",
+    "test:watch": "npm run dependencies | entr -n npm test",
+    "dependencies": "ls as-pect.config.js package.json assembly/*.ts",
+    "asbuild:watch": "npm run dependencies | entr -n npm run asbuild",
+    "asbuild": "npm run clean && npm run asbuild:debug && npm run asbuild:release",
+    "asbuild:debug": "asc assembly/index.ts assembly/interpreter.ts --target debug",
+    "asbuild:release": "asc assembly/index.ts assembly/interpreter.ts --target release"
+  },
+  "exports": {
+    ".": {
+      "import": "./build/release.js",
+      "types": "./build/release.d.ts"
+    }
+  },
+  "dependencies": {
+    "assemblyscript-json": "^1.1.0",
+    "assemblyscript": "^0.27.10"
+  },
+  "devDependencies": {
+    "@as-pect/cli": "^8.1.0",
+    "aspect": "^0.0.2"
+  }
+}
