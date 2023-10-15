@@ -67,6 +67,12 @@ SmallTalk like:
           could actually go across network--it would be the same as on local
           machine.
 
+writing modes
+    - Tychon code
+    - HTML a la JSX
+    - Human text, i.e. documentation
+    - executable examples within documentation
+
 # What does the interpreter provide:
 - evaluates nodes of the program
 - ALU: math, e.g. + - * / ^

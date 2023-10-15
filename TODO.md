@@ -2,10 +2,6 @@ Thoughts on Tychon values and metadata for them
 
 [ Shortcut — list of stories ]( https://app.shortcut.com/nitidbit/stories/space/unsaved )
 
-value
-    - name
-    - exported
-    - doc string
 
 TODO
 ====
@@ -18,13 +14,6 @@ TODO
 
 Ideas
 -----
-
-
-    writing modes
-        - Tychon code
-        - HTML a la JSX
-        - Human text, i.e. documentation
-        - executable examples within documentation
 
 
 ### Automated Testing
