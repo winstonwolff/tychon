@@ -32,9 +32,15 @@ Wasm Interpreter Usage
 
 Docs
 ----
-  [To Do List](TODO.md)
-  [Abstractions](docs/abstractions.md)
-  [Dreams and Wishes](docs/dreams_and_wishes.md)
+  [ To Do List ]( TODO.md )
+  [ Abstractions ]( docs/abstractions.md )
+
+Ideas
+-----
+  [ Dreams and Wishes ]( docs/dreams_and_wishes.md )
+  [ New Functional Lang ]( docs/new_functional_lang.md )
+  [ Description Language ]( docs/description_language.md )
+  
 
 
 References on PEG & Packrat parsers
