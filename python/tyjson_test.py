@@ -19,4 +19,10 @@ def test_dump_Call():
     parseinfo = {}
     assert tyjson.dump(Call([Sym('my_function'), 1, "a string", Sym("my_symbol")])) == '["my_function", 1, "a string", ["Symbol", "my_symbol"]]'
 
+def test_dump_List():
+    parseinfo = {}
+    assert tyjson.dump(
+        [1, "a string", Sym("my_symbol")]
+    ) == '[1, "a string", ["Symbol", "my_symbol"]]'
+
 

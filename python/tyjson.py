@@ -2,23 +2,33 @@
 Serialize Tychon AST object to JSON so they can be read by WASM interpreter
 '''
 
+import json
 from _parser import Sym, Call
+from pprint import pformat
 
-def dump(astNode):
-    if isinstance(astNode, str):
-        return f'"{astNode}"'
+def dump(ast_graph, pretty=False):
+    if pretty:
+        return pformat(nodeAsJson(ast_graph), indent=4, width=120)
+    else:
+        return json.dumps(nodeAsJson(ast_graph)) + "\n"
 
-    elif isinstance(astNode, int):
-        return str(astNode)
 
-    elif isinstance(astNode, float):
-        return str(astNode)
 
-    elif isinstance(astNode, Sym):
-        return f'["Symbol", "{astNode.name}"]'
+def nodeAsJson(ast_node):
+    if isinstance(ast_node, (str, int, float)):
+        return ast_node
 
-    elif isinstance(astNode, Call):
-        args_json = list(dump(arg) for arg in [astNode.function_name] + astNode.args)
-        return f"[{ ', '.join(args_json) }]"
+    elif isinstance(ast_node, Sym):
+        return ["Symbol", ast_node.name]
 
+    elif isinstance(ast_node, Call):
+        return [ast_node.function_name] + [nodeAsJson(arg) for arg in ast_node.args]
+
+    elif isinstance(ast_node, (list, tuple)):
+        return [nodeAsJson(part) for part in ast_node]
+
+    elif ast_node is None:
+        return ""
+
+    raise Exception(f'Unknown node: { repr(ast_node) }')
 
