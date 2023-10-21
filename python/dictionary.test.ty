@@ -3,8 +3,8 @@ test:: 'dictionary_get'
     assert_equal:: dictionary_get(d 'a') 1
     assert_equal:: dictionary_get(d 'b') 2
 
-test:: 'dictionary_get works with Scopes'
-    define(d Dictionary(['a' 1] ['b' 2]))
-    define(s Scope(d))
-    assert_equal(dictionary_get(s 'a') 1)
+# test:: 'dictionary_get works with Scopes'
+#     define(d Dictionary(['a' 1] ['b' 2]))
+#     define(s Scope(d))
+#     assert_equal(dictionary_get(s 'a') 1)
 

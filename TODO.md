@@ -1,7 +1,5 @@
 Thoughts on Tychon values and metadata for them
 
-[ Shortcut — list of stories ]( https://app.shortcut.com/nitidbit/stories/space/unsaved )
-
 
 TODO
 ====

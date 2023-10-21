@@ -10,6 +10,7 @@ Driving Feature? Who would adopt it?
         - programming by contract -- programmable types
     - compiles to WebASM. Run it on CloudFlare.
         WHO: Cloudflare
+        WHO: WASMER -- with threads
     - embeddable in other people's programs as text editor or graphical block language
         WHO: Zapier, Slack Workflows, Logic AND OR statements, Gitlab or CirceCI yaml, AirTable
     - multi-threading & messaging to take advantage of cores and immutable data

@@ -1,10 +1,13 @@
 # Tychon — An experiment in a python-y smalltalk-y lisp-y embedded language.
 
-Parser Usage
------
+Python Parser Usage
+-------------------
   ./run_tests.sh                        # run the tests
   ./tychon.py <sourcefile>.ty           # execute a source file
   ./tychon.py                           # a REPL
+
+### Developer setup
+  pip install -r requirements.txt
 
 Wasm Interpreter Usage
 -----------------
@@ -40,7 +43,7 @@ Ideas
   [ Dreams and Wishes ]( docs/dreams_and_wishes.md )
   [ New Functional Lang ]( docs/new_functional_lang.md )
   [ Description Language ]( docs/description_language.md )
-  
+
 
 
 References on PEG & Packrat parsers
