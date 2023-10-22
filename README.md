@@ -2,12 +2,26 @@
 
 Python Parser Usage
 -------------------
-  ./run_tests.sh                        # run the tests
-  ./tychon.py <sourcefile>.ty           # execute a source file
-  ./tychon.py                           # a REPL
+    cd python
+    ./run_tests.sh                        # run the tests
+    ./tychon.py <sourcefile>.ty           # execute a source file
+    ./tychon.py                           # a REPL
+
 
 ### Developer setup
-  pip install -r requirements.txt
+    brew install entr
+
+    cd python
+    pip install -r requirements.txt
+
+### Run it all together
+
+    cd tychon
+    honcho start
+    open http://localhost:3000
+
+Now you can edit main.ty and it's loaded into browser.
+
 
 Wasm Interpreter Usage
 -----------------
@@ -15,6 +29,8 @@ Wasm Interpreter Usage
   ./runit.sh                            # launch server and compiler
   npm test                              # run unit tests
   npm run test:watch                    # re-run test when a file changes
+
+
 
 ## Programming language for teams
 - communication

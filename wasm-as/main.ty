@@ -1,0 +1,3 @@
+module::
+    print('hello' 'from' 'Tychon')
+    print('FOO foo fah FIG')

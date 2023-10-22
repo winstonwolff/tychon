@@ -4,11 +4,12 @@
     <script type="module">
       import { evaluateJson } from "./build/debug.js";
       // import { evaluateJson } from "./build/release.js";
-      document.querySelector('#tychon-placeholder').innerText = evaluateJson(`
-        ["module",
-          ["print",  "hello", "world"],
-          ["print",  "FOO", "moo"],
-        ]`);
+
+      const resp = await fetch('./main.ty.json')
+      const mainTyJson = await resp.text()
+
+      const output = evaluateJson(mainTyJson)
+      document.querySelector('#tychon-placeholder').innerText = output
     </script>
   </head>
   <body>
