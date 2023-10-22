@@ -1,7 +1,10 @@
 .pytest_cache
 docs.html
-vim-tychon/
+
 *.ty.json
 
 wasm-as/build/
 wasm-as/node_modules/
+
+# vim-tychon is a git subproject
+vim-tychon/

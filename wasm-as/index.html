@@ -7,6 +7,7 @@
 
       const resp = await fetch('./main.ty.json')
       const mainTyJson = await resp.text()
+      console.debug('mainTyJson =', mainTyJson)
 
       const output = evaluateJson(mainTyJson)
       document.querySelector('#tychon-placeholder').innerText = output

@@ -43,6 +43,7 @@ function lookup(scope: Dictionary, functionName: string):TychonMacro {
   if (functionName === "module") return builtins.module
   if (functionName === "define") return builtins.define
   if (functionName === "symbol") return builtins.symbol
+  if (functionName === "Symbol") return builtins.symbol
 
   return builtins.print
 }
