@@ -1,4 +1,4 @@
-import { TyValue, TyString, TyList, TyFalse } from "./TyValue"
+import * as tyv from "./TyValue"
 import { ArgumentList } from "./constants.ts"
 import { zip } from "./builtins"
 
@@ -8,15 +8,19 @@ import { zip } from "./builtins"
   Mnenomic: parameter -> placeholder;  argument -> actual value
 
 */
-export const tyArgumentDescription = (argDesc: TyList):ArgumentDescription =>
+export const tyArgumentDescription = (argDesc: tyv.List):ArgumentDescription =>
   ( new ArgumentDescription(argDesc) )
 
-export class ArgumentDescription extends TyValue {
-  argDesc: TyList
+export class ArgumentDescription extends tyv.Value {
+  argDesc: tyv.List
 
   constructor(args: ArgumentList) {
     super()
     this.argDesc = args
+  }
+
+  static new(args: ArgumentList): ArgumentDescription {
+    return new ArgumentDescription(args)
   }
 
   toString(): string {
@@ -33,19 +37,19 @@ export class ArgumentDescription extends TyValue {
     }
 
     const params_and_args = zip(null, this.argDesc, args)
-    params_and_args.tyMap( (args: ArgumentList):TyValue => {
+    params_and_args.tyMap( (args: ArgumentList):tyv.Value => {
       // input:
-      const param_and_arg:TyList = (args as TyList).get(0) as TyList
+      const param_and_arg:tyv.List = (args as tyv.List).get(0) as tyv.List
 
-      const param_pair: TyList = param_and_arg.get(0) as TyList
+      const param_pair: tyv.List = param_and_arg.get(0) as tyv.List
       const param_name = param_pair.get(0)
       const param_type_str = param_pair.get(1)
-      const arg = (param_and_arg as TyList).get(1)
+      const arg = (param_and_arg as tyv.List).get(1)
 
       if (param_type_str.nativeString() != arg.type_name) {
         throw new Error(`Parameter '${param_name}' must be a ${param_type_str.nativeString()} but was ${arg.inspect()}`)
       }
-      return TyFalse
+      return tyv.False
     })
 
     return this

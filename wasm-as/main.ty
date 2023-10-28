@@ -1,5 +1,4 @@
 module::
     print('hello' 'from' 'Tychon')
-    print('FOO foo fah FIG')
-    define('a' 'AAA')
-    print('the variable "a" is' a)
+    define('person' 'Stephanie')
+    print('Hello to' person)

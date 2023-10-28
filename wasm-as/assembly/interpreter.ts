@@ -2,38 +2,38 @@ import { JSON } from "assemblyscript-json/assembly"
 import * as builtins from "./builtins.ts"
 import { ArgumentList, TychonMacro } from "./constants.ts"
 import { Dictionary } from "./Dictionary.ts"
-import { TyValue, TyList, TyNumber, TyString } from "./TyValue"
+import * as tyv from "./TyValue"
 
 export function evaluateJson(codeJson: string): string {
   // console.log('!!! Tychon evaluator')
   const scope = new Dictionary()
 
-  let listOfExpressions: TyList = TyValue.parseJSON(codeJson) as TyList
+  let listOfExpressions: tyv.List = tyv.Value.parseJSON(codeJson) as tyv.List
   return evaluate(scope, listOfExpressions).inspect()
 }
 
-export function evaluate(scope: Dictionary, value: TyValue): TyValue {
+export function evaluate(scope: Dictionary, value: tyv.Value): tyv.Value {
   // console.log(`!!! evaluate() value=${value.toString()}`)
-  if (value instanceof TyList) {
-    return call(scope, value as TyList)
+  if (value instanceof tyv.List) {
+    return call(scope, value as tyv.List)
   } else {
     return value
   }
 }
 
-export function tyEvaluate(scope: Dictionary, args: TyList): TyValue {
+export function tyEvaluate(scope: Dictionary, args: tyv.List): tyv.Value {
   return evaluate(scope, args.get(0))
 }
 
-function call(scope: Dictionary, args: ArgumentList):TyValue {
-  if (! args instanceof TyList) throw new Error('args should be TyList')
+function call(scope: Dictionary, args: ArgumentList):tyv.Value {
+  if (! args instanceof tyv.List) throw new Error('args should be List')
 
   // input:
-  const functionName:TyValue = (args as TyList).get(0)
-  const funcArgs = new TyList((args as TyList).slice(1))
+  const functionName:tyv.Value = (args as tyv.List).get(0)
+  const funcArgs = new tyv.List((args as tyv.List).slice(1))
 
   // console.log(`!!! call() functionName = ${functionName}`)
-  const func = lookup(scope, (functionName as TyString).nativeString())
+  const func = lookup(scope, (functionName as tyv.TyString).nativeString())
   return func(scope, funcArgs)
 }
 
@@ -44,7 +44,8 @@ function lookup(scope: Dictionary, functionName: string):TychonMacro {
   if (functionName === "define") return builtins.define
   if (functionName === "symbol") return builtins.symbol
   if (functionName === "Symbol") return builtins.symbol
+  // if (functionName === "Macro") return Macro.new
 
-  return builtins.print
+  return builtins.noop
 }
 

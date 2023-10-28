@@ -1,9 +1,9 @@
 import { JSON } from "assemblyscript-json/assembly"
 import { ArgumentList } from "./constants.ts"
-import { TyValue, TyString, TyNumber, TyList } from './TyValue'
+import * as tyv from "./TyValue"
 
-export class Dictionary extends TyValue {
-  namedValues: Map<string, TyValue>
+export class Dictionary extends tyv.Value {
+  namedValues: Map<string, tyv.Value>
 
   constructor() {
     super("Dictionary")
@@ -18,40 +18,40 @@ export class Dictionary extends TyValue {
     return `Dictionary( ${this.toString()} )`
   }
 
-  has(key: TyValue): boolean {
+  has(key: tyv.Value): boolean {
     return this.namedValues.has(key)
   }
 
   // store 'value' under 'key'
-  set(key: TyValue, value: TyValue): TyValue {
+  set(key: tyv.Value, value: tyv.Value): tyv.Value {
     this.namedValues.set(this._normalizedKey(key), value)
     return value
   }
 
   // same as set(), but with Tychon args
-  tySet(args: ArgumentList): TyValue {
+  tySet(args: ArgumentList): tyv.Value {
     // inputs:
-    const key = (args as TyList).get(0)
-    const value = (args as TyList).get(1)
+    const key = (args as tyv.List).get(0)
+    const value = (args as tyv.List).get(1)
 
     this.set(key, value)
     return value
   }
 
   // Returns the value by 'key'
-  get(key: TyValue): TyValue {
+  get(key: tyv.Value): tyv.Value {
     return this.namedValues.get(this._normalizedKey(key))
   }
 
   // same as get() but with Tychon args
-  tyGet(args: ArgumentList): TyValue {
+  tyGet(args: ArgumentList): tyv.Value {
     // inputs:
-    const key = (args as TyList).get(0) // The key of the value you want
+    const key = (args as tyv.List).get(0) // The key of the value you want
 
     return this.get(key)
   }
 
-  _normalizedKey(k: TyValue): string {
+  _normalizedKey(k: tyv.Value): string {
     return k.inspect()
   }
 }

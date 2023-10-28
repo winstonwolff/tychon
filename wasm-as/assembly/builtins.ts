@@ -1,36 +1,36 @@
 import { JSON } from "assemblyscript-json/assembly"
 import { ArgumentList, TychonFunction, TychonMacro } from "./constants"
-import { tyList, TyValue, TyString, TyList, TyFalse } from "./TyValue"
+import * as tyv from "./TyValue"
 import { tyEvaluate, evaluate } from "./interpreter"
 import { Dictionary } from "./Dictionary"
 
-export function print(scope: Dictionary, args: ArgumentList):TyValue {
+export function print(scope: Dictionary, args: ArgumentList):tyv.Value {
   const result = new Array<string>()
   for(let i = 0; i < args.length(); i++) {
     result.push(evaluate(scope, args.get(i)).toString())
   }
   const msg = result.join(' ')
-  return new TyString(msg)
+  return new tyv.TyString(msg)
 }
 
-export function module(scope: Dictionary, args:ArgumentList): TyValue {
-  const result = new Array<TyValue>()
-  for(let i = 0; i < (args as TyList).length(); i++) {
+export function module(scope: Dictionary, args:ArgumentList): tyv.Value {
+  const result = new Array<tyv.Value>()
+  for(let i = 0; i < (args as tyv.List).length(); i++) {
     result.push(evaluate(scope, args.get(i)))
   }
-  return new TyList(result)
+  return new tyv.List(result)
 }
 
-export function zip(_unused: null | Dictionary, seq_1: TyList, seq_2: TyList): TyList {
+export function zip(_unused: null | Dictionary, seq_1: tyv.List, seq_2: tyv.List): tyv.List {
   if (seq_1.length() != seq_2.length()) throw new Error('Sequences must be the same length.')
-  const result = new TyList()
+  const result = new tyv.List()
   for(let i = 0; i < seq_1.length(); i++) {
-    result.append( new TyList([seq_1.get(i), seq_2.get(i)]) )
+    result.append( new tyv.List([seq_1.get(i), seq_2.get(i)]) )
   }
   return result
 }
 
-export function define(scope: Dictionary, args: ArgumentList): TyValue {
+export function define(scope: Dictionary, args: ArgumentList): tyv.Value {
   // inputs:
   const name = args.get(0)
   const value = args.get(1)
@@ -39,7 +39,10 @@ export function define(scope: Dictionary, args: ArgumentList): TyValue {
   return value
 }
 
-export function symbol(scope: Dictionary, args: ArgumentList): TyValue {
+export function symbol(scope: Dictionary, args: ArgumentList): tyv.Value {
   return scope.tyGet(args)
 }
 
+export function noop(scope: Dictionary, args: ArgumentList): tyv.Value {
+  return tyv.TyString.new("")
+}
