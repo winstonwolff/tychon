@@ -37,7 +37,9 @@ def run_file(source_fname, verbose=None):
 
 def compile_file(source_fname, verbose=None):
     target_fname = Path(source_fname).with_suffix(".ty.json")
-    target_fname.unlink() # if the compilation fails, make it obvious because JSON is missing
+
+    # if the compilation fails, make it obvious because JSON is missing
+    if target_fname.exists(): target_fname.unlink()
 
     with open(source_fname, 'rt') as f:
         code_str = f.read()
