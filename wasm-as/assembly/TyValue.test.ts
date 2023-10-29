@@ -1,6 +1,6 @@
 import { JSON } from "assemblyscript-json/assembly"
 import * as tyv from "./TyValue"
-import { tyArgumentDescription, ArgumentDescription } from "./ArgumentDescription"
+import { ArgumentDescription } from "./ArgumentDescription"
 import { Dictionary } from "./Dictionary"
 import { ArgumentList, TychonFunction, TychonMacro } from "./constants"
 
@@ -10,13 +10,13 @@ describe('TyValue.ts', ():void => {
     expect(1).toStrictEqual(1)
   })
 
-  describe('TyString', ():void => {
+  describe('String', ():void => {
     test('toString() returns bare string e.g. "abc"', ():void => {
-      expect(new tyv.TyString('blah').toString()).toStrictEqual('blah')
+      expect(new tyv.String('blah').toString()).toStrictEqual('blah')
     })
 
     test('inspect() returns string with quotes e.g. \'"abc"\'', ():void => {
-      expect(new tyv.TyString('blah').inspect()).toStrictEqual('TyString("blah")')
+      expect(new tyv.String('blah').inspect()).toStrictEqual('String("blah")')
     })
   })
 
@@ -31,23 +31,23 @@ describe('TyValue.ts', ():void => {
   describe('List', ():void => {
     describe('get()', ():void => {
       test('returns value at given index', ():void => {
-        const list = new tyv.List([new tyv.TyString('A')])
-        expect(list.get(0)).toStrictEqual(new tyv.TyString('A'))
+        const list = new tyv.List([new tyv.String('A')])
+        expect(list.get(0)).toStrictEqual(new tyv.String('A'))
       })
     })
 
     describe('tyGet()', ():void => {
       test('returns value at given index', ():void => {
-        const list = new tyv.List([new tyv.TyString('A')])
-        expect(list.tyGet(new tyv.List([tyv.Number.new(0)]))).toStrictEqual(new tyv.TyString('A'))
+        const list = new tyv.List([new tyv.String('A')])
+        expect(list.tyGet(new tyv.List([tyv.Number.new(0)]))).toStrictEqual(new tyv.String('A'))
       })
     })
 
     describe('append()', ():void => {
       test('adds element to the end', ():void => {
-        const list = new tyv.List([new tyv.TyString('A')])
-        list.append(new tyv.TyString('B'))
-        expect(list).toStrictEqual(new tyv.List([new tyv.TyString('A'), new tyv.TyString('B')]))
+        const list = new tyv.List([new tyv.String('A')])
+        list.append(new tyv.String('B'))
+        expect(list).toStrictEqual(new tyv.List([new tyv.String('A'), new tyv.String('B')]))
       })
     })
 
@@ -122,7 +122,7 @@ describe('TyValue.ts', ():void => {
 
     test('converts from JSON.Strings', ():void => {
       const jsonValue:JSON.Value = new JSON.Str('abc')
-      expect(tyv.Value.fromJsonValue(jsonValue).inspect()).toStrictEqual('TyString("abc")')
+      expect(tyv.Value.fromJsonValue(jsonValue).inspect()).toStrictEqual('String("abc")')
     })
 
     test('converts from JSON.Bools', ():void => {
@@ -134,22 +134,22 @@ describe('TyValue.ts', ():void => {
       const array: JSON.Arr = JSON.Value.Array()
       array.push(new JSON.Num(123))
       array.push(new JSON.Str('abc'))
-      expect(tyv.Value.fromJsonValue(array).inspect()).toStrictEqual('List(Number(123.0) TyString("abc"))')
+      expect(tyv.Value.fromJsonValue(array).inspect()).toStrictEqual('List(Number(123.0) String("abc"))')
     })
   })
 
 
   describe('parseJSON()', ():void => {
     test('can parse lists', ():void => {
-      expect(tyv.Value.parseJSON('["abc"]').inspect()).toStrictEqual('List(TyString("abc"))')
+      expect(tyv.Value.parseJSON('["abc"]').inspect()).toStrictEqual('List(String("abc"))')
     })
 
     test('can parse list of 2', ():void => {
-      expect(tyv.Value.parseJSON('["abc", "def"]').inspect()).toStrictEqual('List(TyString("abc") TyString("def"))')
+      expect(tyv.Value.parseJSON('["abc", "def"]').inspect()).toStrictEqual('List(String("abc") String("def"))')
     })
 
     test('can parse list of 3', ():void => {
-      expect(tyv.Value.parseJSON('["abc", 123.0, "def"]').inspect()).toStrictEqual('List(TyString("abc") Number(123.0) TyString("def"))')
+      expect(tyv.Value.parseJSON('["abc", 123.0, "def"]').inspect()).toStrictEqual('List(String("abc") Number(123.0) String("def"))')
     })
   })
 
@@ -158,11 +158,11 @@ describe('TyValue.ts', ():void => {
     test('executes Tychon code', ():void => {
       const m:tyv.Macro = tyv.Macro.new(
         'foo',
-        ArgumentDescription.new(tyv.List.new([])),
-        tyv.TyString.new("FOO")
+        ArgumentDescription.ofArray([]),
+        tyv.String.new("FOO")
       )
       const scope = new Dictionary()
-      expect<tyv.Value>(m.call(scope, tyv.List.new([]))).toStrictEqual(tyv.TyString.new("FOO"))
+      expect<tyv.Value>(m.call(scope, tyv.List.new([]))).toStrictEqual(tyv.String.new("FOO"))
     })
   })
 
@@ -170,11 +170,11 @@ describe('TyValue.ts', ():void => {
     test('executes an AssemblyScript function', ():void => {
       const m = new tyv.NativeMacro(
         'foo',
-        ArgumentDescription.new(tyv.List.new([])),
-        function foo(scope: Dictionary, args: ArgumentList):tyv.Value { return new tyv.TyString("FOO") }
+        ArgumentDescription.ofArray([]),
+        function foo(scope: Dictionary, args: ArgumentList):tyv.Value { return new tyv.String("FOO") }
       )
       const scope = new Dictionary()
-      expect<tyv.Value>(m.call(scope, tyv.List.new([]))).toStrictEqual(tyv.TyString.new("FOO"))
+      expect<tyv.Value>(m.call(scope, tyv.List.new([]))).toStrictEqual(tyv.String.new("FOO"))
     })
   })
 })

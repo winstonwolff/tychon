@@ -5,9 +5,17 @@ import * as tyv from "./TyValue"
 export class Dictionary extends tyv.Value {
   namedValues: Map<string, tyv.Value>
 
-  constructor() {
+  static new(initValues: Array<Array<tyv.Value>>=[]): Dictionary {
+    return new Dictionary(initValues)
+  }
+
+  constructor(initValues: Array<Array<tyv.Value>>=[]) {
     super("Dictionary")
     this.namedValues = new Map()
+
+    for(let i = 0; i < initValues.length; i++) {
+      this.set(initValues[i][0], initValues[i][1])
+    }
   }
 
   toString(): string {
@@ -15,7 +23,14 @@ export class Dictionary extends tyv.Value {
   }
 
   inspect(): string {
-    return `Dictionary( ${this.toString()} )`
+    let parts = new Array<string>()
+    const keys: Array<string> = this.namedValues.keys()
+    const values: Array<tyv.Value> = this.namedValues.values()
+
+    for(let i = 0; i < keys.length; i++) {
+      parts.push(`[${keys[i].toString()} ${values[i].inspect()}]`)
+    }
+    return `Dictionary([ ${parts.join(' ')} ])`
   }
 
   has(key: tyv.Value): boolean {

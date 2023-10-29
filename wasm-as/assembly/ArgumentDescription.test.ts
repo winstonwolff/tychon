@@ -3,33 +3,41 @@ import * as tyv from "./TyValue"
 
 describe('ArgumentDescription', ():void => {
 
+  describe('ofArray()', ():void => {
+    test('takes convenient AS lists of strings', ():void => {
+      const ad1 = ArgumentDescription.ofArray([['key', 'String'], ['value', 'String']])
+      const ad2 = ArgumentDescription.new(tyv.List.new([
+        tyv.List.new([tyv.String.new("key"), tyv.String.new("String")]),
+        tyv.List.new([tyv.String.new("value"), tyv.String.new("String")])
+      ]))
+      expect(ad1 as ArgumentDescription).toStrictEqual(ad2 as ArgumentDescription)
+    })
+  })
+
   describe('throw_if_invalid()', ():void => {
     const subject = ():ArgumentDescription => (new ArgumentDescription(tyv.List.new([
-      tyv.List.new([tyv.TyString.new("key"), tyv.TyString.new("TyString")]),
-      tyv.List.new([tyv.TyString.new("value"), tyv.TyString.new("TyString")])
+      tyv.List.new([tyv.String.new("key"), tyv.String.new("String")]),
+      tyv.List.new([tyv.String.new("value"), tyv.String.new("String")])
     ])))
 
-    test('returns False when args dont match ArgumentDescription', ():void => {
+    test('returns <self> when args match ArgumentDescription', ():void => {
       const arg_desc = subject()
       expect(
         arg_desc.throw_if_invalid(tyv.List.new([
-          tyv.TyString.new('first value'),
-          tyv.TyString.new('second value')
+          tyv.String.new('first value'),
+          tyv.String.new('second value')
         ]))
       ).toBe(arg_desc)
     })
 
-    test('raises an error when args don\'t match', ():void => {
+    test('raises an error when args are incorrect type', ():void => {
       expect( () => {
         const arg_desc = subject()
         arg_desc.throw_if_invalid(tyv.List.new([
-          tyv.TyString.new('first value'),
+          tyv.String.new('first value'),
           tyv.Number.new(99)
         ]))
       }).toThrow()
     })
   })
-
-  // it raises an error when return value doesn't match type
-  // it raises an error when number of args don't match
 })

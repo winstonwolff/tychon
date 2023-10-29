@@ -21,7 +21,7 @@ export function evaluate(scope: Dictionary, value: tyv.Value): tyv.Value {
   }
 }
 
-export function tyEvaluate(scope: Dictionary, args: tyv.List): tyv.Value {
+export function tyEvaluate(scope: Dictionary, args: ArgumentList): tyv.Value {
   return evaluate(scope, args.get(0))
 }
 
@@ -33,7 +33,7 @@ function call(scope: Dictionary, args: ArgumentList):tyv.Value {
   const funcArgs = new tyv.List((args as tyv.List).slice(1))
 
   // console.log(`!!! call() functionName = ${functionName}`)
-  const func = lookup(scope, (functionName as tyv.TyString).nativeString())
+  const func = lookup(scope, (functionName as tyv.String).nativeString())
   return func(scope, funcArgs)
 }
 

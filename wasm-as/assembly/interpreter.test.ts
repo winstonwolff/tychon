@@ -9,7 +9,7 @@ describe('interpreter.ts', ():void => {
 
     test('can [print "hello" "world"]', ():void => {
       const code = `["print", "hello", "world"]`
-      expect(evaluateJson(code)).toStrictEqual('TyString(\"hello world\")')
+      expect(evaluateJson(code)).toStrictEqual('String(\"hello world\")')
     })
 
     test('evaluates [module]', ():void => {
@@ -17,7 +17,7 @@ describe('interpreter.ts', ():void => {
           ["print", "hello", "world"],
           ["print", "I'm", "a", "Module"],
         ]`
-      expect(evaluateJson(code)).toStrictEqual(`List(TyString("hello world") TyString("I'm a Module"))`)
+      expect(evaluateJson(code)).toStrictEqual(`List(String("hello world") String("I'm a Module"))`)
     })
 
     test('can define variable', ():void => {
@@ -25,7 +25,7 @@ describe('interpreter.ts', ():void => {
           ["define", "name", "winston"],
           ["print", "hello", ["symbol", "name"]],
         ]`
-      expect(evaluateJson(code)).toStrictEqual(`List(TyString("winston") TyString("hello winston"))`)
+      expect(evaluateJson(code)).toStrictEqual(`List(String("winston") String("hello winston"))`)
     })
   })
 
@@ -36,16 +36,16 @@ describe('interpreter.ts', ():void => {
 
     it('fetches the value in scope', ():void => {
       const scope = new Dictionary()
-      builtins.define(scope, new tyv.List([new tyv.TyString("my_var"), new tyv.TyString("Teapot")]))
+      builtins.define(scope, new tyv.List([new tyv.String("my_var"), new tyv.String("Teapot")]))
 
-      expect<tyv.Value>(builtins.symbol(scope, new tyv.List([new tyv.TyString("my_var")]))).toStrictEqual(new tyv.TyString("Teapot"))
+      expect<tyv.Value>(builtins.symbol(scope, new tyv.List([new tyv.String("my_var")]))).toStrictEqual(new tyv.String("Teapot"))
     })
 
     xit('fetches functions too', ():void => {
       const scope = new Dictionary()
       // const tyDouble = new TyASFunction(double, 'double')
-      // define(scope, new List([new TyString("double"), tyDouble]))
-      // expect(new_lookup(scope, new List([new TyString("double")]))).toStrictEqual(tyDouble)
+      // define(scope, new List([new String("double"), tyDouble]))
+      // expect(new_lookup(scope, new List([new String("double")]))).toStrictEqual(tyDouble)
     })
   })
 })

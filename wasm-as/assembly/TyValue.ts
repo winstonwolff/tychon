@@ -19,7 +19,7 @@ export class Value {
   // Takes a JSON.Value and converts to Values
   static fromJsonValue(v: JSON.Value): Value {
     if (v.isString) {
-      return new TyString((v as JSON.Str).valueOf())
+      return new String((v as JSON.Str).valueOf())
     }
     if (v.isNum) {
       return new Number((v as JSON.Num).valueOf()) 
@@ -52,15 +52,15 @@ export class Value {
   inspect(): string { throw new Error(`not implemented in '${typeof(this)}'`) }
 }
 
-export class TyString extends Value {
+export class String extends Value {
   value: string = "";
 
   constructor(s:string) {
-    super("TyString")
+    super("String")
     this.value = s
   }
 
-  static new(s: string):Value { return new TyString(s) }
+  static new(s: string):Value { return new String(s) }
 
   // return AssemblyScript value
   nativeString(): string { return this.value }
@@ -69,7 +69,7 @@ export class TyString extends Value {
   toString(): string { return this.value }
 
   // returns e.g. '"abc"'
-  inspect(): string { return `TyString("${this.value.toString()}")` }
+  inspect(): string { return `String("${this.value.toString()}")` }
 
   instance_of(): Boolean { throw new Error(`not implemented in ${this.class.name}`) }
 }
@@ -207,13 +207,17 @@ export class Macro extends Value {
   }
 }
 
+// Macro which creates and returns new Macros
+// export const MacroMacro = Macro.new("Macro",
+
+
 export class NativeMacro extends Value {
   name: string
   argDesc: ArgumentDescription
   assemblyScriptFunction: TychonMacro
 
   static new(name:string, argDesc:ArgumentDescription, assemblyScriptFunction: TychonMacro): NativeMacro {
-    return new TyMacro(name, argDesc, assemblyScriptFunction)
+    return new NativeMacro(name, argDesc, assemblyScriptFunction)
   }
 
   constructor(name:string, argDesc:ArgumentDescription, assemblyScriptFunction: TychonMacro) {

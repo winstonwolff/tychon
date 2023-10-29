@@ -1,7 +1,7 @@
 import { JSON } from "assemblyscript-json/assembly"
 import { ArgumentList, TychonFunction, TychonMacro } from "./constants"
 import * as tyv from "./TyValue"
-import { tyEvaluate, evaluate } from "./interpreter"
+import { evaluate } from "./interpreter"
 import { Dictionary } from "./Dictionary"
 
 export function print(scope: Dictionary, args: ArgumentList):tyv.Value {
@@ -10,7 +10,7 @@ export function print(scope: Dictionary, args: ArgumentList):tyv.Value {
     result.push(evaluate(scope, args.get(i)).toString())
   }
   const msg = result.join(' ')
-  return new tyv.TyString(msg)
+  return new tyv.String(msg)
 }
 
 export function module(scope: Dictionary, args:ArgumentList): tyv.Value {
@@ -44,5 +44,5 @@ export function symbol(scope: Dictionary, args: ArgumentList): tyv.Value {
 }
 
 export function noop(scope: Dictionary, args: ArgumentList): tyv.Value {
-  return tyv.TyString.new("")
+  return tyv.String.new("")
 }

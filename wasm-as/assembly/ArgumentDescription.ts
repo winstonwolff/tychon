@@ -8,19 +8,24 @@ import { zip } from "./builtins"
   Mnenomic: parameter -> placeholder;  argument -> actual value
 
 */
-export const tyArgumentDescription = (argDesc: tyv.List):ArgumentDescription =>
-  ( new ArgumentDescription(argDesc) )
-
 export class ArgumentDescription extends tyv.Value {
   argDesc: tyv.List
+
+  static new(args: ArgumentList): ArgumentDescription {
+    return new ArgumentDescription(args)
+  }
+
+  static ofArray(argNamesAndTypes: Array<Array<string>>): ArgumentDescription {
+    const tyArgs = argNamesAndTypes
+      .map<tyv.Value>( (name_and_type) => (
+        tyv.List.new([ tyv.String.new(name_and_type[0]), tyv.String.new(name_and_type[1])])
+      ))
+    return ArgumentDescription.new(tyv.List.new(tyArgs))
+  }
 
   constructor(args: ArgumentList) {
     super()
     this.argDesc = args
-  }
-
-  static new(args: ArgumentList): ArgumentDescription {
-    return new ArgumentDescription(args)
   }
 
   toString(): string {

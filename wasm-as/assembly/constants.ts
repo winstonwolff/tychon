@@ -1,7 +1,6 @@
 // Shared constants and types
 
 import * as tyv from './TyValue'
-import { JSON } from "assemblyscript-json/assembly"
 import { Dictionary } from "./Dictionary"
 
 export type ArgumentList = tyv.List
