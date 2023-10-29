@@ -1,6 +1,6 @@
 import { JSON } from "assemblyscript-json/assembly"
 import { Dictionary } from "./Dictionary"
-import { ArgumentList } from "./constants"
+import { ArgumentList } from "./TyValue"
 import * as tyv from './TyValue'
 
 
@@ -58,9 +58,9 @@ describe('Dictionary', ():void => {
   describe('tySet() and tyGet()', ():void => {
     test('takes Tychon arguments', ():void => {
       const d = new Dictionary()
-      d.tySet(new tyv.List([new tyv.String('A'), new tyv.String("FOO FOO")]))
+      d.tySet(ArgumentList.new([new tyv.String('A'), new tyv.String("FOO FOO")]))
 
-      expect(d.tyGet(new tyv.List([ new tyv.String("A") ])))
+      expect(d.tyGet(ArgumentList.new([ new tyv.String("A") ])))
         .toStrictEqual(new tyv.String('FOO FOO'))
     })
   })

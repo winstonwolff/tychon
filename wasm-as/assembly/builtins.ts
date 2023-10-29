@@ -1,5 +1,6 @@
 import { JSON } from "assemblyscript-json/assembly"
-import { ArgumentList, TychonFunction, TychonMacro } from "./constants"
+import { TychonFunction, TychonMacro } from "./constants"
+import { ArgumentList } from "./TyValue"
 import * as tyv from "./TyValue"
 import { evaluate } from "./interpreter"
 import { Dictionary } from "./Dictionary"

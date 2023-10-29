@@ -1,5 +1,5 @@
 import * as tyv from "./TyValue"
-import { ArgumentList } from "./constants.ts"
+import { ArgumentList } from "./TyValue"
 import { zip } from "./builtins"
 
 /*
@@ -20,7 +20,7 @@ export class ArgumentDescription extends tyv.Value {
       .map<tyv.Value>( (name_and_type) => (
         tyv.List.new([ tyv.String.new(name_and_type[0]), tyv.String.new(name_and_type[1])])
       ))
-    return ArgumentDescription.new(tyv.List.new(tyArgs))
+    return ArgumentDescription.new(ArgumentList.new(tyArgs))
   }
 
   constructor(args: ArgumentList) {

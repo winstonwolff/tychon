@@ -1,6 +1,6 @@
 import { JSON } from "assemblyscript-json/assembly"
 import { Dictionary } from "./Dictionary"
-import { ArgumentList, TychonFunction, TychonMacro } from "./constants"
+import { TychonFunction, TychonMacro } from "./constants"
 import { ArgumentDescription } from "./ArgumentDescription"
 import { evaluate } from "./interpreter"
 
@@ -169,7 +169,7 @@ export class List extends Value {
   tyMap(callback: TychonFunction): List {
     const result = new List()
     for(let i=0; i < this.arrayOfValues.length; i++) {
-      result.append(callback(new List([this.arrayOfValues[i]])))
+      result.append(callback(ArgumentList.new([this.arrayOfValues[i]])))
     }
     return result
   }
@@ -178,6 +178,18 @@ export class List extends Value {
     return this.arrayOfValues.some(is_true)
   }
 }
+
+
+export class ArgumentList extends List {
+  static new(list: Array<Value> = []):ArgumentList {
+    return new ArgumentList(list)
+  }
+
+  static ofList(list: List):ArgumentList {
+    return ArgumentList.new(list.arrayOfValues)
+  }
+}
+
 
 export class Macro extends Value {
   name: string

@@ -1,5 +1,5 @@
 import { JSON } from "assemblyscript-json/assembly"
-import { ArgumentList } from "./constants.ts"
+import { ArgumentList } from "./TyValue"
 import * as tyv from "./TyValue"
 
 export class Dictionary extends tyv.Value {

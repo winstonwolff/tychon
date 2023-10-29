@@ -1,5 +1,6 @@
 import { evaluateJson } from './interpreter'
-import { ArgumentList, TychonMacro } from "./constants.ts"
+import { ArgumentList } from "./TyValue"
+import { TychonMacro } from "./constants.ts"
 import { Dictionary } from "./Dictionary.ts"
 import * as tyv from "./TyValue"
 import * as builtins from "./builtins.ts"
@@ -36,9 +37,9 @@ describe('interpreter.ts', ():void => {
 
     it('fetches the value in scope', ():void => {
       const scope = new Dictionary()
-      builtins.define(scope, new tyv.List([new tyv.String("my_var"), new tyv.String("Teapot")]))
+      builtins.define(scope, ArgumentList.new([new tyv.String("my_var"), new tyv.String("Teapot")]))
 
-      expect<tyv.Value>(builtins.symbol(scope, new tyv.List([new tyv.String("my_var")]))).toStrictEqual(new tyv.String("Teapot"))
+      expect<tyv.Value>(builtins.symbol(scope, ArgumentList.new([new tyv.String("my_var")]))).toStrictEqual(new tyv.String("Teapot"))
     })
 
     xit('fetches functions too', ():void => {

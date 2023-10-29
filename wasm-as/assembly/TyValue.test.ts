@@ -1,14 +1,55 @@
 import { JSON } from "assemblyscript-json/assembly"
 import * as tyv from "./TyValue"
+import { ArgumentList } from "./TyValue"
 import { ArgumentDescription } from "./ArgumentDescription"
 import { Dictionary } from "./Dictionary"
-import { ArgumentList, TychonFunction, TychonMacro } from "./constants"
+import { TychonFunction, TychonMacro } from "./constants"
 
 describe('TyValue.ts', ():void => {
 
-  test('1==2', ():void => {
-    expect(1).toStrictEqual(1)
+
+  describe('Value', ():void => {
+
+    describe('fromJsonValue()', ():void => {
+      test('converts from JSON.Nums', ():void => {
+        const jsonValue:JSON.Value = JSON.Value.Number(11)
+        expect(tyv.Value.fromJsonValue(jsonValue).toString()).toStrictEqual('11.0')
+      })
+
+      test('converts from JSON.Strings', ():void => {
+        const jsonValue:JSON.Value = new JSON.Str('abc')
+        expect(tyv.Value.fromJsonValue(jsonValue).inspect()).toStrictEqual('String("abc")')
+      })
+
+      test('converts from JSON.Bools', ():void => {
+        const jsonValue:JSON.Value = new JSON.Bool(true)
+        expect(tyv.Value.fromJsonValue(jsonValue).inspect()).toStrictEqual('Boolean(true)')
+      })
+
+      test("converts JSON.Arr's to List's", ():void => {
+        const array: JSON.Arr = JSON.Value.Array()
+        array.push(new JSON.Num(123))
+        array.push(new JSON.Str('abc'))
+        expect(tyv.Value.fromJsonValue(array).inspect()).toStrictEqual('List(Number(123.0) String("abc"))')
+      })
+    })
+
+
+    describe('parseJSON()', ():void => {
+      test('can parse lists', ():void => {
+        expect(tyv.Value.parseJSON('["abc"]').inspect()).toStrictEqual('List(String("abc"))')
+      })
+
+      test('can parse list of 2', ():void => {
+        expect(tyv.Value.parseJSON('["abc", "def"]').inspect()).toStrictEqual('List(String("abc") String("def"))')
+      })
+
+      test('can parse list of 3', ():void => {
+        expect(tyv.Value.parseJSON('["abc", 123.0, "def"]').inspect()).toStrictEqual('List(String("abc") Number(123.0) String("def"))')
+      })
+    })
   })
+
 
   describe('String', ():void => {
     test('toString() returns bare string e.g. "abc"', ():void => {
@@ -39,7 +80,7 @@ describe('TyValue.ts', ():void => {
     describe('tyGet()', ():void => {
       test('returns value at given index', ():void => {
         const list = new tyv.List([new tyv.String('A')])
-        expect(list.tyGet(new tyv.List([tyv.Number.new(0)]))).toStrictEqual(new tyv.String('A'))
+        expect(list.tyGet(ArgumentList.new([tyv.Number.new(0)]))).toStrictEqual(new tyv.String('A'))
       })
     })
 
@@ -114,45 +155,15 @@ describe('TyValue.ts', ():void => {
   })
 
 
-  describe('fromJsonValue()', ():void => {
-    test('converts from JSON.Nums', ():void => {
-      const jsonValue:JSON.Value = JSON.Value.Number(11)
-      expect(tyv.Value.fromJsonValue(jsonValue).toString()).toStrictEqual('11.0')
-    })
-
-    test('converts from JSON.Strings', ():void => {
-      const jsonValue:JSON.Value = new JSON.Str('abc')
-      expect(tyv.Value.fromJsonValue(jsonValue).inspect()).toStrictEqual('String("abc")')
-    })
-
-    test('converts from JSON.Bools', ():void => {
-      const jsonValue:JSON.Value = new JSON.Bool(true)
-      expect(tyv.Value.fromJsonValue(jsonValue).inspect()).toStrictEqual('Boolean(true)')
-    })
-
-    test("converts JSON.Arr's to List's", ():void => {
-      const array: JSON.Arr = JSON.Value.Array()
-      array.push(new JSON.Num(123))
-      array.push(new JSON.Str('abc'))
-      expect(tyv.Value.fromJsonValue(array).inspect()).toStrictEqual('List(Number(123.0) String("abc"))')
+  describe('ArgumentList', ():void => {
+    describe('ofList()', ():void => {
+      test('takes List of args', ():void => {
+        const l = tyv.ArgumentList.ofList(tyv.List.new([tyv.String.new('R')]))
+        const a = tyv.ArgumentList.new([tyv.String.new('R')])
+        expect(l).toStrictEqual(a)
+      })
     })
   })
-
-
-  describe('parseJSON()', ():void => {
-    test('can parse lists', ():void => {
-      expect(tyv.Value.parseJSON('["abc"]').inspect()).toStrictEqual('List(String("abc"))')
-    })
-
-    test('can parse list of 2', ():void => {
-      expect(tyv.Value.parseJSON('["abc", "def"]').inspect()).toStrictEqual('List(String("abc") String("def"))')
-    })
-
-    test('can parse list of 3', ():void => {
-      expect(tyv.Value.parseJSON('["abc", 123.0, "def"]').inspect()).toStrictEqual('List(String("abc") Number(123.0) String("def"))')
-    })
-  })
-
 
   describe('Macro', ():void => {
     test('executes Tychon code', ():void => {
@@ -162,7 +173,7 @@ describe('TyValue.ts', ():void => {
         tyv.String.new("FOO")
       )
       const scope = new Dictionary()
-      expect<tyv.Value>(m.call(scope, tyv.List.new([]))).toStrictEqual(tyv.String.new("FOO"))
+      expect<tyv.Value>(m.call(scope, ArgumentList.new([]))).toStrictEqual(tyv.String.new("FOO"))
     })
   })
 
@@ -174,7 +185,7 @@ describe('TyValue.ts', ():void => {
         function foo(scope: Dictionary, args: ArgumentList):tyv.Value { return new tyv.String("FOO") }
       )
       const scope = new Dictionary()
-      expect<tyv.Value>(m.call(scope, tyv.List.new([]))).toStrictEqual(tyv.String.new("FOO"))
+      expect<tyv.Value>(m.call(scope, ArgumentList.new([]))).toStrictEqual(tyv.String.new("FOO"))
     })
   })
 })
