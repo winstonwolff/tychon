@@ -173,7 +173,7 @@ describe('TyValue.ts', ():void => {
         tyv.String.new("FOO")
       )
       const scope = new Dictionary()
-      expect<tyv.Value>(m.call(scope, ArgumentList.new([]))).toStrictEqual(tyv.String.new("FOO"))
+      expect<tyv.Value>(m.__call__(scope, ArgumentList.new([]))).toStrictEqual(tyv.String.new("FOO"))
     })
   })
 
@@ -185,7 +185,7 @@ describe('TyValue.ts', ():void => {
         function foo(scope: Dictionary, args: ArgumentList):tyv.Value { return new tyv.String("FOO") }
       )
       const scope = new Dictionary()
-      expect<tyv.Value>(m.call(scope, ArgumentList.new([]))).toStrictEqual(tyv.String.new("FOO"))
+      expect<tyv.Value>(m.__call__(scope, ArgumentList.new([]))).toStrictEqual(tyv.String.new("FOO"))
     })
   })
 })

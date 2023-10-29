@@ -213,7 +213,7 @@ export class Macro extends Value {
     return `Macro(${this.name})`
   }
 
-  call(scope:Dictionary, args: ArgumentList): Value {
+  __call__(scope:Dictionary, args: ArgumentList): Value {
     this.argDesc.throw_if_invalid(args)
     return evaluate(scope, this.code)
   }
@@ -247,7 +247,7 @@ export class NativeMacro extends Value {
     return `NativeMacro(${this.name})`
   }
 
-  call(scope: Dictionary, args: ArgumentList): Value {
+  __call__(scope: Dictionary, args: ArgumentList): Value {
     this.argDesc.throw_if_invalid(args)
     return this.assemblyScriptFunction(scope, args)
   }
