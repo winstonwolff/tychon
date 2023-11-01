@@ -1,6 +1,7 @@
 import { JSON } from "assemblyscript-json/assembly"
 import { TychonFunction, TychonMacro } from "./constants"
 import { ArgumentList } from "./TyValue"
+import { ArgumentDescription } from "./ArgumentDescription"
 import * as tyv from "./TyValue"
 import { evaluate } from "./interpreter"
 import { Dictionary } from "./Dictionary"
@@ -47,3 +48,31 @@ export function symbol(scope: Dictionary, args: ArgumentList): tyv.Value {
 export function noop(scope: Dictionary, args: ArgumentList): tyv.Value {
   return tyv.String.new("")
 }
+
+// Macro which creates and returns new Macros
+export const MacroMacro = tyv.NativeMacro.new(
+  "Macro",
+  ArgumentDescription.ofArray([
+    ['name', 'String'],
+    ['argList', 'List'],
+    ['code', 'List']
+  ]),
+  (scope: Dictionary, args: ArgumentList): tyv.Value => {
+    const name = args.get(0).nativeString()
+    const argDesc = ArgumentDescription.new(ArgumentList.ofList(args.get(1) as tyv.List))
+    const code = args.get(2)
+
+    return tyv.Macro.new(name, argDesc, code)
+  }
+)
+
+export const BUILTINS = Dictionary.new([
+  // [ tyv.String.new("evaluate"),
+  //   tyv.NativeMacro.new('evaluate',
+  //     ArgumentDescription.ofArray([['value', 'Value']]),
+  //     (scope: Dictionary, args: ArgumentList): tyv.Value => evaluate(scope, args.get(0))
+  //   )
+  // ],
+  [tyv.String.new("Macro"), MacroMacro],
+])
+

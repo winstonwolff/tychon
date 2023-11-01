@@ -28,6 +28,17 @@ describe('interpreter.ts', ():void => {
         ]`
       expect(evaluateJson(code)).toStrictEqual(`List(String("winston") String("hello winston"))`)
     })
+
+    test('can create and run a Macro', ():void => {
+      const code = `["module",
+          ["define", "name", "winston"],
+          ["Macro", "inspect", [["v", "String"]], [
+            ["print", "inspect:", ["Symbol", "v"]]
+          ]],
+          ["inspect", "name"]
+        ]`
+      expect(evaluateJson(code)).toStrictEqual(`List(String("inspect: winston"))`)
+    })
   })
 
   describe('symbol()', ():void => {

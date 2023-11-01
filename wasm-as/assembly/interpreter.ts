@@ -31,27 +31,23 @@ function call(scope: Dictionary, args: ArgumentList):tyv.Value {
   if (! args instanceof tyv.List) throw new Error('args should be List')
 
   // input:
-  const functionName:tyv.Value = (args as tyv.List).get(0)
-  const funcArgs = ArgumentList.new((args as tyv.List).slice(1))
+  const functionName:tyv.Value = args.get(0)
+  const funcArgs = ArgumentList.new(args.slice(1))
 
-  // console.log(`!!! call() functionName = ${functionName}`)
-  const func = lookup(scope, (functionName as tyv.String).nativeString())
+  if (builtins.BUILTINS.has(functionName)) {
+    const macro = builtins.BUILTINS.get(functionName)
+    if (macro.type_name == 'Macro') {
+      return (macro as tyv.Macro).__call__(scope, funcArgs)
+    } else if (macro.type_name == 'NativeMacro') {
+      return (macro as tyv.NativeMacro).__call__(scope, funcArgs)
+    }
+    throw new Error(`unknown type for macro ${functionName} ${macro.type_name}`)
+  }
+
+  const fn = (functionName as tyv.String).nativeString()
+  const func = lookup(scope, fn)
   return func(scope, funcArgs)
 }
-
-const BUILTINS = Dictionary.new([
-  [ tyv.String.new("evaluate"),
-    tyv.NativeMacro.new('evaluate',
-      ArgumentDescription.ofArray([['value', 'Value']]),
-      (scope: Dictionary, args: ArgumentList): tyv.Value => evaluate(scope, args.get(0))
-    )
-  ],
-  // [tyv.String.new("print"), builtins.print],
-  // [tyv.String.new("module"), builtins.module],
-  // [tyv.String.new("define"), builtins.define],
-  // [tyv.String.new("Symbol"), builtins.symbol],
-  // [tyv.String.new("Macro"), tyv.Macro],
-])
 
 function lookup(scope: Dictionary, functionName: string):TychonMacro {
   if (functionName === "evaluate") return tyEvaluate
@@ -60,7 +56,6 @@ function lookup(scope: Dictionary, functionName: string):TychonMacro {
   if (functionName === "define") return builtins.define
   if (functionName === "symbol") return builtins.symbol
   if (functionName === "Symbol") return builtins.symbol
-  // if (functionName === "Macro") return Macro.new
 
   return builtins.noop
 }
