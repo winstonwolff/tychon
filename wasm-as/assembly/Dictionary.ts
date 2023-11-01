@@ -34,7 +34,7 @@ export class Dictionary extends tyv.Value {
   }
 
   has(key: tyv.Value): boolean {
-    return this.namedValues.has(key)
+    return this.namedValues.has(this._normalizedKey(key))
   }
 
   // store 'value' under 'key'

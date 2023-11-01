@@ -219,9 +219,6 @@ export class Macro extends Value {
   }
 }
 
-// Macro which creates and returns new Macros
-// export const MacroMacro = Macro.new("Macro",
-
 
 export class NativeMacro extends Value {
   name: string

@@ -52,7 +52,7 @@ export class ArgumentDescription extends tyv.Value {
       const arg = (param_and_arg as tyv.List).get(1)
 
       if (param_type_str.nativeString() != arg.type_name) {
-        throw new Error(`Parameter '${param_name}' must be a ${param_type_str.nativeString()} but was ${arg.inspect()}`)
+        throw new Error(`ArgumentDescription: Parameter '${param_name}' must be a ${param_type_str.nativeString()} but was ${arg.inspect()}`)
       }
       return tyv.False
     })

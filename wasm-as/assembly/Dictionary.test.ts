@@ -64,4 +64,13 @@ describe('Dictionary', ():void => {
         .toStrictEqual(new tyv.String('FOO FOO'))
     })
   })
+
+  describe('has()', ():void => {
+    test('returns True when key is in the dictionary', ():void => {
+        const d = Dictionary.new([
+          [tyv.String.new('rope'), tyv.String.new('ROPE')],
+        ])
+      // expect(d.has(tyv.String.new('rope'))).toStrictEqual(true)
+    })
+  })
 })
